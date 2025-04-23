@@ -75,18 +75,6 @@ int main() {
 				case Keyboard::Escape:
 					window.close();
 					break;
-				case Keyboard::W:
-					player.mSetDirection(1);
-					break;
-				case Keyboard::D:
-					player.mSetDirection(2);
-					break;
-				case Keyboard::S:
-					player.mSetDirection(3);
-					break;
-				case Keyboard::A:
-					player.mSetDirection(4);
-					break;
 				}
 			}
 		}
@@ -96,22 +84,22 @@ int main() {
 		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l’horloge
 		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
 		{
-			// Bouger le personnage
-			if (player.mGetDirection() == 1)
+			// Mouvement du joueur
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
 				player.mSetPosY(fPlayerMove(1, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (player.mGetDirection() == 2)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 			{
-				player.mSetPosY(fPlayerMove(2, sPlayer, player.mGetPosX(), player.mGetPosY()));
+				player.mSetPosX(fPlayerMove(2, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (player.mGetDirection() == 3)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			{
 				player.mSetPosY(fPlayerMove(3, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (player.mGetDirection() == 4)
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
-				player.mSetPosY(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
+				player.mSetPosX(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
 
 			// Défilement des ennemis

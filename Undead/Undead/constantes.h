@@ -7,7 +7,7 @@
 #define GAME_NAME "Undead"
 #define WINDOW_SIZE_X 800
 #define WINDOW_SIZE_Y 640
-#define INCREMENT 16
+#define INCREMENT 8 //16
 #define FRAMERATE 60 // FPS
 #define UPDATE_RATE 50 // milisecondes
 
