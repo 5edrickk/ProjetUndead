@@ -14,12 +14,16 @@ int main() {
 	//========================================================================================================================
 	// Variables
 	int vCharacterPositionX = WINDOW_SIZE_X / 2 - PLAYER_SIZE / 2,
-		vCharacterPositionY = WINDOW_SIZE_Y / 2 - PLAYER_SIZE / 2;
+		vCharacterPositionY = WINDOW_SIZE_Y / 2 - PLAYER_SIZE / 2,
+		vCurrentDirection = 0; // Idle, Up, Right, Down, Left (0 1 2 3 4)
 
 	//========================================================================================================================
 	// Objets de classes
-	Clock clock;
-	Time time;
+	Clock clockUpdate;
+	Time timeUpdate;
+
+	Clock clockDraw;
+	Time timeDraw;
 
 	//========================================================================================================================
 	// Render window
@@ -64,63 +68,60 @@ int main() {
 			{
 				window.close();
 			}
+			// Détection des touches
 			else if (event.type == Event::KeyPressed)
 			{
 				switch (event.key.code) {
 				case Keyboard::Escape:
 					window.close();
 					break;
-					// Movement switch case
 				case Keyboard::W:
-					if (vCharacterPositionY > 0)
-					{
-						sPlayer.move(0, -INCREMENT);
-						vCharacterPositionY -= INCREMENT;
-					}
-					else { fDebug(1); }
-
-					fDebug(2, vCharacterPositionX, vCharacterPositionY);
+					vCurrentDirection = 1;
 					break;
 				case Keyboard::D:
-					if (vCharacterPositionX < WINDOW_SIZE_X - PLAYER_SIZE)
-					{
-						sPlayer.move(INCREMENT, 0);
-						vCharacterPositionX += INCREMENT;
-					}
-					else { fDebug(1); }
-
-					fDebug(2, vCharacterPositionX, vCharacterPositionY);
+					vCurrentDirection = 2;
 					break;
 				case Keyboard::S:
-					if (vCharacterPositionY < WINDOW_SIZE_Y - PLAYER_SIZE)
-					{
-						sPlayer.move(0, INCREMENT);
-						vCharacterPositionY += INCREMENT;
-					}
-					else { fDebug(1); }
-
-					fDebug(2, vCharacterPositionX, vCharacterPositionY);
+					vCurrentDirection = 3;
 					break;
 				case Keyboard::A:
-					if (vCharacterPositionX > 0)
-					{
-						sPlayer.move(-INCREMENT, 0);
-						vCharacterPositionX -= INCREMENT;
-					}
-					else { fDebug(1); }
-
-					fDebug(2, vCharacterPositionX, vCharacterPositionY);
+					vCurrentDirection = 4;
 					break;
 				}
 			}
 		}
 
 		//========================================================================================================================
-		// Boucle fenêtre > Boucle temps
-		time = clock.getElapsedTime(); //Prends le temps de l’horloge
-		if (time.asMilliseconds() >= 100.0f) //En milisecondes
+		// Boucle fenêtre > Boucle update
+		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l’horloge
+		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
 		{
+			// Bouger le personnage
+			if (vCurrentDirection == 1)
+			{
+				vCharacterPositionY = fPlayerMove(1, sPlayer, vCharacterPositionX, vCharacterPositionY);
+			}
+			else if (vCurrentDirection == 2)
+			{
+				vCharacterPositionX = fPlayerMove(2, sPlayer, vCharacterPositionX, vCharacterPositionY);
+			}
+			else if (vCurrentDirection == 3)
+			{
+				vCharacterPositionY = fPlayerMove(3, sPlayer, vCharacterPositionX, vCharacterPositionY);
+			}
+			else if (vCurrentDirection == 4)
+			{
+				vCharacterPositionX = fPlayerMove(4, sPlayer, vCharacterPositionX, vCharacterPositionY);
+			}
 
+			clockUpdate.restart(); // On remet l’horloge à 0
+		}
+
+		//========================================================================================================================
+		// Boucle fenêtre > Boucle visuelle
+		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
+		if (timeDraw.asMilliseconds() >= 1000/FRAMERATE) //En milisecondes (100.0f)
+		{
 			// Effacement de la fenêtre en noir
 			window.clear();
 
@@ -131,8 +132,7 @@ int main() {
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
 			window.display();
 
-			clock.restart(); // On remet l’horloge à 0
-
+			clockDraw.restart(); // On remet l’horloge à 0
 		}
 	}
 	
