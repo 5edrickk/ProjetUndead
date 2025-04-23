@@ -5,6 +5,7 @@
 
 #include "constantes.h"
 #include "functions.h"
+#include "player.h"
 
 using namespace sf;
 using namespace std;
@@ -13,9 +14,6 @@ int main() {
 
 	//========================================================================================================================
 	// Variables
-	int vCharacterPositionX = WINDOW_SIZE_X / 2 - PLAYER_SIZE / 2,
-		vCharacterPositionY = WINDOW_SIZE_Y / 2 - PLAYER_SIZE / 2,
-		vCurrentDirection = 0; // Idle, Up, Right, Down, Left (0 1 2 3 4)
 
 	//========================================================================================================================
 	// Objets de classes
@@ -24,6 +22,8 @@ int main() {
 
 	Clock clockDraw;
 	Time timeDraw;
+
+	Player player;
 
 	//========================================================================================================================
 	// Render window
@@ -76,16 +76,16 @@ int main() {
 					window.close();
 					break;
 				case Keyboard::W:
-					vCurrentDirection = 1;
+					player.mSetDirection(1);
 					break;
 				case Keyboard::D:
-					vCurrentDirection = 2;
+					player.mSetDirection(2);
 					break;
 				case Keyboard::S:
-					vCurrentDirection = 3;
+					player.mSetDirection(3);
 					break;
 				case Keyboard::A:
-					vCurrentDirection = 4;
+					player.mSetDirection(4);
 					break;
 				}
 			}
@@ -97,22 +97,26 @@ int main() {
 		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
 		{
 			// Bouger le personnage
-			if (vCurrentDirection == 1)
+			if (player.mGetDirection() == 1)
 			{
-				vCharacterPositionY = fPlayerMove(1, sPlayer, vCharacterPositionX, vCharacterPositionY);
+				player.mSetPosY(fPlayerMove(1, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (vCurrentDirection == 2)
+			else if (player.mGetDirection() == 2)
 			{
-				vCharacterPositionX = fPlayerMove(2, sPlayer, vCharacterPositionX, vCharacterPositionY);
+				player.mSetPosY(fPlayerMove(2, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (vCurrentDirection == 3)
+			else if (player.mGetDirection() == 3)
 			{
-				vCharacterPositionY = fPlayerMove(3, sPlayer, vCharacterPositionX, vCharacterPositionY);
+				player.mSetPosY(fPlayerMove(3, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
-			else if (vCurrentDirection == 4)
+			else if (player.mGetDirection() == 4)
 			{
-				vCharacterPositionX = fPlayerMove(4, sPlayer, vCharacterPositionX, vCharacterPositionY);
+				player.mSetPosY(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
+
+			// Défilement des ennemis
+
+			// Défilement des projectiles
 
 			clockUpdate.restart(); // On remet l’horloge à 0
 		}
