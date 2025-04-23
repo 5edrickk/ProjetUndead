@@ -2,4 +2,8 @@
 
 #include <iostream>
 
-void fTest();
+#include "constantes.h"
+
+void fDebug(int code, int param1 = 0, int param2 = 0);
+
+void fInitialize();

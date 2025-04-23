@@ -137,6 +137,7 @@
     <ClCompile Include="projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constantes.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="game.h" />
