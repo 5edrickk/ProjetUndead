@@ -14,6 +14,7 @@ int main() {
 
 	//========================================================================================================================
 	// Variables
+	int time = 0;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -102,9 +103,14 @@ int main() {
 				player.mSetPosX(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
 
+			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
+			player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), player);
+
 			// Défilement des ennemis
 
 			// Défilement des projectiles
+
+			time++;
 
 			clockUpdate.restart(); // On remet l’horloge à 0
 		}

@@ -12,7 +12,7 @@ Player::Player()
 	_currentHealth = PLAYER_MAX_HEALTH;
 	_speed = PLAYER_SPEED;
 	_direction = 0;
-	_rotation = 90;
+	_rotation = 0;
 }
 
 Player::~Player()
@@ -43,6 +43,11 @@ int Player::mGetDirection() const
 	return _direction;
 }
 
+int Player::mGetRotation() const
+{
+	return _rotation;
+}
+
 //========================================================================================================================
 // Setters
 void Player::mSetPosX(const int x)
@@ -59,4 +64,35 @@ void Player::mSetDirection(const int dir)
 {
 	assert(dir >= 0 && dir <= 4);
 	_direction = dir;
+}
+
+void Player::mSetRotation(const int rot)
+{
+	//assert(rot >= 0 && rot <= 360);
+
+	cout << "SUS : " << _rotation << endl;
+
+	_rotation += rot;
+
+	if (_rotation >= 360)
+	{
+		_rotation = 0;
+	}
+	else if (_rotation <= 0)
+	{
+		_rotation = 0;
+	}
+
+	cout << "amongus : " << _rotation << endl;
+}
+
+//========================================================================================================================
+// Autres
+void Player::mRotate(int targetX, int targetY, Player& object)
+{
+	int amount = (180/ 3.141592653589793) * (atan2(targetX - object.mGetPosX() - PLAYER_SIZE / 2, targetY - object.mGetPosY() - PLAYER_SIZE / 2));
+	
+	cout << "RAHHHHH : " << amount << endl;
+	
+	mSetRotation(amount);
 }
