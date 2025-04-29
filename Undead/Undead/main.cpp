@@ -34,8 +34,11 @@ int main() {
 
 	//========================================================================================================================
 	// Background
-	Background background[5]; // On crée un tableau de Backgrounds
-	for (int i = 0; i < 5; i++)
+	int bkg = 0,
+		lastbkg = 0;
+
+	Background background[BACKGROUND_NUMBER]; // On crée un tableau de Backgrounds
+	for (int i = 0; i < BACKGROUND_NUMBER; i++)
 	{
 		background[i].setBackground(background[i].getBackground()); // On initialise le background
 		Texture textureBackground; // On crée une texture pour le background
@@ -43,8 +46,7 @@ int main() {
 		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
 		
 	}
-	int bkg = 0;
-	int lastbkg=5;
+
 	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
