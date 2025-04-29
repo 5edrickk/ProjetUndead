@@ -15,6 +15,7 @@ int main() {
 
 	//========================================================================================================================
 	// Variables
+	int time = 0;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -147,10 +148,20 @@ int main() {
 				bkg = lastbkg;
 				break;
 			}
-			
-			// Défilement des ennemis
 
-			// Défilement des projectiles
+      // Rotation joueur par rapport a la souris
+			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
+			player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), player);
+			sPlayer.rotate(-player.mGetRotation() - sPlayer.getRotation());
+
+			// D�filement des ennemis
+
+			// D�filement des projectiles
+
+			time++;
+
+			clockUpdate.restart(); // On remet l�horloge � 0
+		}
 
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle visuelle

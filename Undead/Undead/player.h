@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cassert>
+#include <cmath>
+#include <iostream>
 
 #include "constantes.h"
 #include "abilities.h"
@@ -26,10 +28,15 @@ public:
 	int mGetPosX() const;
 	int mGetPosY() const;
 	int mGetDirection() const;
+	int mGetRotation() const;
 
 	// Setters
 	void mSetPosX(const int x);
 	void mSetPosY(const int y);
 	void mSetDirection(const int dir);
+	void mSetRotation(const int rot);
+
+	//Autres
+	void mRotate(int targetX, int targetY, Player& object);
 
 };

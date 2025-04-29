@@ -17,11 +17,42 @@ void fDebug(int code, int param1, int param2)
 		case 2:
 			cout << "DEBUG : Player position : " << param1 << "x " << param2 << "y" << endl;
 			break;
+		case 3:
+			cout << "DEBUG : " << param1 << "x " << param2 << "y (" << fWindowClamp(param1, 'x') << "x " << fWindowClamp(param2, 'y') << "y)" << endl;
+			break;
 		default:
 			cout << "DEBUG : Default" << endl;
 			break;
 		}
 	}
+}
+
+int fWindowClamp(int value, char direction)
+{
+	if (direction == 'x')
+	{
+		if (value < 0)
+		{
+			return 0;
+		}
+		else if (value > WINDOW_SIZE_X) 
+		{
+			return WINDOW_SIZE_X;
+		}
+	}
+	else if (direction == 'y')
+	{
+		if (value < 0)
+		{
+			return 0;
+		}
+		else if (value > WINDOW_SIZE_Y)
+		{
+			return WINDOW_SIZE_Y;
+		}
+	}
+
+	return value;
 }
 
 int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY) 
