@@ -107,6 +107,18 @@ int main() {
 		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l�horloge
 		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
 		{
+			// Clear console on tick (constantes)
+			if (CLEAR_CONSOLE_ON_TICK == true) { system("cls"); }
+
+			// Tick console
+			time++;
+			cout << time << " / ================================" << endl;
+
+			if (SHOW_SETTINGS_ON_DEBUG == true)
+			{
+				cout << GAME_NAME << " : " << FRAMERATE << "FPS / " << UPDATE_RATE << "Hz / " << WINDOW_SIZE_X << "x" << WINDOW_SIZE_Y << "px / " << INCREMENT << "inc." << endl;
+			}
+
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
@@ -122,11 +134,12 @@ int main() {
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
-				player.mSetPosY(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
+				player.mSetPosX(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
 			}
+
+			fDebug(2, player.mGetPosX(), player.mGetPosY());
 	
-			//Defilement du joueur
-			
+			//Défilement du joueur
 			switch (dir)
 			{
 			case 1: // Haut
@@ -159,8 +172,6 @@ int main() {
 			// D�filement des ennemis
 
 			// D�filement des projectiles
-
-			time++;
 
 			clockUpdate.restart(); // On remet l�horloge � 0
 		}

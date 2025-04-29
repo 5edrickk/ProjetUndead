@@ -2,6 +2,8 @@
 
 // Options
 #define DEBUG true
+#define SHOW_SETTINGS_ON_DEBUG true
+#define CLEAR_CONSOLE_ON_TICK false
 
 // Window
 #define GAME_NAME "Undead"

@@ -68,13 +68,7 @@ void Player::mSetDirection(const int dir)
 
 void Player::mSetRotation(const int rot)
 {
-	//assert(rot >= 0 && rot <= 360);
-
-	cout << "SUS : " << _rotation << endl;
-
 	_rotation = rot;
-
-	cout << "amongus : " << _rotation << endl;
 }
 
 //========================================================================================================================
@@ -82,8 +76,7 @@ void Player::mSetRotation(const int rot)
 void Player::mRotate(int targetX, int targetY, Player& object)
 {
 	int amount = (180/ 3.141592653589793) * (atan2(targetX - object.mGetPosX() - PLAYER_SIZE / 2, targetY - object.mGetPosY() - PLAYER_SIZE / 2));
-	
-	cout << "RAHHHHH : " << amount << endl;
+	fDebug(4, amount);
 	
 	object.mSetRotation(amount);
 }
