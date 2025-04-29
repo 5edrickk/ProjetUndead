@@ -33,14 +33,14 @@ int main() {
 
 	//========================================================================================================================
 	// Background
-	Background background[5]; // On crée un tableau de Backgrounds
+	Background background[5]; // On crÃ©e un tableau de Backgrounds
 	for (int i = 0; i < 5; i++)
 	{
 		background[i].setBackground(background[i].getBackground()); // On initialise le background
-		Texture textureBackground; // On crée une texture pour le background
+		Texture textureBackground; // On crÃ©e une texture pour le background
 		textureBackground.loadFromFile("assets/backgrounds/background" + std::to_string(i) + ".png"); // On charge la texture
 		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
-
+		
 	}
 	int bkg = 0;
 	int lastbkg=5;
@@ -59,21 +59,21 @@ int main() {
 	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 	//========================================================================================================================
-	// Boucle fenêtre : jusqu'à ce que la fenêtre soit fermée
+	// Boucle fenÃªtre : jusqu'Ã  ce que la fenÃªtre soit fermÃ©e
 	while (window.isOpen())
 	{
-		// On inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
+		// On inspecte tous les Ã©vÃ¨nements de la fenÃªtre qui ont Ã©tÃ© Ã©mis depuis la prÃ©cÃ©dente itÃ©ration
 		Event event;
 		int dir = 0;
 
 		while (window.pollEvent(event))
 		{
-			// Évènement "fermeture demandée" : on ferme la fenêtre
+			// Ã‰vÃ¨nement "fermeture demandÃ©e" : on ferme la fenÃªtre
 			if (event.type == Event::Closed)
 			{
 				window.close();
 			}
-			// Détection des touches
+			// DÃ©tection des touches
 			else if (event.type == Event::KeyPressed)
 			{
 				switch (event.key.code) {
@@ -95,17 +95,33 @@ int main() {
 				default:
 					break;
 				}
-
 			}
 		}
 
 		//========================================================================================================================
 
-		// Boucle fenêtre > Boucle update
+		// Boucle fenÃªtre > Boucle update
+		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de lï¿½horloge
+		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
+		{
+			// Mouvement du joueur
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+			{
+				player.mSetPosY(fPlayerMove(1, sPlayer, player.mGetPosX(), player.mGetPosY()));
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+			{
+				player.mSetPosX(fPlayerMove(2, sPlayer, player.mGetPosX(), player.mGetPosY()));
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+			{
+				player.mSetPosY(fPlayerMove(3, sPlayer, player.mGetPosX(), player.mGetPosY()));
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+			{
+				player.mSetPosY(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
+			}
 	
-	
-
-
 			//Defilement du joueur
 			
 			switch (dir)
@@ -132,36 +148,33 @@ int main() {
 				break;
 			}
 			
-			// Défilement des ennemis
+			// DÃ©filement des ennemis
 
-			// Défilement des projectiles
-
-
+			// DÃ©filement des projectiles
 
 		//========================================================================================================================
-		// Boucle fenêtre > Boucle visuelle
-		//timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
-		//if (timeDraw.asMilliseconds() >= 1000/FRAMERATE) //En milisecondes (100.0f)
-		//{
-			// Effacement de la fenêtre en noir
+		// Boucle fenÃªtre > Boucle visuelle
+		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de lâ€™horloge
+		if (timeDraw.asMilliseconds() >= 1000/FRAMERATE) //En milisecondes (100.0f)
+		{
+			// Effacement de la fenÃªtre en noir
 			window.clear();
 
 			// On dessine le background
 			background[bkg].draw(window); // On dessine le background
 
-
-
 			window.draw(sPlayer);
-			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
+			
+			// Fin de la frame courante, affichage de tout ce qu'on a dessinÃ©
 			window.display();
 
-	//		clockDraw.restart(); // On remet l’horloge à 0
-	//	}
+			clockDraw.restart(); // On remet lâ€™horloge Ã  0
+		}
 	}
 	
 	//========================================================================================================================
 	// Fin
-	std::cout << endl;
+	cout << endl;
 	system("pause");
 	return 0;
 
