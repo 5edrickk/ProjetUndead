@@ -72,16 +72,7 @@ void Player::mSetRotation(const int rot)
 
 	cout << "SUS : " << _rotation << endl;
 
-	_rotation += rot;
-
-	if (_rotation >= 360)
-	{
-		_rotation = 0;
-	}
-	else if (_rotation <= 0)
-	{
-		_rotation = 0;
-	}
+	_rotation = rot;
 
 	cout << "amongus : " << _rotation << endl;
 }
@@ -94,5 +85,5 @@ void Player::mRotate(int targetX, int targetY, Player& object)
 	
 	cout << "RAHHHHH : " << amount << endl;
 	
-	mSetRotation(amount);
+	object.mSetRotation(amount);
 }

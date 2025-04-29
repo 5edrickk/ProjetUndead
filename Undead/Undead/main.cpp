@@ -105,6 +105,7 @@ int main() {
 
 			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
 			player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), player);
+			sPlayer.rotate(-player.mGetRotation() - sPlayer.getRotation());
 
 			// Défilement des ennemis
 
