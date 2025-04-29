@@ -6,6 +6,7 @@
 #include "constantes.h"
 #include "functions.h"
 #include "player.h"
+#include "Background.h"
 
 using namespace sf;
 using namespace std;
@@ -33,21 +34,24 @@ int main() {
 
 	//========================================================================================================================
 	// Background
-	sf::RectangleShape sBackground;
-
-	sBackground.setPosition(0, 0);
-	sBackground.setSize(sf::Vector2f(WINDOW_SIZE_X, WINDOW_SIZE_Y));
-	sBackground.setFillColor(sf::Color::White);
-	sBackground.setOutlineColor(sf::Color::Black);
-	sBackground.setOutlineThickness(5);
-	
+	Background background[5]; // On crÃ©e un tableau de Backgrounds
+	for (int i = 0; i < 5; i++)
+	{
+		background[i].setBackground(background[i].getBackground()); // On initialise le background
+		Texture textureBackground; // On crÃ©e une texture pour le background
+		textureBackground.loadFromFile("assets/backgrounds/background" + std::to_string(i) + ".png"); // On charge la texture
+		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
+		
+	}
+	int bkg = 0;
+	int lastbkg=5;
 	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
 
 	sPlayer.setPosition(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y / 2);
 	sPlayer.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-	sPlayer.setFillColor(sf::Color::Blue);
+	sPlayer.setFillColor(sf::Color::Black);
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
 	
@@ -56,33 +60,49 @@ int main() {
 	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 	//========================================================================================================================
-	// Boucle fenêtre : jusqu'à ce que la fenêtre soit fermée
+	// Boucle fenÃªtre : jusqu'Ã  ce que la fenÃªtre soit fermÃ©e
 	while (window.isOpen())
 	{
-		// On inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
+		// On inspecte tous les Ã©vÃ¨nements de la fenÃªtre qui ont Ã©tÃ© Ã©mis depuis la prÃ©cÃ©dente itÃ©ration
 		Event event;
+		int dir = 0;
 
 		while (window.pollEvent(event))
 		{
-			// Évènement "fermeture demandée" : on ferme la fenêtre
+			// Ã‰vÃ¨nement "fermeture demandÃ©e" : on ferme la fenÃªtre
 			if (event.type == Event::Closed)
 			{
 				window.close();
 			}
-			// Détection des touches
+			// DÃ©tection des touches
 			else if (event.type == Event::KeyPressed)
 			{
 				switch (event.key.code) {
 				case Keyboard::Escape:
 					window.close();
 					break;
+				case Keyboard::W:
+					dir = 1;
+					break;
+				case Keyboard::D:
+					dir = 2;
+					break;
+				case Keyboard::S:
+					dir = 3;
+					break;
+				case Keyboard::A:
+					dir = 4;
+					break;
+				default:
+					break;
 				}
 			}
 		}
 
 		//========================================================================================================================
-		// Boucle fenêtre > Boucle update
-		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l’horloge
+
+		// Boucle fenÃªtre > Boucle update
+		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de lï¿½horloge
 		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
 		{
 			// Mouvement du joueur
@@ -100,38 +120,66 @@ int main() {
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
-				player.mSetPosX(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
+				player.mSetPosY(fPlayerMove(4, sPlayer, player.mGetPosX(), player.mGetPosY()));
+			}
+	
+			//Defilement du joueur
+			
+			switch (dir)
+			{
+			case 1: // Haut
+				bkg = 1; 
+				lastbkg = bkg;
+				
+				break;
+			case 2: // Droite
+				bkg = 2;
+				lastbkg = bkg;
+				break;
+			case 3: // Bas
+				bkg = 3;
+				lastbkg = bkg;
+				break;
+			case 4: // Gauche
+				bkg = 4;
+				lastbkg = bkg;
+				break;
+			default:
+				bkg = lastbkg;
+				break;
 			}
 
+      // Rotation joueur par rapport a la souris
 			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
 			player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), player);
 			sPlayer.rotate(-player.mGetRotation() - sPlayer.getRotation());
 
-			// Défilement des ennemis
+			// Dï¿½filement des ennemis
 
-			// Défilement des projectiles
+			// Dï¿½filement des projectiles
 
 			time++;
 
-			clockUpdate.restart(); // On remet l’horloge à 0
+			clockUpdate.restart(); // On remet lï¿½horloge ï¿½ 0
 		}
 
 		//========================================================================================================================
-		// Boucle fenêtre > Boucle visuelle
-		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
+		// Boucle fenÃªtre > Boucle visuelle
+		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de lâ€™horloge
 		if (timeDraw.asMilliseconds() >= 1000/FRAMERATE) //En milisecondes (100.0f)
 		{
-			// Effacement de la fenêtre en noir
+			// Effacement de la fenÃªtre en noir
 			window.clear();
 
-			// C'est ici qu'on dessine tout
-			window.draw(sBackground);
-			window.draw(sPlayer);
+			// On dessine le background
+			background[bkg].draw(window); // On dessine le background
 
-			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
+			window.draw(sPlayer);
+			
+			// Fin de la frame courante, affichage de tout ce qu'on a dessinÃ©
 			window.display();
 
-			clockDraw.restart(); // On remet l’horloge à 0
+			clockDraw.restart(); // On remet lâ€™horloge Ã  0
 		}
 	}
 	
