@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "constantes.h"
+#include "functions.h"
 #include "abilities.h"
 
 class Player {

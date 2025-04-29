@@ -18,7 +18,10 @@ void fDebug(int code, int param1, int param2)
 			cout << "DEBUG : Player position : " << param1 << "x " << param2 << "y" << endl;
 			break;
 		case 3:
-			cout << "DEBUG : " << param1 << "x " << param2 << "y (" << fWindowClamp(param1, 'x') << "x " << fWindowClamp(param2, 'y') << "y)" << endl;
+			cout << "DEBUG : Mouse Position : " << param1 << "x " << param2 << "y (" << fWindowClamp(param1, 'x') << "x " << fWindowClamp(param2, 'y') << "y)" << endl;
+			break;
+		case 4:
+			cout << "DEBUG : Player rotation : " << param1 << endl;
 			break;
 		default:
 			cout << "DEBUG : Default" << endl;
@@ -67,7 +70,6 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 		}
 		else { fDebug(1); }
 
-		fDebug(2, posX, posY);
 		return posY;
 	case 2: // Right
 		if (posX < WINDOW_SIZE_X - PLAYER_SIZE)
@@ -77,7 +79,6 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 		}
 		else { fDebug(1); }
 
-		fDebug(2, posX, posY);
 		return posX;
 	case 3: // Down
 		if (posY < WINDOW_SIZE_Y - PLAYER_SIZE)
@@ -87,7 +88,6 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 		}
 		else { fDebug(1); }
 
-		fDebug(2, posX, posY);
 		return posY;
 	case 4: // Left
 		if (posX > 0)
@@ -97,7 +97,6 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 		}
 		else { fDebug(1); }
 
-		fDebug(2, posX, posY);
 		return posX;
 	default:
 		return 0;
