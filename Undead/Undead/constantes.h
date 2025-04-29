@@ -11,6 +11,8 @@
 #define FRAMERATE 60 // FPS
 #define UPDATE_RATE 50 // milisecondes
 
+#define BACKGROUND_NUMBER 5
+
 // Character
 #define PLAYER_SIZE 32
 #define PLAYER_ABILITY_SLOTS 5
