@@ -38,6 +38,7 @@ public:
 	void mSetRotation(const int rot);
 
 	//Autres
+	void mInitialize();
 	void mRotate(int targetX, int targetY, Player& object);
 
 };

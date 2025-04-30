@@ -1,9 +1,4 @@
 #include "menu.h"
-#include "constantes.h"
-#include "player.h"  // Pour accéder aux dimensions ou constantes similaires
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <iostream>
 
 using namespace sf;
 using namespace std;
