@@ -20,3 +20,6 @@
 #define PLAYER_ABILITY_SLOTS 5
 #define PLAYER_MAX_HEALTH 100
 #define PLAYER_SPEED 10
+
+// Game
+#define MAX_ENEMIES

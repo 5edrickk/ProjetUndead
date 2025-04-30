@@ -73,6 +73,11 @@ void Player::mSetRotation(const int rot)
 
 //========================================================================================================================
 // Autres
+void Player::mInitialize()
+{
+	_playerAbilities[0].mSetAvtive(true);
+}
+
 void Player::mRotate(int targetX, int targetY, Player& object)
 {
 	int amount = (180/ 3.141592653589793) * (atan2(targetX - object.mGetPosX() - PLAYER_SIZE / 2, targetY - object.mGetPosY() - PLAYER_SIZE / 2));
