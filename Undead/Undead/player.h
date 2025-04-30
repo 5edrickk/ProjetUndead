@@ -30,6 +30,7 @@ public:
 	int mGetPosY() const;
 	int mGetDirection() const;
 	int mGetRotation() const;
+	Abilities mGetAbility(int slot) const;
 
 	// Setters
 	void mSetPosX(const int x);
@@ -37,8 +38,14 @@ public:
 	void mSetDirection(const int dir);
 	void mSetRotation(const int rot);
 
+	// Abilities
+	void mSetActive(const int number, const bool active);
+
 	//Autres
 	void mInitialize();
 	void mRotate(int targetX, int targetY, Player& object);
+	bool mCheckAttack(int slot);
+	void mAttacked(int slot);
+	void mDecreaseCooldown(int slot);
 
 };

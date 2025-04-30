@@ -22,4 +22,5 @@
 #define PLAYER_SPEED 10
 
 // Game
-#define MAX_ENEMIES
+#define MAX_ENEMIES 100
+#define MAX_PROJECTILES 100

@@ -21,6 +21,8 @@ int Game::mPlay()
 	//========================================================================================================================
 	// Variables
 	int time = 0;
+	vector<Enemy> vEnemies;
+	vector<Projectile> vProjectiles;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -29,8 +31,6 @@ int Game::mPlay()
 
 	Clock clockDraw;
 	Time timeDraw;
-
-	Game game;
 
 	//========================================================================================================================
 	// Render window
@@ -61,6 +61,9 @@ int Game::mPlay()
 	sPlayer.setFillColor(sf::Color::Black);
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
+
+	_player.mInitialize();
+	_player.mSetActive(0, true);
 
 	//========================================================================================================================
 	// Boucle de menu principal
@@ -196,6 +199,25 @@ int Game::mPlay()
 			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
 			_player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), _player);
 			sPlayer.rotate(-_player.mGetRotation() - sPlayer.getRotation());
+
+			// Attaque du joueur
+			for (int i = 0; i < PLAYER_ABILITY_SLOTS; i++)
+			{
+				if (_player.mCheckAttack(i) == true) 
+				{ 
+					_tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
+					vProjectiles.push_back(_tempProjectile);
+					_player.mAttacked(i);
+					fDebug(5, i);
+				}
+				else 
+				{
+					_player.mDecreaseCooldown(i);
+					fDebug(6, i);
+				}
+			}
+
+			fDebug(7, vProjectiles.size());
 
 			// D�filement des ennemis
 
