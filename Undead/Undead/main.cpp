@@ -7,6 +7,7 @@
 #include "functions.h"
 #include "player.h"
 #include "Background.h"
+#include "menu.h"
 
 using namespace sf;
 using namespace std;
@@ -56,6 +57,28 @@ int main() {
 	sPlayer.setFillColor(sf::Color::Black);
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
+
+	//========================================================================================================================
+	// Boucle de menu principal
+	int choix = afficherMenuPrincipal(window);
+
+	if (choix == 1) {
+		std::cout << "Vous avez choisi de jouer !" << endl;
+		// Lancer le jeu
+	}
+	else if (choix == 2) {
+		std::cout << "Paramètres sélectionnés" << endl;
+		// Afficher ou gérer les paramètres
+	}
+	else if (choix == 3) {
+		std::cout << "Affichage du tutoriel" << endl;
+		// Afficher le tutoriel
+	}
+	else if (choix == 4 || choix == -1) {
+		std::cout << "Quitter le jeu" << endl;
+		return 0;
+		// Fermer le jeu
+	}
 	
 	//========================================================================================================================
 	// Joueur hitbox

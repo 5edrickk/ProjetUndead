@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 
-int afficherMenuPrincipal(RenderWindow& window)
 
+int afficherMenuPrincipal(sf::RenderWindow& window);
