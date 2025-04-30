@@ -23,6 +23,15 @@ void fDebug(int code, int param1, int param2)
 		case 4:
 			cout << "DEBUG : Player rotation : " << param1 << endl;
 			break;
+		case 5:
+			cout << "DEBUG : Attacked : Ability " << param1 << endl;
+			break;
+		case 6:
+			cout << "DEBUG : Cooldowned : Ability " << param1 << endl;
+			break;
+		case 7:
+			cout << "DEBUG : Projectiles on screen : " << param1 << endl;
+			break;
 		default:
 			cout << "DEBUG : Default" << endl;
 			break;
