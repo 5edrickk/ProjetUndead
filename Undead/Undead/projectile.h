@@ -1,69 +1,75 @@
 #pragma once
 
+#include <iostream>
 #include <string>
+#include <cmath>
 
 #include "constantes.h"
+#include "functions.h"
 #include "abilities.h"
 
 class Projectile {
 private:
 	std::string _name;
-	bool _active,
-		_projectile;
 	int _damage,
-		_maxCooldown,
-		_cooldown,
-		_maxLifetime,
 		_lifetime,
 		_speed,
 		_size,
-		_maxPierceAmount,
 		_pierceAmount,
-		_maxBounceAmount,
 		_bounceAmount,
 		_criticalMultiplier,
-		_criticalChance;
+		_criticalChance,
+		
+		_rotation,
+		_velocityX,
+		_velocityY,
+		_positionX,
+		_positionY;
 
 public:
 	// Constructeurs
 	Projectile();
-	Projectile(std::string name, bool active, bool projectile, int damage, int maxCooldown, int cooldown, int maxLifetime, int lifetime, int speed, int size, int maxPierceAmount, int pierceAmount, int maxBounceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
+	Projectile(std::string nam, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
 	~Projectile();
 
 	// Getters
 	std::string mGetName() const;
-	bool mGetProjectile() const;
 	int mGetDamage() const;
-	int mGetMaxLifetime() const;
 	int mGetLifetime() const;
 	int mGetSpeed() const;
 	int mGetSize() const;
-	int mGetMaxPierceAmount() const;
 	int mGetPierceAmount() const;
-	int mGetMaxBounceAmount() const;
 	int mGetBounceAmount() const;
 	int mGetCriticalMultiplier() const;
 	int mGetCriticalChance() const;
 
+	int mGetRotation() const;
+	int mGetVelocityX() const;
+	int mGetVelocityY() const;
+	int mGetPositionX() const;
+	int mGetPositionY() const;
+
 	// Setters
-	void mSetName(const std::string name);
-	void mSetActive(const bool active);
-	void mSetProjectile(const bool projectile);
+	void mSetName(const std::string name);;
 	void mSetDamage(const int damage);
-	void mSetMaxCooldown(const int maxCooldown);
-	void mSetCooldown(const int cooldown);
-	void mSetMaxLifetime(const int maxLifetime);
 	void mSetLifetime(const int lifetime);
 	void mSetSpeed(const int speed);
 	void mSetSize(const int size);
-	void mSetMaxPierceAmount(const int maxPierceAmount);
 	void mSetPierceAmount(const int pierceAmount);
-	void mSetMaxBounceAmount(const int maxBounceAmount);
 	void mSetBounceAmount(const int bounceAmount);
 	void mSetCriticalMultiplier(const int criticalMultiplier);
 	void mSetCriticalChance(const int criticalChance);
-	void mSetProjectile(std::string name, bool active, bool projectile, int damage, int maxCooldown, int cooldown, int maxLifetime, int lifetime, int speed, int size, int maxPierceAmount, int pierceAmount, int maxBounceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
 	
+	void mSetRotation(const int rot);
+	void mSetVelocityX(const int velX);
+	void mSetVelocityY(const int velY);
+	void mSetPositionX(const int posX);
+	void mSetPositionY(const int posY);
+	
+	void mSetProjectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
+
 	// Autres
+	void mInitializeMovement(const int rotation, const int speed);
 	void mCloneFromAbility(const Abilities& ability);
+	void mCastProjectile(const Projectile& projectile);
 };

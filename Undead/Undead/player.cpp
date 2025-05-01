@@ -12,7 +12,7 @@ Player::Player()
 	_currentHealth = PLAYER_MAX_HEALTH;
 	_speed = PLAYER_SPEED;
 	_direction = 0;
-	_rotation = 0;
+	_rotation = 90;
 }
 
 Player::~Player()
@@ -93,7 +93,13 @@ void Player::mInitialize()
 
 void Player::mRotate(int targetX, int targetY, Player& object)
 {
-	int amount = (180/ 3.141592653589793) * (atan2(targetX - object.mGetPosX() - PLAYER_SIZE / 2, targetY - object.mGetPosY() - PLAYER_SIZE / 2));
+	int amount = (180/ 3.141592653589793) * (atan2(targetX - object.mGetPosX() - PLAYER_SIZE / 2, targetY - object.mGetPosY() - PLAYER_SIZE / 2)) - 90;
+	
+	if (amount < 0)
+	{
+		amount += 360;
+	}
+	
 	fDebug(4, amount);
 	
 	object.mSetRotation(amount);

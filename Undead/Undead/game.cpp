@@ -23,6 +23,7 @@ int Game::mPlay()
 	int time = 0;
 	vector<Enemy> vEnemies;
 	vector<Projectile> vProjectiles;
+	vector<RectangleShape> vProjectileShapes;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -144,7 +145,11 @@ int Game::mPlay()
 
 			// Tick console
 			time++;
-			cout << time << " / ================================" << endl;
+
+			if (DEBUG == true)
+			{
+				cout << time << " / ================================" << endl;
+			}
 
 			if (SHOW_SETTINGS_ON_DEBUG == true)
 			{
@@ -205,9 +210,21 @@ int Game::mPlay()
 			{
 				if (_player.mCheckAttack(i) == true) 
 				{ 
-					_tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
-					vProjectiles.push_back(_tempProjectile);
+					Projectile tempProjectile;
+					tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
+					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed());
+					
+					vProjectiles.push_back(tempProjectile);
 					_player.mAttacked(i);
+
+					sf::RectangleShape sProjectile;
+					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
+					sProjectile.setSize(sf::Vector2f(vProjectiles[i].mGetSize(), vProjectiles[i].mGetSize()));
+					sProjectile.setFillColor(sf::Color::Red);
+					sProjectile.setOrigin(vProjectiles[i].mGetSize() / 2, vProjectiles[i].mGetSize() / 2);
+					vProjectileShapes.push_back(sProjectile);
+
+					tempProjectile.~Projectile();
 					fDebug(5, i);
 				}
 				else 
@@ -219,11 +236,28 @@ int Game::mPlay()
 
 			fDebug(7, vProjectiles.size());
 
-			// D�filement des ennemis
+			// Défilement des projectiles
+			for (int i = 0; i < vProjectiles.size(); i++)
+			{
+				vProjectiles[i].mSetLifetime(vProjectiles[i].mGetLifetime() - 1);
 
-			// D�filement des projectiles
+				if (vProjectiles[i].mGetLifetime() <= 0)
+				{
+					vProjectiles.erase(vProjectiles.begin() + i);
+					vProjectileShapes.erase(vProjectileShapes.begin() + i);
+				}
+				else
+				{
+					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + vProjectiles[i].mGetVelocityX());
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + vProjectiles[i].mGetVelocityY());
 
-			clockUpdate.restart(); // On remet l�horloge � 0
+					vProjectileShapes[i].move(vProjectiles[i].mGetVelocityX(), -vProjectiles[i].mGetVelocityY());
+				}
+			}
+			
+			// Défilement des ennemis
+
+			clockUpdate.restart(); // On remet l'horloge � 0
 		}
 
 		//========================================================================================================================
@@ -237,7 +271,13 @@ int Game::mPlay()
 			// On dessine le background
 			background[bkg].draw(window); // On dessine le background
 
+			// Dessin des objets dans le jeu
 			window.draw(sPlayer);
+
+			for (int i = 0; i < vProjectileShapes.size(); i++)
+			{
+				window.draw(vProjectileShapes[i]);
+			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
 			window.display();

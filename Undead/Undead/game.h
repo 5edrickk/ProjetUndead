@@ -17,7 +17,6 @@
 class Game {
 private:
 	Player _player;
-	Projectile _tempProjectile;
 
 public:
 	// Constructeurs
