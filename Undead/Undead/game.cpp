@@ -20,8 +20,11 @@ int Game::mPlay()
 
 	//========================================================================================================================
 	// Variables
-	int time = 0;
+	srand(time(0));
+	int time = 0,
+		enemyCount = 0;
 	vector<Enemy> vEnemies;
+	vector<RectangleShape> vEnemyShapes;
 	vector<Projectile> vProjectiles;
 	vector<RectangleShape> vProjectileShapes;
 
@@ -156,6 +159,49 @@ int Game::mPlay()
 				cout << GAME_NAME << " : " << FRAMERATE << "FPS / " << UPDATE_RATE << "Hz / " << WINDOW_SIZE_X << "x" << WINDOW_SIZE_Y << "px / " << INCREMENT << "inc." << endl;
 			}
 
+			// Vague
+			if (enemyCount == 0)
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					int side = rand() % 4 + 1;
+
+					Enemy tempEnemy;
+					RectangleShape tempEnemyRect;
+
+					// Max, min
+					if (side == 1)
+					{
+						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+						tempEnemy.mSetPositionY(0);
+					}
+					else if (side == 2)
+					{
+						tempEnemy.mSetPositionX(0);
+						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+					}
+					else if (side == 3)
+					{
+						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+						tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
+					}
+					else 
+					{
+						tempEnemy.mSetPositionX(WINDOW_SIZE_X);
+						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+					}
+
+					tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
+					tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+					tempEnemyRect.setFillColor(sf::Color::Blue);
+
+					vEnemies.push_back(tempEnemy);
+					vEnemyShapes.push_back(tempEnemyRect);
+
+					enemyCount++;
+				}
+			}
+
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
@@ -256,7 +302,24 @@ int Game::mPlay()
 			}
 			
 			// Défilement des ennemis
+			for (int i = 0; i < vEnemies.size(); i++)
+			{				
+				if (vEnemies[i].mGetHealth() <= 0)
+				{
+					vEnemies.erase(vEnemies.begin() + i);
+					vEnemyShapes.erase(vEnemyShapes.begin() + i);
+				}
+				else
+				{
+					vEnemies[i].mInitializeMovement(_player.mGetPosX(), _player.mGetPosY());
 
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() + vEnemies[i].mGetVelocityX());
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + vEnemies[i].mGetVelocityY());
+
+					vEnemyShapes[i].move(vEnemies[i].mGetVelocityX(), vEnemies[i].mGetVelocityY());
+				}
+			}
+			
 			clockUpdate.restart(); // On remet l'horloge � 0
 		}
 
@@ -277,6 +340,11 @@ int Game::mPlay()
 			for (int i = 0; i < vProjectileShapes.size(); i++)
 			{
 				window.draw(vProjectileShapes[i]);
+			}
+
+			for (int i = 0; i < vEnemyShapes.size(); i++)
+			{
+				window.draw(vEnemyShapes[i]);
 			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
