@@ -263,7 +263,7 @@ int Game::mPlay()
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle visuelle
 		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
-		if (timeDraw.asMilliseconds() >= 1000 / FRAMERATE) //En milisecondes (100.0f)
+		if (timeDraw.asMilliseconds() >= 1000 / 60) //En milisecondes (100.0f)
 		{
 			// Effacement de la fenêtre en noir
 			window.clear();
