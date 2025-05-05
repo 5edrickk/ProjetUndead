@@ -9,22 +9,58 @@ void fDebug(int code, int param1, int param2)
 		switch (code)
 		{
 		case 0:
-			cout << "DEBUG : Unknown" << endl;
+			cout << "DEBUG " << code << " : Unknown" << endl;
 			break;
 		case 1:
-			cout << "DEBUG : Player hit window border" << endl;
+			cout << "DEBUG " << code << " : Player hit window border" << endl;
 			break;
 		case 2:
-			cout << "DEBUG : Player position : " << param1 << "x " << param2 << "y" << endl;
+			cout << "DEBUG " << code << " : Player position : " << param1 << "x " << param2 << "y" << endl;
 			break;
 		case 3:
-			cout << "DEBUG : Mouse Position : " << param1 << "x " << param2 << "y (" << fWindowClamp(param1, 'x') << "x " << fWindowClamp(param2, 'y') << "y)" << endl;
+			cout << "DEBUG " << code << " : Mouse Position : " << param1 << "x " << param2 << "y (" << fWindowClamp(param1, 'x') << "x " << fWindowClamp(param2, 'y') << "y)" << endl;
 			break;
 		case 4:
-			cout << "DEBUG : Player rotation : " << param1 << endl;
+			cout << "DEBUG " << code << " : Player rotation : " << param1 << endl;
+			break;
+		case 5:
+			cout << "DEBUG " << code << " : Attacked : Ability " << param1 << endl;
+			break;
+		case 6:
+			cout << "DEBUG " << code << " : Cooldowned : Ability " << param1 << endl;
+			break;
+		case 7:
+			cout << "DEBUG " << code << " : Projectiles on screen : " << param1 << endl;
+			break;
+		case 8:
+			if (PROJECTILE_DEBUG == true) 
+			{ 
+				cout << "DEBUG " << code << " : Projectile rotation : " << param1 << endl; 
+			}
+			break;
+		case 9:
+			if (PROJECTILE_DEBUG == true)
+			{
+				cout << "DEBUG " << code << " : Projectile X Velocity : " << param1 << endl;
+			}
+			break;
+		case 10:
+			if (PROJECTILE_DEBUG == true)
+			{
+				cout << "DEBUG " << code << " : Projectile Y Velocity : " << param1 << endl;
+			}
+			break;
+		case 11:
+			cout << "- - - - - -" << endl;
+			break;
+		case 12:
+			if (PROJECTILE_DEBUG == true)
+			{
+				cout << "- - - - - -" << endl;
+			}
 			break;
 		default:
-			cout << "DEBUG : Default" << endl;
+			cout << "DEBUG " << code << " : Default" << endl;
 			break;
 		}
 	}

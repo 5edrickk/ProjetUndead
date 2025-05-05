@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "constantes.h"
-#include "player.h"  // Pour accéder aux dimensions ou constantes similaires
+#include "player.h"  // Pour accÃ©der aux dimensions ou constantes similaires
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <fstream>
@@ -157,13 +158,13 @@ int afficherMenuPrincipal(RenderWindow& window) {
 
     // Charger l'image de fond
     Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("assets/Menu/background.jpg")) {  // Assure-toi que l'image est dans le bon répertoire
+    if (!backgroundTexture.loadFromFile("assets/Menu/background.jpg")) {  // Assure-toi que l'image est dans le bon rÃ©pertoire
         cerr << "Erreur chargement image de fond" << endl;
         return -1;
     }
     Sprite backgroundSprite(backgroundTexture);
 
-    // Dimensions des boutons basées sur PLAYER_SIZE pour cohérence avec le jeu
+    // Dimensions des boutons basÃ©es sur PLAYER_SIZE pour cohÃ©rence avec le jeu
     const float BUTTON_WIDTH = PLAYER_SIZE * 6;
     const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
     const float BUTTON_SPACING = 30;
@@ -172,25 +173,25 @@ int afficherMenuPrincipal(RenderWindow& window) {
     Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Options du menu
-    string labels[] = { "Commencer un Partie", "Paramètres", "Tutoriel", "Quitter" };
+    string labels[] = { "Commencer un Partie", "ParamÃ¨tres", "Tutoriel", "Quitter" };
     RectangleShape boutons[4];
     Text textes[4];
    
 
-    // Créer et styliser les boutons et textes
+    // CrÃ©er et styliser les boutons et textes
     for (int i = 0; i < 4; ++i) {
         boutons[i].setSize(Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
         boutons[i].setOrigin(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
         boutons[i].setPosition(windowCenter.x, windowCenter.y + i * (BUTTON_HEIGHT + BUTTON_SPACING));
 
         // Style de bordure pour les boutons
-        boutons[i].setOutlineThickness(5);  // Épaisseur de la bordure
+        boutons[i].setOutlineThickness(5);  // Ã‰paisseur de la bordure
         boutons[i].setOutlineColor(Color::White);  // Couleur de la bordure (ici noire)
         boutons[i].setFillColor(Color(100, 100, 255));  // Couleur initiale
 
         textes[i].setFont(font);
         textes[i].setString(labels[i]);
-        textes[i].setCharacterSize(30);  // Plus gros pour être lisible
+        textes[i].setCharacterSize(30);  // Plus gros pour Ãªtre lisible
         textes[i].setFillColor(Color::White);  // Couleur blanche pour le texte
 
         FloatRect textRect = textes[i].getLocalBounds();
@@ -199,7 +200,7 @@ int afficherMenuPrincipal(RenderWindow& window) {
     }
     
 
-    // Texte animé du titre "UNDEAD"
+    // Texte animÃ© du titre "UNDEAD"
     Text titre;
     titre.setFont(font);
     titre.setString("UNDEAD GAME");
@@ -212,7 +213,7 @@ int afficherMenuPrincipal(RenderWindow& window) {
     Clock animationClock;
     float hue = 0.f;
 
-    // Boucle de gestion de la fenêtre
+    // Boucle de gestion de la fenÃªtre
     while (window.isOpen()) {
         Event event;
         Vector2i souris = Mouse::getPosition(window);
@@ -226,7 +227,7 @@ int afficherMenuPrincipal(RenderWindow& window) {
             if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
                 for (int i = 0; i < 4; ++i) {
                     if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                        return i + 1;  // 1: Jouer, 2: Paramètres, etc.
+                        return i + 1;  // 1: Jouer, 2: ParamÃ¨tres, etc.
                     }
                 }
             }
@@ -235,10 +236,10 @@ int afficherMenuPrincipal(RenderWindow& window) {
         // Survol de la souris sur les boutons
         for (int i = 0; i < 4; ++i) {
             if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                boutons[i].setFillColor(Color::Red);    // Changer la couleur survolée
+                boutons[i].setFillColor(Color::Red);    // Changer la couleur survolÃ©e
 
                 // Augmenter la taille du bouton pour un effet visuel
-                boutons[i].setScale(1.1f, 1.1f);  // Agrandir légèrement
+                boutons[i].setScale(1.1f, 1.1f);  // Agrandir lÃ©gÃ¨rement
                 
             }
             else {
@@ -260,7 +261,7 @@ int afficherMenuPrincipal(RenderWindow& window) {
 
         titre.setFillColor(animatedColor);
 
-        // Effacer la fenêtre et redessiner le menu
+        // Effacer la fenÃªtre et redessiner le menu
         window.clear(Color(30, 30, 30));  // Fond sombre pour un meilleur contraste
         // Dessiner l'image de fond
         window.draw(backgroundSprite);
@@ -273,6 +274,6 @@ int afficherMenuPrincipal(RenderWindow& window) {
         window.display();
     }
 
-    return -1;  // Retourne -1 si la fenêtre est fermée sans option sélectionnée
+    return -1;  // Retourne -1 si la fenÃªtre est fermÃ©e sans option sÃ©lectionnÃ©e
 }
 

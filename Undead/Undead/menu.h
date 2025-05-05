@@ -1,5 +1,12 @@
 #pragma once
+
+#include "constantes.h"
+#include "player.h"  // Pour accéder aux dimensions ou constantes similaires
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <iostream>
 
 int lireHighScore();
 void ecrireHighScore(int nouveauScore);
