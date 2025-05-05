@@ -11,7 +11,7 @@ Abilities::Abilities()
 	_damage = 5;
 	_maxCooldown = 0.25 * (1000 / UPDATE_RATE); // Max cooldown in seconds (X * (1000 / UPDATE_RATE))
 	_cooldown = 0;
-	_speed = 1 * (1000 / UPDATE_RATE); // Speed in pixels per seconds (X * (1000 / UPDATE_RATE))
+	_speed = 1 * UPDATE_RATE; // Speed in pixels per seconds (X * UPDATE_RATE)
 	_lifetime = 2 * (1000 / UPDATE_RATE); // Lifetime in seconds (X * (1000 / UPDATE_RATE))
 	_size = 20; // Pixels
 	_pierceAmount = 0;
