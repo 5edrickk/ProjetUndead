@@ -22,7 +22,8 @@ int Game::mPlay()
 	// Variables
 	srand(time(0));
 	int time = 0,
-		enemyCount = 0;
+		enemyCount = 0,
+		waveNumber = 0;
 	vector<Enemy> vEnemies;
 	vector<RectangleShape> vEnemyShapes;
 	vector<Projectile> vProjectiles;
@@ -162,7 +163,9 @@ int Game::mPlay()
 			// Vague
 			if (enemyCount == 0)
 			{
-				for (int i = 0; i < 10; i++)
+				waveNumber++;
+
+				for (int i = 0; i < 5 * waveNumber; i++)
 				{
 					int side = rand() % 4 + 1;
 
@@ -199,6 +202,7 @@ int Game::mPlay()
 					vEnemyShapes.push_back(tempEnemyRect);
 
 					enemyCount++;
+					cout << enemyCount << endl;
 				}
 			}
 
@@ -334,17 +338,19 @@ int Game::mPlay()
 			// On dessine le background
 			background[bkg].draw(window); // On dessine le background
 
-			// Dessin des objets dans le jeu
-			window.draw(sPlayer);
-
-			for (int i = 0; i < vProjectileShapes.size(); i++)
-			{
-				window.draw(vProjectileShapes[i]);
-			}
-
+			// Dessin des ennemis
 			for (int i = 0; i < vEnemyShapes.size(); i++)
 			{
 				window.draw(vEnemyShapes[i]);
+			}
+
+			// Dessin du joueur
+			window.draw(sPlayer);
+
+			// Dessin des projectiles
+			for (int i = 0; i < vProjectileShapes.size(); i++)
+			{
+				window.draw(vProjectileShapes[i]);
 			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné

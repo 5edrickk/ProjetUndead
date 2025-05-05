@@ -96,5 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="temporaary.txt" />
+    <Text Include="assets\Menu\highscore.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
