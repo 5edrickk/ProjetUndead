@@ -132,22 +132,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="abilities.cpp" />
-    <ClCompile Include="Background.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="GameTile.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="abilities.h" />
-    <ClInclude Include="Background.h" />
     <ClInclude Include="constantes.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="GameTile.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />

@@ -16,10 +16,16 @@ public:
 	// Getters
 	sf::RectangleShape getBackground() const;
 	sf::Texture getTexture() const;
+	
 
 	// Setters
 	void setBackground(const sf::RectangleShape& background);
 	void setTexture(const sf::Texture& texture, const int left, const int top, const int width, const int height);
+	void setTextureUp(const sf::Texture& texture);
+	void setTextureDown(const sf::Texture& texture);
+	void setTextureLeft(const sf::Texture& texture);
+	void setTextureRight(const sf::Texture& texture);
+
 	void setPosition(const int x, const int y);
 
 	// Autres

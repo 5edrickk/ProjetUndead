@@ -11,7 +11,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "projectile.h"
-#include "Background.h"
+#include "GameTile.h"
 #include "menu.h"
 
 class Game {

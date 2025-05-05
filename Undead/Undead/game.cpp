@@ -39,21 +39,6 @@ int Game::mPlay()
 	window.setFramerateLimit(FRAMERATE);
 
 	//========================================================================================================================
-	// Background
-	int bkg = 0,
-		lastbkg = 0;
-
-	Background background[BACKGROUND_NUMBER]; // On crée un tableau de Backgrounds
-	for (int i = 0; i < BACKGROUND_NUMBER; i++)
-	{
-		background[i].setBackground(background[i].getBackground()); // On initialise le background
-		Texture textureBackground; // On crée une texture pour le background
-		textureBackground.loadFromFile("assets/backgrounds/background" + std::to_string(i) + ".png"); // On charge la texture
-		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
-
-	}
-
-	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
 
@@ -66,6 +51,18 @@ int Game::mPlay()
 	_player.mInitialize();
 	_player.mSetActive(0, true);
 
+	Vector2f playerPosition = sPlayer.getPosition();
+
+	//========================================================================================================================
+	// Background
+	int bkg = 0,
+		lastbkg = 0;
+
+	View view(sf::FloatRect(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y)); // On crée une vue de la taille de la fenêtre
+	view.setCenter(playerPosition); // On centre la vue sur la fenêtre
+	window.setView(view); // On applique la vue à la fenêtre
+
+	
 	//========================================================================================================================
 	// Boucle de menu principal
 	int choix = afficherMenuPrincipal(window);
@@ -174,31 +171,33 @@ int Game::mPlay()
 				_player.mSetPosX(fPlayerMove(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
 			}
 
+			playerPosition = sPlayer.getPosition();
+
 			fDebug(2, _player.mGetPosX(), _player.mGetPosY());
 
 			//Défilement du joueur
-			switch (dir)
-			{
-			case 1: // Haut
-				bkg = 1;
-				lastbkg = bkg;
-				break;
-			case 2: // Droite
-				bkg = 2;
-				lastbkg = bkg;
-				break;
-			case 3: // Bas
-				bkg = 3;
-				lastbkg = bkg;
-					break;
-			case 4: // Gauche
-				bkg = 4;
-				lastbkg = bkg;
-				break;
-			default:
-				bkg = lastbkg;
-				break;
-			}
+			//switch (dir)
+			//{
+			//case 1: // Haut
+			//	bkg = 1;
+			//	lastbkg = bkg;
+			//	break;
+			//case 2: // Droite
+			//	bkg = 2;
+			//	lastbkg = bkg;
+			//	break;
+			//case 3: // Bas
+			//	bkg = 3;
+			//	lastbkg = bkg;
+			//		break;
+			//case 4: // Gauche
+			//	bkg = 4;
+			//	lastbkg = bkg;
+			//	break;
+			//default:
+			//	bkg = lastbkg;
+			//	break;
+			//}
 
 			// Rotation joueur par rapport a la souris
 			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
@@ -269,8 +268,7 @@ int Game::mPlay()
 			window.clear();
 
 			// On dessine le background
-			background[bkg].draw(window); // On dessine le background
-
+			
 			// Dessin des objets dans le jeu
 			window.draw(sPlayer);
 
