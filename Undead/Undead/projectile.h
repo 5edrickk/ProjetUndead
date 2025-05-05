@@ -71,5 +71,4 @@ public:
 	// Autres
 	void mInitializeMovement(const int rotation, const int speed);
 	void mCloneFromAbility(const Abilities& ability);
-	void mCastProjectile(const Projectile& projectile);
 };
