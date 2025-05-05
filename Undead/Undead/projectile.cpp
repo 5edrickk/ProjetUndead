@@ -8,7 +8,7 @@ Projectile::Projectile()
 {
 	_name = "Default";
 	_damage = 5;
-	_speed = 50 / UPDATE_RATE; // Pixels per seconds (X / UPDATE_RATE)
+	_speed = 1 * UPDATE_RATE; // Speed (X * UPDATE_RATE))
 	_lifetime = UPDATE_RATE * 2; // Lifetime in seconds (UPDATE_RATE * X)
 	_size = 20; // Pixels
 	_pierceAmount = 0;
@@ -19,6 +19,8 @@ Projectile::Projectile()
 	_rotation = 0;
 	_velocityX = 0;
 	_velocityY = 0;
+	_positionX = 0;
+	_positionY = 0;
 }
 
 Projectile::Projectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
@@ -49,6 +51,8 @@ Projectile::~Projectile()
 	_rotation = 0;
 	_velocityX = 0;
 	_velocityY = 0;
+	_positionX = 0;
+	_positionY = 0;
 }
 
 //========================================================================================================================
@@ -219,6 +223,8 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 
 	mSetVelocityX(speed * (cos(rads)));
 	mSetVelocityY(speed * (sin(rads)));
+
+	cout << speed << endl;
 
 	fDebug(12);
 	fDebug(8, rotation);
