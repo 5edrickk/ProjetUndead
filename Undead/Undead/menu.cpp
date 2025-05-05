@@ -32,28 +32,28 @@ void ecrireHighScore(int nouveauScore) {
         }
     }
 }
-//void afficherNouvelHighScore(sf::RenderWindow& window, int nouveauScore) {
-//    Font font;
-//    if (!font.loadFromFile("assets/Menu/fonts/Arial.ttf")) {
-//        return;
-//    }
-//
-//    Text texte;
-//    texte.setFont(font);
-//    texte.setCharacterSize(36);
-//    texte.setFillColor(Color::Green);
-//    texte.setString("Nouveau Highscore: " + to_string(nouveauScore));
-//
-//    FloatRect bounds = texte.getLocalBounds();
-//    texte.setOrigin(bounds.width / 2, bounds.height / 2);
-//    texte.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-//
-//    window.clear(Color::Black);
-//    window.draw(texte);
-//    window.display();
-//
-//    sleep(seconds(3));
-//}
+void afficherNouvelHighScore(sf::RenderWindow& window, int nouveauScore) {
+    Font font;
+    if (!font.loadFromFile("assets/Menu/fonts/Arial.ttf")) {
+        return;
+    }
+
+    Text texte;
+    texte.setFont(font);
+    texte.setCharacterSize(36);
+    texte.setFillColor(Color::Green);
+    texte.setString("Nouveau Highscore: " + to_string(nouveauScore));
+
+    FloatRect bounds = texte.getLocalBounds();
+    texte.setOrigin(bounds.width / 2, bounds.height / 2);
+    texte.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+
+    window.clear(Color::Black);
+    window.draw(texte);
+    window.display();
+
+    sleep(seconds(3));
+}
 
 int afficherMenuJouer(RenderWindow& window, Font& font) {
     Texture backgroundTexture;
@@ -141,7 +141,7 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
 int afficherMenuPrincipal(RenderWindow& window) {
     // Charger la police
     Font font;
-    if (!font.loadFromFile("assets/Menu/fonts/Arial_Bold_Italic.ttf")) {  
+    if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {  
         cerr << "Erreur chargement police" << endl;
         return -1;
     }
@@ -165,15 +165,15 @@ int afficherMenuPrincipal(RenderWindow& window) {
     Sprite backgroundSprite(backgroundTexture);
 
     // Dimensions des boutons basées sur PLAYER_SIZE pour cohérence avec le jeu
-    const float BUTTON_WIDTH = PLAYER_SIZE * 6;
+    const float BUTTON_WIDTH = PLAYER_SIZE * 15;
     const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
-    const float BUTTON_SPACING = 30;
+    const float BUTTON_SPACING = 35;
     const float CORNER_RADIUS = 20;  // Rayon des coins arrondis
 
     Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
     // Options du menu
-    string labels[] = { "Commencer un Partie", "Paramètres", "Tutoriel", "Quitter" };
+    string labels[] = { "Commencer un Partie", "Parametres", "Tutoriel", "Quitter" };
     RectangleShape boutons[4];
     Text textes[4];
    
