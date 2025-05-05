@@ -224,8 +224,6 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 	mSetVelocityX(speed * (cos(rads)));
 	mSetVelocityY(speed * (sin(rads)));
 
-	cout << speed << endl;
-
 	fDebug(12);
 	fDebug(8, rotation);
 	fDebug(9, mGetVelocityX());
