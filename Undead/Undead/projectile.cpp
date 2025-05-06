@@ -242,8 +242,3 @@ void Projectile::mCloneFromAbility(const Abilities& ability)
 	_criticalMultiplier = ability.mGetCriticalMultiplier();
 	_criticalChance = ability.mGetCriticalChance();
 }
-
-void Projectile::mCastProjectile(const Projectile& projectile)
-{
-
-}
