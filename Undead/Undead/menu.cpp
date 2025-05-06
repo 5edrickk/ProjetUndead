@@ -7,52 +7,100 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include <filesystem>
 
 using namespace sf;
 using namespace std;
 
-int lireHighScore() {
-    ifstream fichier("assets/Menu/highscore.txt");
-    int score = 0;
-    if (fichier.is_open()) {
-        fichier >> score;
-        fichier.close();
+struct ScoreEntry {
+    string nom;
+    int score;
+};
+
+// Fonction pour lire les meilleurs scores depuis un fichier
+vector<ScoreEntry> lireTousLesScores() {
+    vector<ScoreEntry> scores;
+    ifstream fichier("highscore.txt");
+    if (!fichier.is_open()) return scores;
+
+    string nom;
+    int score;
+    while (fichier >> nom >> score) {
+        scores.push_back({ nom, score });
     }
-    return score;
+
+    fichier.close();
+    sort(scores.begin(), scores.end(), [](const ScoreEntry& a, const ScoreEntry& b) {
+        return a.score > b.score;  // Tri décroissant
+        });
+
+    return scores;
 }
 
-void ecrireHighScore(int nouveauScore) {
-    int highScoreActuel = lireHighScore();
-    if (nouveauScore > highScoreActuel) {
-        ofstream fichier("assets/Menu/highscore.txt");
-        if (fichier.is_open()) {
-            fichier << nouveauScore;
-            fichier.close();
+// Fonction pour afficher les scores dans un tableau
+void afficherTableauScores(RenderWindow& window, Font& font) {
+    auto scores = lireTousLesScores();
+
+    RectangleShape fond(Vector2f(window.getSize()));
+    fond.setFillColor(Color(0, 0, 0, 220));
+
+    Text titre;
+    titre.setFont(font);
+    titre.setString("Meilleurs Scores");
+    titre.setCharacterSize(40);
+    titre.setFillColor(Color::Yellow);
+    titre.setPosition(100, 50);
+
+    vector<Text> textes;
+    int yOffset = 120;
+
+    for (size_t i = 0; i < scores.size() && i < 10; ++i) {
+        Text ligne;
+        ligne.setFont(font);
+        ligne.setCharacterSize(26);
+        ligne.setFillColor(Color::White);
+        ligne.setString(to_string(i + 1) + ". " + scores[i].nom + " - " + to_string(scores[i].score));
+        ligne.setPosition(100, yOffset + i * 40);
+        textes.push_back(ligne);
+    }
+
+    // Bouton retour
+    RectangleShape boutonRetour(Vector2f(200, 50));
+    boutonRetour.setFillColor(Color(100, 100, 255));
+    boutonRetour.setPosition(100, window.getSize().y - 80);
+
+    Text texteRetour;
+    texteRetour.setFont(font);
+    texteRetour.setString("Retour");
+    texteRetour.setCharacterSize(24);
+    texteRetour.setFillColor(Color::White);
+    texteRetour.setPosition(130, window.getSize().y - 75);
+
+    while (window.isOpen()) {
+        Event event;
+        Vector2i souris = Mouse::getPosition(window);
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+                return;
+            }
+            if (event.type == Event::MouseButtonPressed && boutonRetour.getGlobalBounds().contains(Vector2f(souris))) {
+                return; // Quitter la vue des scores
+            }
         }
+
+        boutonRetour.setFillColor(boutonRetour.getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
+
+        window.clear();
+        window.draw(fond);
+        window.draw(titre);
+        for (const auto& t : textes) window.draw(t);
+        window.draw(boutonRetour);
+        window.draw(texteRetour);
+        window.display();
     }
-}
-void afficherNouvelHighScore(sf::RenderWindow& window, int nouveauScore) {
-    Font font;
-    if (!font.loadFromFile("assets/Menu/fonts/Arial.ttf")) {
-        return;
-    }
-
-    Text texte;
-    texte.setFont(font);
-    texte.setCharacterSize(36);
-    texte.setFillColor(Color::Green);
-    texte.setString("Nouveau Highscore: " + to_string(nouveauScore));
-
-    FloatRect bounds = texte.getLocalBounds();
-    texte.setOrigin(bounds.width / 2, bounds.height / 2);
-    texte.setPosition(window.getSize().x / 2, window.getSize().y / 2);
-
-    window.clear(Color::Black);
-    window.draw(texte);
-    window.display();
-
-    sleep(seconds(3));
 }
 
 int afficherMenuJouer(RenderWindow& window, Font& font) {
@@ -60,12 +108,12 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
     backgroundTexture.loadFromFile("assets/Menu/background.jpg");
     Sprite backgroundSprite(backgroundTexture);
 
-    const float BUTTON_WIDTH = PLAYER_SIZE * 6;
+    const float BUTTON_WIDTH = PLAYER_SIZE *12 ;
     const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
     const float BUTTON_SPACING = 40;
     Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
 
-    string labels[] = { "Lancer la partie", "Voir Meilleurs Scores", "Retour" };
+    string labels[] = { "Lancer la partie", "High Score", "Retour" };
     RectangleShape boutons[3];
     Text textes[3];
 
@@ -87,17 +135,6 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
         textes[i].setPosition(boutons[i].getPosition());
     }
 
-    Clock colorClock;
-
-    // Affichage du highscore
-    int highScore = lireHighScore();
-    Text highScoreText;
-    highScoreText.setFont(font);
-    highScoreText.setCharacterSize(24);
-    highScoreText.setFillColor(Color::Yellow);
-    highScoreText.setString("Highscore: " + to_string(highScore));
-    highScoreText.setPosition(20, 20);
-
     while (window.isOpen()) {
         Event event;
         Vector2i souris = Mouse::getPosition(window);
@@ -110,24 +147,20 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
             if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
                 for (int i = 0; i < 3; ++i) {
                     if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                        return i + 1; // 1: Lancer, 2: Voir scores, 3: Retour
+                        if (i == 0) return 1; // Lancer la partie
+                        else if (i == 1) afficherTableauScores(window, font); // Affiche les scores
+                        else if (i == 2) return 3; // Retour
                     }
                 }
             }
         }
 
         for (int i = 0; i < 3; ++i) {
-            if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                boutons[i].setFillColor(Color::Red);
-            }
-            else {
-                boutons[i].setFillColor(Color(100, 100, 255));
-            }
+            boutons[i].setFillColor(boutons[i].getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
         }
 
         window.clear();
         window.draw(backgroundSprite);
-        window.draw(highScoreText);
         for (int i = 0; i < 3; ++i) {
             window.draw(boutons[i]);
             window.draw(textes[i]);
@@ -137,6 +170,60 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
 
     return -1;
 }
+
+int afficherTutoriel(RenderWindow& window, Font& font) {
+    // Charger l'image ou texture du tutoriel (remplace par une vidéo si nécessaire avec une lib externe)
+    Texture tutoTexture;
+    if (!tutoTexture.loadFromFile("assets/Menu/tutoriel.jpg")) {
+        cerr << "Erreur chargement tutoriel" << endl;
+        return -1;
+    }
+    Sprite tutoSprite(tutoTexture);
+
+    // Créer le bouton Retour
+    RectangleShape boutonRetour(Vector2f(200, 60));
+    boutonRetour.setPosition(window.getSize().x / 2 - 100, window.getSize().y - 100);
+    boutonRetour.setFillColor(Color(100, 100, 255));
+    boutonRetour.setOutlineThickness(3);
+    boutonRetour.setOutlineColor(Color::White);
+
+    Text texteRetour;
+    texteRetour.setFont(font);
+    texteRetour.setString("Retour");
+    texteRetour.setCharacterSize(24);
+    texteRetour.setFillColor(Color::White);
+    texteRetour.setPosition(boutonRetour.getPosition().x + 50, boutonRetour.getPosition().y + 10);
+
+    while (window.isOpen()) {
+        Event event;
+        Vector2i souris = Mouse::getPosition(window);
+
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+                return -1;
+            }
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+                if (boutonRetour.getGlobalBounds().contains(Vector2f(souris))) {
+                    return 3; // Retour
+                }
+            }
+        }
+
+        boutonRetour.setFillColor(
+            boutonRetour.getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
+
+        window.clear();
+        window.draw(tutoSprite);
+        window.draw(boutonRetour);
+        window.draw(texteRetour);
+        window.display();
+    }
+
+    return -1;
+}
+
+
 
 int afficherMenuPrincipal(RenderWindow& window) {
     // Charger la police
@@ -227,11 +314,33 @@ int afficherMenuPrincipal(RenderWindow& window) {
             if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
                 for (int i = 0; i < 4; ++i) {
                     if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                        return i + 1;  // 1: Jouer, 2: Paramètres, etc.
+                        if (i == 0) {
+                            // Appel à afficherMenuJouer
+                            int resultat = afficherMenuJouer(window, font);
+
+                            if (resultat == -1) {
+                                return -1;  // Si un problème survient dans afficherMenuJouer
+                            }
+                        }
+
+                        else if (i == 1) {
+
+                           return 1; // Paramètres
+                        }
+                        else if (i == 2) {
+                                int resultat = afficherTutoriel(window, font); // Tutoriel
+                                if (resultat == -1) return -1;
+                        }
+                         else if (i == 3) {
+                                continue;  // Quitter
+                         }
+                        
                     }
                 }
             }
         }
+            
+    
 
         // Survol de la souris sur les boutons
         for (int i = 0; i < 4; ++i) {
