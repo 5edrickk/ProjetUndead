@@ -8,8 +8,12 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-int lireHighScore();
-void ecrireHighScore(int nouveauScore);
+//int lireHighScore();
+//void ecrireHighScore(int nouveauScore);
 //void afficherNouvelHighScore(sf::RenderWindow& window, int nouveauScore);
 int afficherMenuJouer(sf::RenderWindow& window, sf::Font& font);
 int afficherMenuPrincipal(sf::RenderWindow& window);
+
+//int lireTousLesScores();
+void afficherTableauScores(sf::RenderWindow& window, sf::Font& font);
+int afficherTutoriel(sf::RenderWindow& window, sf::Font& font);
