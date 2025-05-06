@@ -321,19 +321,22 @@ int afficherMenuPrincipal(RenderWindow& window) {
                             if (resultat == -1) {
                                 return -1;  // Si un problème survient dans afficherMenuJouer
                             }
+                            else if (resultat == 1)
+                            {
+                                return 1;
+                            }
                         }
 
                         else if (i == 1) {
-
-                           return 1; // Paramètres
+                            return 1; // Paramètres
                         }
                         else if (i == 2) {
-                                int resultat = afficherTutoriel(window, font); // Tutoriel
-                                if (resultat == -1) return -1;
+                            int resultat = afficherTutoriel(window, font); // Tutoriel
+                            if (resultat == -1) return -1;
                         }
-                         else if (i == 3) {
-                                continue;  // Quitter
-                         }
+                        else if (i == 3) {
+                            continue;  // Quitter
+                        }
                         
                     }
                 }
