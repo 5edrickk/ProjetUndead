@@ -12,7 +12,7 @@ using namespace sf;
 
 
 
-GameTile::GameTile(string& textureName, float x, float y, bool passable, bool exit)
+GameTile::GameTile(string textureName, float x, float y, bool passable, bool exit)
 {
 	// Load the texture from a file
 	if (!setUpSprite(textureName)){ 
