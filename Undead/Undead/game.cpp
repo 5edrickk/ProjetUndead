@@ -32,6 +32,10 @@ int Game::mPlay()
 		killNumber = 0,
 		typeResult = 0;
 
+	int upgradeID[3],
+		upgradeSlot[3],
+		upgradeLevel[3];
+
 	vector<Enemy> vEnemies;
 	vector<RectangleShape> vEnemyShapes;
 	vector<FloatRect> vEnemyBounds;
@@ -42,6 +46,12 @@ int Game::mPlay()
 
 	vector<RectangleShape> vInterfaceShapes;
 	vector<Text> vInterfaceTextes;
+
+	Font font;
+	if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {
+		cerr << "Erreur chargement police" << endl;
+		return -1;
+	}
 
 	//========================================================================================================================
 	// Objets de classes
@@ -107,22 +117,26 @@ int Game::mPlay()
 	upgradedMenuButton3.setOutlineThickness(10);
 
 	upgradeName1.setString("Default : L1");
-	//upgradeName1.setFont(font);
-	upgradeName1.setCharacterSize(40);
+	upgradeName1.setFont(font);
+	upgradeName1.setCharacterSize(25);
 	upgradeName1.setFillColor(Color::Black);
 	upgradeName1.setPosition(100, 50);
 
 	upgradeName2.setString("Default : L2");
-	//upgradeName2.setFont(font);
-	upgradeName2.setCharacterSize(40);
+	upgradeName2.setFont(font);
+	upgradeName2.setCharacterSize(25);
 	upgradeName2.setFillColor(Color::Black);
 	upgradeName2.setPosition(100, 50);
 
 	upgradeName3.setString("Default : L3");
-	//upgradeName3.setFont(font);
-	upgradeName3.setCharacterSize(40);
+	upgradeName3.setFont(font);
+	upgradeName3.setCharacterSize(25);
 	upgradeName3.setFillColor(Color::Black);
 	upgradeName3.setPosition(100, 50);
+
+	upgradeName1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
+	upgradeName2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
+	upgradeName3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
 
 	vInterfaceShapes.push_back(upgradeMenuBackground);
 	vInterfaceShapes.push_back(upgradedMenuButton1);
@@ -212,23 +226,21 @@ int Game::mPlay()
 				}
 			}
 
+			// Upgrade menu
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
 				if (upgradedMenuButton1.getGlobalBounds().contains(Vector2f(souris))) 
 				{
-					fTriggerUpgrade(1);
-					_player.mUpdateAbility("Default", 0, 1);
+					_player.mUpdateAbility(upgradeID[0], upgradeSlot[0], upgradeLevel[0]); //ID, slot, level
 					showUpgradeMenu = false;
 				}
 				else if (upgradedMenuButton2.getGlobalBounds().contains(Vector2f(souris)))
 				{
-					fTriggerUpgrade(2);
-					_player.mUpdateAbility("Default", 0, 2);
+					_player.mUpdateAbility(upgradeID[1], upgradeSlot[1], upgradeLevel[1]); //ID, slot, level
 					showUpgradeMenu = false;
 				}
 				else if (upgradedMenuButton3.getGlobalBounds().contains(Vector2f(souris)))
 				{
-					fTriggerUpgrade(3);
-					_player.mUpdateAbility("Default", 0, 3);
+					_player.mUpdateAbility(upgradeID[2], upgradeSlot[2], upgradeLevel[2]); //ID, slot, level
 					showUpgradeMenu = false;
 				}
 			}
@@ -260,8 +272,32 @@ int Game::mPlay()
 			{
 				waveNumber++;
 				killNumber = 0;
-				showUpgradeMenu = true;
 				cout << "Wave " << waveNumber << endl;
+
+				// Generate upgrades
+				for (int i = 0; i < 3; i++)
+				{
+					int slotIndex = rand() % PLAYER_ABILITY_SLOTS; // [0, 4]
+					upgradeSlot[i] = slotIndex;
+
+					int existingID = _player.mCheckAbilityID(slotIndex);
+
+					if (existingID == 0) // If no ability assigned yet
+					{
+						int newAbilityID = rand() % PLAYER_UPGRADE_TYPE_NUMBER + 1; // [1, N]
+						upgradeID[i] = newAbilityID;
+						upgradeLevel[i] = 1;
+					}
+					else // Upgrade existing ability
+					{
+						upgradeID[i] = existingID;
+						upgradeLevel[i] = _player.mCheckAbilityLevel(slotIndex) + 1;
+					}
+
+					cout << "Slot: " << slotIndex << " | Ability ID: " << upgradeID[i] << " | Upgrade Level: " << upgradeLevel[i] << endl;
+				}
+
+				showUpgradeMenu = true;
 			}
 
 			// Enemy type selection

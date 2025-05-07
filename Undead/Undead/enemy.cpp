@@ -221,7 +221,7 @@ void Enemy::mInitializeMovement(const int playerX, const int playerY)
 
 void Enemy::mDamageEffect(sf::RectangleShape& enemyShape)
 {
-	mSetDmgEffectCooldown(5);
+	mSetDmgEffectCooldown(10);
 	enemyShape.setFillColor(sf::Color::White);
 }
 
