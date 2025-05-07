@@ -99,6 +99,8 @@ void Player::mSetActive(const int number, const bool active)
 void Player::mInitialize()
 {
 	_playerAbilities[0].mSetActive(true);
+	_playerAbilities[0].mSetID(1);
+	_playerAbilities[0].mSetLevel(1);
 }
 
 void Player::mRotate(int targetX, int targetY, Player& object)
@@ -136,7 +138,20 @@ void Player::mDecreaseCooldown(int slot)
 	}
 }
 
-void Player::mUpdateAbility(std::string name, int slot, int level)
+void Player::mUpdateAbility(int ID, int slot, int level)
 {
-	_playerAbilities[slot].mSetAbilityType(name, slot, level);
+	_playerAbilities[slot].mSetActive(true);
+	_playerAbilities[slot].mSetID(ID);
+	_playerAbilities[slot].mSetLevel(level);
+	_playerAbilities[slot].mSetAbilityType(ID, slot, level);
+}
+
+int Player::mCheckAbilityID(const int slot)
+{
+	return _playerAbilities[slot].mGetID();
+}
+
+int Player::mCheckAbilityLevel(const int slot)
+{
+	return _playerAbilities[slot].mGetLevel();
 }

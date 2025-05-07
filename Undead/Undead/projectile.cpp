@@ -6,8 +6,8 @@ using namespace std;
 // Constructeurs
 Projectile::Projectile()
 {
-	_name = "Default";
 	_canDamage = true;
+	_damage = 1;
 	_damage = 5;
 	_speed = 10;
 	_lifetime = 120;
@@ -26,8 +26,8 @@ Projectile::Projectile()
 
 Projectile::~Projectile()
 {
-	_name = "";
 	_canDamage = false;
+	_damage = 0;
 	_damage = 0;
 	_speed = 0;
 	_lifetime = 0;
@@ -46,14 +46,14 @@ Projectile::~Projectile()
 
 //========================================================================================================================
 // Getters
-string Projectile::mGetName() const
-{
-	return _name;
-}
-
 bool Projectile::mGetCanDamage() const
 {
 	return _canDamage;
+}
+
+int Projectile::mGetID() const
+{
+	return _ID;
 }
 
 int Projectile::mGetDamage() const
@@ -123,14 +123,14 @@ int Projectile::mGetPositionY() const
 
 //========================================================================================================================
 // Setters
-void Projectile::mSetName(const string name)
-{
-	_name = name;
-}
-
 void Projectile::mSetCanDamage(const bool canDamage)
 {
 	_canDamage = canDamage;
+}
+
+void Projectile::mSetID(const int ID)
+{
+	_ID = ID;
 }
 
 void Projectile::mSetDamage(const int damage)
@@ -199,9 +199,9 @@ void Projectile::mSetPositionY(const int posY)
 	_positionY = posY;
 }
 
-void Projectile::mSetProjectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
+void Projectile::mSetProjectile(int ID, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
 {
-	_name = name;
+	_ID = ID;
 	_damage = damage;
 	_speed = speed;
 	_lifetime = lifetime;
@@ -231,7 +231,7 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 
 void Projectile::mCloneFromAbility(const Abilities& ability)
 {
-	_name = ability.mGetName();
+	_ID = ability.mGetID();
 	_damage = ability.mGetDamage();
 	_speed = ability.mGetSpeed();;
 	_lifetime = ability.mGetLifetime();

@@ -10,9 +10,9 @@
 
 class Projectile {
 private:
-	std::string _name;
 	bool _canDamage;
-	int _damage,
+	int _ID,
+		_damage,
 		_lifetime,
 		_speed,
 		_size,
@@ -33,8 +33,8 @@ public:
 	~Projectile();
 
 	// Getters
-	std::string mGetName() const;
 	bool mGetCanDamage() const;
+	int mGetID() const;
 	int mGetDamage() const;
 	int mGetLifetime() const;
 	int mGetSpeed() const;
@@ -51,8 +51,8 @@ public:
 	int mGetPositionY() const;
 
 	// Setters
-	void mSetName(const std::string name);
 	void mSetCanDamage(const bool canDamage);
+	void mSetID(const int ID);
 	void mSetDamage(const int damage);
 	void mSetLifetime(const int lifetime);
 	void mSetSpeed(const int speed);
@@ -68,7 +68,7 @@ public:
 	void mSetPositionX(const int posX);
 	void mSetPositionY(const int posY);
 	
-	void mSetProjectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
+	void mSetProjectile(int ID, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
 
 	// Autres
 	void mInitializeMovement(const int rotation, const int speed);

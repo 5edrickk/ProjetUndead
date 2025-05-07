@@ -6,9 +6,9 @@
 
 class Abilities {
 private:
-	std::string _name;
 	bool _active;
-	int _damage,
+	int _ID,
+		_damage,
 		_maxCooldown,
 		_cooldown,
 		_lifetime,
@@ -26,8 +26,8 @@ public:
 	~Abilities();
 
 	// Getters
-	std::string mGetName() const;
 	bool mGetActive() const;
+	int mGetID() const;
 	int mGetDamage() const;
 	int mGetMaxCooldown() const;
 	int mGetCooldown() const;
@@ -41,8 +41,8 @@ public:
 	int mGetLevel() const;
 
 	// Setters
-	void mSetName(const std::string name);
 	void mSetActive(const bool active);
+	void mSetID(const int ID);
 	void mSetDamage(const int damage);
 	void mSetMaxCooldown(const int maxCooldown);
 	void mSetCooldown(const int cooldown);
@@ -56,5 +56,5 @@ public:
 	void mSetLevel(const int level);
 
 	// Autres
-	void mSetAbilityType(std::string name, int slot, int level);
+	void mSetAbilityType(int ID, int slot, int level);
 };

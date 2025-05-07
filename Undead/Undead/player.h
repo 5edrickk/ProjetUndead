@@ -50,6 +50,9 @@ public:
 	bool mCheckAttack(int slot);
 	void mAttacked(int slot);
 	void mDecreaseCooldown(int slot);
-	void mUpdateAbility(std::string name, int slot, int level);
+	void mUpdateAbility(int ID, int slot, int level);
+
+	int mCheckAbilityID(const int slot);
+	int mCheckAbilityLevel(const int slot);
 
 };
