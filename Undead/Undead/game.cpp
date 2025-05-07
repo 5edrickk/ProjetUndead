@@ -22,9 +22,15 @@ int Game::mPlay()
 	// Variables
 	srand(time(0));
 
+	bool playerAlive = true,
+		showUpgradeMenu = false;
+
 	int time = 0,
 		enemyCount = 0,
-		waveNumber = 0;
+		waveNumber = 0,
+		spawnCooldown = 0,
+		killNumber = 0,
+		typeResult = 0;
 
 	vector<Enemy> vEnemies;
 	vector<RectangleShape> vEnemyShapes;
@@ -33,6 +39,9 @@ int Game::mPlay()
 	vector<Projectile> vProjectiles;
 	vector<RectangleShape> vProjectileShapes;
 	vector<FloatRect> vProjectileBounds;
+
+	vector<RectangleShape> vInterfaceShapes;
+	vector<Text> vInterfaceTextes;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -61,7 +70,68 @@ int Game::mPlay()
 		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
 
 	}
+	
+	//========================================================================================================================
+	// Upgrade menu
+	RectangleShape upgradeMenuBackground;
+	RectangleShape upgradedMenuButton1;
+	RectangleShape upgradedMenuButton2;
+	RectangleShape upgradedMenuButton3;
 
+	Text upgradeName1;
+	Text upgradeName2;
+	Text upgradeName3;
+
+	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 3.35);
+	upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
+	upgradeMenuBackground.setFillColor(Color::Black);
+	upgradeMenuBackground.setOutlineColor(Color::White);
+	upgradeMenuBackground.setOutlineThickness(10);
+
+	upgradedMenuButton1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton1.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton1.setFillColor(Color::Red);
+	upgradedMenuButton1.setOutlineColor(Color::White);
+	upgradedMenuButton1.setOutlineThickness(10);
+
+	upgradedMenuButton2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton2.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton2.setFillColor(Color::Red);
+	upgradedMenuButton2.setOutlineColor(Color::White);
+	upgradedMenuButton2.setOutlineThickness(10);
+
+	upgradedMenuButton3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton3.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton3.setFillColor(Color::Red);
+	upgradedMenuButton3.setOutlineColor(Color::White);
+	upgradedMenuButton3.setOutlineThickness(10);
+
+	upgradeName1.setString("Default : L1");
+	//upgradeName1.setFont(font);
+	upgradeName1.setCharacterSize(40);
+	upgradeName1.setFillColor(Color::Black);
+	upgradeName1.setPosition(100, 50);
+
+	upgradeName2.setString("Default : L2");
+	//upgradeName2.setFont(font);
+	upgradeName2.setCharacterSize(40);
+	upgradeName2.setFillColor(Color::Black);
+	upgradeName2.setPosition(100, 50);
+
+	upgradeName3.setString("Default : L3");
+	//upgradeName3.setFont(font);
+	upgradeName3.setCharacterSize(40);
+	upgradeName3.setFillColor(Color::Black);
+	upgradeName3.setPosition(100, 50);
+
+	vInterfaceShapes.push_back(upgradeMenuBackground);
+	vInterfaceShapes.push_back(upgradedMenuButton1);
+	vInterfaceShapes.push_back(upgradedMenuButton2);
+	vInterfaceShapes.push_back(upgradedMenuButton3);
+
+	vInterfaceTextes.push_back(upgradeName1);
+	vInterfaceTextes.push_back(upgradeName2);
+	vInterfaceTextes.push_back(upgradeName3);
 	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
@@ -108,6 +178,7 @@ int Game::mPlay()
 	{
 		// On inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		Event event;
+		Vector2i souris = Mouse::getPosition(window);
 		int dir = 0;
 
 		while (window.pollEvent(event))
@@ -140,12 +211,33 @@ int Game::mPlay()
 					break;
 				}
 			}
+
+			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+				if (upgradedMenuButton1.getGlobalBounds().contains(Vector2f(souris))) 
+				{
+					fTriggerUpgrade(1);
+					_player.mUpdateAbility("Default", 0, 1);
+					showUpgradeMenu = false;
+				}
+				else if (upgradedMenuButton2.getGlobalBounds().contains(Vector2f(souris)))
+				{
+					fTriggerUpgrade(2);
+					_player.mUpdateAbility("Default", 0, 2);
+					showUpgradeMenu = false;
+				}
+				else if (upgradedMenuButton3.getGlobalBounds().contains(Vector2f(souris)))
+				{
+					fTriggerUpgrade(3);
+					_player.mUpdateAbility("Default", 0, 3);
+					showUpgradeMenu = false;
+				}
+			}
 		}
 
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle update
 		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l�horloge
-		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
+		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE) //En milisecondes (100.0f)
 		{
 			// Clear console on tick (constantes)
 			if (CLEAR_CONSOLE_ON_TICK == true) { system("cls"); }
@@ -164,71 +256,138 @@ int Game::mPlay()
 			}
 
 			// Vague
-			if (enemyCount == 0)
+			if (killNumber == KILLS_FOR_WAVE * waveNumber)
 			{
 				waveNumber++;
+				killNumber = 0;
+				showUpgradeMenu = true;
+				cout << "Wave " << waveNumber << endl;
+			}
 
-				for (int i = 0; i < 5 * waveNumber; i++)
+			// Enemy type selection
+			if (killNumber == 0 || killNumber >= waveNumber / 3)
+			{
+				typeResult = rand() % ENEMY_TYPE_NUMBER + 1; // Max, min
+			}
+
+			// Spawning
+			if (spawnCooldown <= 0 && enemyCount < MAX_ENEMIES)
+			{
+				int side = rand() % 4 + 1; // Max, min
+
+				Enemy tempEnemy;
+				RectangleShape tempEnemyRect;
+
+				tempEnemy.mSetEnemyType(typeResult, tempEnemyRect);
+
+				if (side == 1)
 				{
-					int side = rand() % 4 + 1;
-
-					Enemy tempEnemy;
-					RectangleShape tempEnemyRect;
-
-					// Max, min
-					if (side == 1)
-					{
-						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
-						tempEnemy.mSetPositionY(0);
-					}
-					else if (side == 2)
-					{
-						tempEnemy.mSetPositionX(0);
-						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
-					}
-					else if (side == 3)
-					{
-						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
-						tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
-					}
-					else 
-					{
-						tempEnemy.mSetPositionX(WINDOW_SIZE_X);
-						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
-					}
-
-					tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
-					tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-					tempEnemyRect.setFillColor(sf::Color::Blue);
-
-					FloatRect sEnemeyBounds = tempEnemyRect.getGlobalBounds();
-
-					vEnemies.push_back(tempEnemy);
-					vEnemyShapes.push_back(tempEnemyRect);
-					vEnemyBounds.push_back(sEnemeyBounds);
-
-					enemyCount++;
-					tempEnemy.~Enemy();
+					tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0); // Max, min
+					tempEnemy.mSetPositionY(0);
 				}
+				else if (side == 2)
+				{
+					tempEnemy.mSetPositionX(0);
+					tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+				}
+				else if (side == 3)
+				{
+					tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+					tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
+				}
+				else
+				{
+					tempEnemy.mSetPositionX(WINDOW_SIZE_X);
+					tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+				}
+
+				tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
+				tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+
+				FloatRect sEnemeyBounds = tempEnemyRect.getGlobalBounds();
+
+				vEnemies.push_back(tempEnemy);
+				vEnemyShapes.push_back(tempEnemyRect);
+				vEnemyBounds.push_back(sEnemeyBounds);
+
+				enemyCount++;
+				spawnCooldown = MAX_SPAWN_COOLDOWN;
+				tempEnemy.~Enemy();
+
+				spawnCooldown = spawnCooldown / waveNumber;
+			}
+			else
+			{
+				spawnCooldown--;
 			}
 
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
 				_player.mSetPosY(fPlayerMove(1, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + INCREMENT);
+					vEnemyShapes[i].move(0, + INCREMENT);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
+					vProjectileShapes[i].move(0, +INCREMENT);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 			{
 				_player.mSetPosX(fPlayerMove(2, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() - INCREMENT);
+					vEnemyShapes[i].move(-INCREMENT, 0);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
+					vProjectileShapes[i].move(-INCREMENT, 0);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			{
 				_player.mSetPosY(fPlayerMove(3, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() - INCREMENT);
+					vEnemyShapes[i].move(0, - INCREMENT);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
+					vProjectileShapes[i].move(0, -INCREMENT);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
 				_player.mSetPosX(fPlayerMove(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() + INCREMENT);
+					vEnemyShapes[i].move(INCREMENT, 0);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
+					vProjectileShapes[i].move(INCREMENT, 0);
+				}
 			}
+
+			FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 			fDebug(2, _player.mGetPosX(), _player.mGetPosY());
 
@@ -269,6 +428,8 @@ int Game::mPlay()
 					Projectile tempProjectile;
 					tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
 					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed());
+					tempProjectile.mSetPositionX(_player.mGetPosX());
+					tempProjectile.mSetPositionY(_player.mGetPosY());
 
 					RectangleShape sProjectile;
 					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
@@ -308,12 +469,32 @@ int Game::mPlay()
 				}
 				else
 				{
+					if (vProjectiles[i].mGetBounceAmount() > 0 && (vProjectiles[i].mGetPositionX() <= 0 || vProjectiles[i].mGetPositionX() >= WINDOW_SIZE_X || vProjectiles[i].mGetPositionY() <= 0 || vProjectiles[i].mGetPositionY() >= WINDOW_SIZE_Y))
+					{
+						if (vProjectiles[i].mGetPositionX() <= 0 || vProjectiles[i].mGetPositionX() >= WINDOW_SIZE_X)
+						{
+							vProjectiles[i].mSetVelocityX(-vProjectiles[i].mGetVelocityX());
+							vProjectiles[i].mSetBounceAmount(vProjectiles[i].mGetBounceAmount() - 1);
+						}
+
+						if  (vProjectiles[i].mGetPositionY() <= 0 || vProjectiles[i].mGetPositionY() >= WINDOW_SIZE_Y)
+						{
+							vProjectiles[i].mSetVelocityY(-vProjectiles[i].mGetVelocityY());
+							vProjectiles[i].mSetBounceAmount(vProjectiles[i].mGetBounceAmount() - 1);
+						}
+					}
+					
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + vProjectiles[i].mGetVelocityX());
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + vProjectiles[i].mGetVelocityY());
-
+					
 					vProjectileShapes[i].move(vProjectiles[i].mGetVelocityX(), -vProjectiles[i].mGetVelocityY());
 					vProjectileBounds[i] = vProjectileShapes[i].getGlobalBounds();
 				}
+			}
+
+			for (int i = 0; i < vEnemies.size(); i++)
+			{
+				vEnemies[i].mDamageEffectTick(vEnemyShapes[i]);
 			}
 
 			// Collision des projectiles
@@ -321,11 +502,34 @@ int Game::mPlay()
 			{
 				for (int j = 0; j < vEnemies.size(); j++)
 				{
-					if (vProjectileBounds[i].intersects(vEnemyBounds[j]))
+					if (vProjectileBounds[i].intersects(vEnemyBounds[j]) && vProjectiles[i].mGetCanDamage() == true)
 					{
-						vProjectiles[i].mSetLifetime(0);
-
+						vEnemies[j].mDamageEffect(vEnemyShapes[j]);
 						vEnemies[j].mSetHealth(vEnemies[j].mGetHealth() - vProjectiles[i].mGetDamage());
+
+						if (vProjectiles[i].mGetPierceAmount() > 0)
+						{
+							vProjectiles[i].mSetPierceAmount(vProjectiles[i].mGetPierceAmount() - 1);
+						}
+						else
+						{
+							vProjectiles[i].mSetCanDamage(false);
+							vProjectiles[i].mSetLifetime(0);
+						}
+					}
+				}
+			}
+
+			// Collision des ennemis avec le joueur
+			for (int i = 0; i < vEnemies.size(); i++)
+			{
+				if (sPlayerBounds.intersects(vEnemyBounds[i]))
+				{
+					_player.mSetHealth(_player.mGetHealth() - vEnemies[i].mGetDamage());
+
+					if (_player.mGetHealth() <= 0)
+					{
+						playerAlive = false;
 					}
 				}
 			}
@@ -338,6 +542,9 @@ int Game::mPlay()
 					vEnemies.erase(vEnemies.begin() + i);
 					vEnemyShapes.erase(vEnemyShapes.begin() + i);
 					vEnemyBounds.erase(vEnemyBounds.begin() + i);
+
+					enemyCount--;
+					killNumber++;
 				}
 				else
 				{
@@ -358,7 +565,7 @@ int Game::mPlay()
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle visuelle
 		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
-		if (timeDraw.asMilliseconds() >= 1000 / 60) //En milisecondes (100.0f)
+		if (timeDraw.asMilliseconds() >= 1000 / FRAMERATE) //En milisecondes (100.0f)
 		{
 			// Effacement de la fenêtre en noir
 			window.clear();
@@ -379,6 +586,20 @@ int Game::mPlay()
 			for (int i = 0; i < vProjectileShapes.size(); i++)
 			{
 				window.draw(vProjectileShapes[i]);
+			}
+
+			// Dessin de l'interface
+			if (showUpgradeMenu == true)
+			{
+				for (int i = 0; i < vInterfaceShapes.size(); i++)
+				{
+					window.draw(vInterfaceShapes[i]);
+				}
+
+				for (int i = 0; i < vInterfaceTextes.size(); i++)
+				{
+					window.draw(vInterfaceTextes[i]);
+				}
 			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné

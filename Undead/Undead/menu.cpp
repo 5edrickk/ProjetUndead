@@ -1,15 +1,4 @@
 #include "menu.h"
-#include "constantes.h"
-#include "player.h"  // Pour accéder aux dimensions ou constantes similaires
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <filesystem>
 
 using namespace sf;
 using namespace std;
@@ -108,7 +97,7 @@ int afficherMenuJouer(RenderWindow& window, Font& font) {
     backgroundTexture.loadFromFile("assets/Menu/background.jpg");
     Sprite backgroundSprite(backgroundTexture);
 
-    const float BUTTON_WIDTH = PLAYER_SIZE *12 ;
+    const float BUTTON_WIDTH = PLAYER_SIZE * 12;
     const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
     const float BUTTON_SPACING = 40;
     Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);

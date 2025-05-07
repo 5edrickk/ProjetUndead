@@ -12,3 +12,5 @@ int fWindowClamp(int value, char direction);
 int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY);
 
 void fInitialize();
+
+void fTriggerUpgrade(int upgradeNumber);

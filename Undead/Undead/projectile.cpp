@@ -7,9 +7,10 @@ using namespace std;
 Projectile::Projectile()
 {
 	_name = "Default";
+	_canDamage = true;
 	_damage = 5;
-	_speed = 1 * UPDATE_RATE; // Speed (X * UPDATE_RATE))
-	_lifetime = UPDATE_RATE * 2; // Lifetime in seconds (UPDATE_RATE * X)
+	_speed = 10;
+	_lifetime = 120;
 	_size = 20; // Pixels
 	_pierceAmount = 0;
 	_bounceAmount = 0;
@@ -23,22 +24,10 @@ Projectile::Projectile()
 	_positionY = 0;
 }
 
-Projectile::Projectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
-{
-	_name = name;
-	_damage = damage;
-	_speed = speed;
-	_lifetime = lifetime;
-	_size = size;
-	_pierceAmount = pierceAmount;
-	_bounceAmount = bounceAmount;
-	_criticalMultiplier = criticalMultiplier;
-	_criticalChance = criticalChance;
-}
-
 Projectile::~Projectile()
 {
 	_name = "";
+	_canDamage = false;
 	_damage = 0;
 	_speed = 0;
 	_lifetime = 0;
@@ -60,6 +49,11 @@ Projectile::~Projectile()
 string Projectile::mGetName() const
 {
 	return _name;
+}
+
+bool Projectile::mGetCanDamage() const
+{
+	return _canDamage;
 }
 
 int Projectile::mGetDamage() const
@@ -132,6 +126,11 @@ int Projectile::mGetPositionY() const
 void Projectile::mSetName(const string name)
 {
 	_name = name;
+}
+
+void Projectile::mSetCanDamage(const bool canDamage)
+{
+	_canDamage = canDamage;
 }
 
 void Projectile::mSetDamage(const int damage)

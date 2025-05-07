@@ -17,12 +17,12 @@ private:
 		_pierceAmount,
 		_bounceAmount,
 		_criticalMultiplier,
-		_criticalChance;
+		_criticalChance,
+		_level;
 
 public:
 	// Constructeurs
 	Abilities();
-	Abilities(std:: string name, bool active, bool projectile, int damage, int maxCooldown, int cooldown, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
 	~Abilities();
 
 	// Getters
@@ -38,6 +38,7 @@ public:
 	int mGetBounceAmount() const;
 	int mGetCriticalMultiplier() const;
 	int mGetCriticalChance() const;
+	int mGetLevel() const;
 
 	// Setters
 	void mSetName(const std::string name);
@@ -52,4 +53,8 @@ public:
 	void mSetBounceAmount(const int bounceAmount);
 	void mSetCriticalMultiplier(const int criticalMultiplier);
 	void mSetCriticalChance(const int criticalChance);
+	void mSetLevel(const int level);
+
+	// Autres
+	void mSetAbilityType(std::string name, int slot, int level);
 };
