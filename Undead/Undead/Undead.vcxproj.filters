@@ -13,63 +13,97 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{96d3038b-e23f-483a-bfd5-0c4ee090c433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interface">
+      <UniqueIdentifier>{cdc52345-08c7-46e0-8aac-bf74e543c85b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objets">
+      <UniqueIdentifier>{7cb4584f-faef-4765-8d7c-4c1d10f91071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objets">
+      <UniqueIdentifier>{1e3b569e-1e95-4655-b641-f898de006aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface">
+      <UniqueIdentifier>{9e413134-ef67-4baa-b035-800b38410cc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{a8d4bcc9-951d-4399-878b-e92cec3b9a32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="functions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="projectile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="enemy.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objets</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objets</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="projectile.cpp">
+      <Filter>Source Files\Objets</Filter>
     </ClCompile>
     <ClCompile Include="abilities.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Objets</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameTile.cpp">
       <Filter>Source Files</Filter>
+=======
+    <ClCompile Include="Background.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="functions.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\Core</Filter>
+>>>>>>> 087a54d1ffd7268fca07338e68fe4eca74bbb8bb
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="projectile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="enemy.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Objets</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="constantes.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Objets</Filter>
     </ClInclude>
     <ClInclude Include="abilities.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Objets</Filter>
     </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>Header Files\Objets</Filter>
+    </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameTile.h">
       <Filter>Header Files</Filter>
+=======
+    <ClInclude Include="Background.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="menu.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="constantes.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files\Core</Filter>
+>>>>>>> 087a54d1ffd7268fca07338e68fe4eca74bbb8bb
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -78,5 +112,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="temporaary.txt" />
+<<<<<<< HEAD
+=======
+    <Text Include="assets\Menu\highscore.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+>>>>>>> 087a54d1ffd7268fca07338e68fe4eca74bbb8bb
   </ItemGroup>
 </Project>

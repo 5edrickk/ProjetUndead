@@ -38,6 +38,4 @@ bool GameTile::setUpSprite(std::string path)
 	_sprite.setTexture(_texture);
 	_sprite.setTextureRect(IntRect(0, 0, 100, 80)); // Set the texture rectangle
 	return true;
-	
-	return true;
 }

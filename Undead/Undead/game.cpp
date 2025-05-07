@@ -20,10 +20,19 @@ int Game::mPlay()
 
 	//========================================================================================================================
 	// Variables
-	int time = 0;
+	srand(time(0));
+
+	int time = 0,
+		enemyCount = 0,
+		waveNumber = 0;
+
 	vector<Enemy> vEnemies;
+	vector<RectangleShape> vEnemyShapes;
+	vector<FloatRect> vEnemyBounds;
+
 	vector<Projectile> vProjectiles;
 	vector<RectangleShape> vProjectileShapes;
+	vector<FloatRect> vProjectileBounds;
 
 	//========================================================================================================================
 	// Objets de classes
@@ -47,6 +56,8 @@ int Game::mPlay()
 	sPlayer.setFillColor(sf::Color::Black);
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
+
+	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 	_player.mInitialize();
 	_player.mSetActive(0, true);
@@ -87,10 +98,6 @@ int Game::mPlay()
 			// Fermer le jeu
 		}
 	} while (choix == 2 || choix == 3);
-
-	//========================================================================================================================
-	// Joueur hitbox
-	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 	//========================================================================================================================
 	// Boucle fenêtre : jusqu'à ce que la fenêtre soit fermée
@@ -153,6 +160,55 @@ int Game::mPlay()
 				cout << GAME_NAME << " : " << FRAMERATE << "FPS / " << UPDATE_RATE << "Hz / " << WINDOW_SIZE_X << "x" << WINDOW_SIZE_Y << "px / " << INCREMENT << "inc." << endl;
 			}
 
+			// Vague
+			if (enemyCount == 0)
+			{
+				waveNumber++;
+
+				for (int i = 0; i < 5 * waveNumber; i++)
+				{
+					int side = rand() % 4 + 1;
+
+					Enemy tempEnemy;
+					RectangleShape tempEnemyRect;
+
+					// Max, min
+					if (side == 1)
+					{
+						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+						tempEnemy.mSetPositionY(0);
+					}
+					else if (side == 2)
+					{
+						tempEnemy.mSetPositionX(0);
+						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+					}
+					else if (side == 3)
+					{
+						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+						tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
+					}
+					else 
+					{
+						tempEnemy.mSetPositionX(WINDOW_SIZE_X);
+						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+					}
+
+					tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
+					tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+					tempEnemyRect.setFillColor(sf::Color::Blue);
+
+					FloatRect sEnemeyBounds = tempEnemyRect.getGlobalBounds();
+
+					vEnemies.push_back(tempEnemy);
+					vEnemyShapes.push_back(tempEnemyRect);
+					vEnemyBounds.push_back(sEnemeyBounds);
+
+					enemyCount++;
+					tempEnemy.~Enemy();
+				}
+			}
+
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
@@ -207,21 +263,24 @@ int Game::mPlay()
 			// Attaque du joueur
 			for (int i = 0; i < PLAYER_ABILITY_SLOTS; i++)
 			{
-				if (_player.mCheckAttack(i) == true) 
+				if (_player.mCheckAttack(i) == true)
 				{ 
 					Projectile tempProjectile;
 					tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
 					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed());
-					
-					vProjectiles.push_back(tempProjectile);
-					_player.mAttacked(i);
 
-					sf::RectangleShape sProjectile;
+					RectangleShape sProjectile;
 					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
-					sProjectile.setSize(sf::Vector2f(vProjectiles[i].mGetSize(), vProjectiles[i].mGetSize()));
+					sProjectile.setSize(sf::Vector2f(tempProjectile.mGetSize(), tempProjectile.mGetSize()));
 					sProjectile.setFillColor(sf::Color::Red);
-					sProjectile.setOrigin(vProjectiles[i].mGetSize() / 2, vProjectiles[i].mGetSize() / 2);
+					sProjectile.setOrigin(tempProjectile.mGetSize() / 2, tempProjectile.mGetSize() / 2);
+
+					FloatRect sProjectileBounds = sProjectile.getGlobalBounds();
+
+					vProjectiles.push_back(tempProjectile);
 					vProjectileShapes.push_back(sProjectile);
+					vProjectileBounds.push_back(sProjectileBounds);
+					_player.mAttacked(i);
 
 					tempProjectile.~Projectile();
 					fDebug(5, i);
@@ -236,7 +295,7 @@ int Game::mPlay()
 			fDebug(7, vProjectiles.size());
 
 			// Défilement des projectiles
-			for (int i = 0; i < vProjectiles.size(); i++)
+			for (int i = vProjectiles.size() - 1; i >= 0; i--) //int i = 0; i < vProjectiles.size(); i++ //int i = vProjeectiles.size() - 1; i >= 0; i--
 			{
 				vProjectiles[i].mSetLifetime(vProjectiles[i].mGetLifetime() - 1);
 
@@ -244,6 +303,7 @@ int Game::mPlay()
 				{
 					vProjectiles.erase(vProjectiles.begin() + i);
 					vProjectileShapes.erase(vProjectileShapes.begin() + i);
+					vProjectileBounds.erase(vProjectileBounds.begin() + i);
 				}
 				else
 				{
@@ -251,27 +311,72 @@ int Game::mPlay()
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + vProjectiles[i].mGetVelocityY());
 
 					vProjectileShapes[i].move(vProjectiles[i].mGetVelocityX(), -vProjectiles[i].mGetVelocityY());
+					vProjectileBounds[i] = vProjectileShapes[i].getGlobalBounds();
+				}
+			}
+
+			// Collision des projectiles
+			for (int i = 0; i < vProjectiles.size(); i++)
+			{
+				for (int j = 0; j < vEnemies.size(); j++)
+				{
+					if (vProjectileBounds[i].intersects(vEnemyBounds[j]))
+					{
+						vProjectiles[i].mSetLifetime(0);
+
+						vEnemies[j].mSetHealth(vEnemies[j].mGetHealth() - vProjectiles[i].mGetDamage());
+					}
+				}
+			}
+		
+			// Défilement des ennemis
+			for (int i = vEnemies.size() - 1; i >= 0; i--) //int i = 0; i < vEnemies.size(); i++ //int i = vEnemies.size() - 1; i >= 0; i--
+			{
+				if (vEnemies[i].mGetHealth() <= 0)
+				{
+					vEnemies.erase(vEnemies.begin() + i);
+					vEnemyShapes.erase(vEnemyShapes.begin() + i);
+					vEnemyBounds.erase(vEnemyBounds.begin() + i);
+				}
+				else
+				{
+					vEnemies[i].mInitializeMovement(_player.mGetPosX(), _player.mGetPosY());
+
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() + vEnemies[i].mGetVelocityX());
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + vEnemies[i].mGetVelocityY());
+
+					vEnemyShapes[i].move(vEnemies[i].mGetVelocityX(), vEnemies[i].mGetVelocityY());
+
+					vEnemyBounds[i] = vEnemyShapes[i].getGlobalBounds();
 				}
 			}
 			
-			// Défilement des ennemis
-
 			clockUpdate.restart(); // On remet l'horloge � 0
 		}
 
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle visuelle
 		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
-		if (timeDraw.asMilliseconds() >= 1000 / FRAMERATE) //En milisecondes (100.0f)
+		if (timeDraw.asMilliseconds() >= 1000 / 60) //En milisecondes (100.0f)
 		{
 			// Effacement de la fenêtre en noir
 			window.clear();
 
 			// On dessine le background
+			background[bkg].draw(window); // On dessine le background
+
+			// Dessin des ennemis
+			for (int i = 0; i < vEnemyShapes.size(); i++)
+			{
+				window.draw(vEnemyShapes[i]);
+			}
+
+			// Dessin du joueur
 			
 			// Dessin des objets dans le jeu
 			window.draw(sPlayer);
 
+			// Dessin des projectiles
 			for (int i = 0; i < vProjectileShapes.size(); i++)
 			{
 				window.draw(vProjectileShapes[i]);

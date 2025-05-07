@@ -96,13 +96,15 @@ int fWindowClamp(int value, char direction)
 
 int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY) 
 {
+	int temp = INCREMENT * UPDATE_RATE;
+
 	switch (direction) 
 	{
 	case 1: // Up
 		if (posY > 0)
 		{
-			player.move(0, -INCREMENT);
-			posY -= INCREMENT;
+			player.move(0, -INCREMENT * temp);
+			posY -= INCREMENT * temp;
 		}
 		else { fDebug(1); }
 
@@ -110,8 +112,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 2: // Right
 		if (posX < WINDOW_SIZE_X - PLAYER_SIZE)
 		{
-			player.move(INCREMENT, 0);
-			posX += INCREMENT;
+			player.move(INCREMENT * temp, 0);
+			posX += INCREMENT * temp;
 		}
 		else { fDebug(1); }
 
@@ -119,8 +121,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 3: // Down
 		if (posY < WINDOW_SIZE_Y - PLAYER_SIZE)
 		{
-			player.move(0, INCREMENT);
-			posY += INCREMENT;
+			player.move(0, INCREMENT * temp);
+			posY += INCREMENT * temp;
 		}
 		else { fDebug(1); }
 
@@ -128,8 +130,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 4: // Left
 		if (posX > 0)
 		{
-			player.move(-INCREMENT, 0);
-			posX -= INCREMENT;
+			player.move(-INCREMENT * temp, 0);
+			posX -= INCREMENT * temp;
 		}
 		else { fDebug(1); }
 

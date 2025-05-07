@@ -224,8 +224,6 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 	mSetVelocityX(speed * (cos(rads)));
 	mSetVelocityY(speed * (sin(rads)));
 
-	cout << speed << endl;
-
 	fDebug(12);
 	fDebug(8, rotation);
 	fDebug(9, mGetVelocityX());
@@ -243,9 +241,4 @@ void Projectile::mCloneFromAbility(const Abilities& ability)
 	_bounceAmount = ability.mGetBounceAmount();
 	_criticalMultiplier = ability.mGetCriticalMultiplier();
 	_criticalChance = ability.mGetCriticalChance();
-}
-
-void Projectile::mCastProjectile(const Projectile& projectile)
-{
-
 }
