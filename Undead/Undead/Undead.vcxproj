@@ -135,6 +135,7 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameTile.cpp" />
     <ClCompile Include="menu.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="functions.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="GameTile.h" />
+    <ClInclude Include="GameWorld.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />

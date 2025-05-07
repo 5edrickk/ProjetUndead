@@ -28,7 +28,7 @@ GameTile::GameTile(string textureName, float x, float y, bool passable, bool exi
 bool GameTile::setUpSprite(std::string path)
 {
 	// Load the texture from a file
-	if (!_texture.loadFromFile("path"))
+	if (!_texture.loadFromFile(path))
 	{
 		cout << "Error loading texture" << endl;
 		return false;

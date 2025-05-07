@@ -3,8 +3,8 @@
 class GameTile
 {
 	public:
-		Vector2f _position;
-		Texture _texture;
+		sf::Vector2f _position;
+		sf::Texture _texture;
 		sf::Sprite _sprite;
 
 		bool _isPassable;

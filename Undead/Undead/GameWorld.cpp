@@ -1,6 +1,8 @@
-#include "game.cpp"
-#include "GameTile.h"
+#include <SFML/Graphics.hpp>
 #include "GameWorld.h"
+
+using namespace std;
+using namespace sf;
 
 void GameWorld::setUpInitialState()
 {
@@ -14,18 +16,33 @@ void GameWorld::setUpTiles()
 {
 	_tiles.clear();
 
-	vector<GameTile*> firstRow;
+	vector<GameTile*> primeiraRow;
+	
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 100, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 200, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 300, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 400, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 500, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 600, 20, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 700, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 800, 0, true, false));
+	primeiraRow.push_back(new GameTile("/assets/backgrounds/background0.png", 900, 0, true, false));
+
+	_tiles.push_back(primeiraRow);
+
+
+	/*vector<GameTile*> firstRow;
 	for (int i = 1; i < _gridlength; i++)
 	{
-		firstRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 0, true, false));
+		firstRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 0, true, false));
 	}
-	_tiles.push_back(firstRow);
+	_tiles.push_back(firstRow);*/
 	
 	vector<GameTile*> secondRow;
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-		secondRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 80, true, false));
+		secondRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 80, true, false));
 		
 	}
 	_tiles.push_back(secondRow);
@@ -34,7 +51,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			thirdRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 160, true, false));
+			thirdRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 160, true, false));
 
 	}
 	_tiles.push_back(thirdRow);
@@ -43,7 +60,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			fourthRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 240, true, false));
+			fourthRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 240, true, false));
 
 	}
 	_tiles.push_back(fourthRow);
@@ -52,7 +69,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			fifthRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 320, true, false));
+			fifthRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 320, true, false));
 
 	}
 	_tiles.push_back(fifthRow);
@@ -61,7 +78,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			sixthRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 400, true, false));
+			sixthRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 400, true, false));
 
 	}
 	_tiles.push_back(sixthRow);
@@ -70,7 +87,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			seventhRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 480, true, false));
+			seventhRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 480, true, false));
 
 	}
 	_tiles.push_back(seventhRow);
@@ -79,7 +96,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			eighthRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 560, true, false));
+			eighthRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 560, true, false));
 
 	}
 	_tiles.push_back(eighthRow);
@@ -88,7 +105,7 @@ void GameWorld::setUpTiles()
 	for (int i = 0; i < _gridlength; i++)
 	{
 		if (i != 0)
-			ninthRow.push_back(new GameTile("assets/backgrounds/background0.png", i * 100, 640, true, false));
+			ninthRow.push_back(new GameTile("/assets/backgrounds/background0.png", i * 100, 640, true, false));
 
 	}
 	_tiles.push_back(ninthRow);

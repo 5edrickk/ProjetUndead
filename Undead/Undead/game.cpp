@@ -66,14 +66,12 @@ int Game::mPlay()
 
 	//========================================================================================================================
 	// Background
-	int bkg = 0;
-
 	GameWorld gameWorld = GameWorld();
 		
 
-	View view(sf::FloatRect(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y)); // On crée une vue de la taille de la fenêtre
-	view.setCenter(playerPosition); // On centre la vue sur la fenêtre
-	window.setView(view); // On applique la vue à la fenêtre
+	//View view(sf::FloatRect(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y)); // On crée une vue de la taille de la fenêtre
+	//view.setCenter(playerPosition); // On centre la vue sur la fenêtre
+	//window.setView(view); // On applique la vue à la fenêtre
 
 	
 	//========================================================================================================================
@@ -365,9 +363,9 @@ int Game::mPlay()
 			window.clear();
 
 			// On dessine le background
-			for (int i = 0; i < WINDOW_SIZE_X / 8; i++)
+			for (int i = 0; i < gameWorld._gridlength; i++)
 			{
-				for (int j = 0; j < WINDOW_SIZE_Y / 8; j++)
+				for (int j = 0; j < 5; j++)
 				{
 					window.draw(gameWorld._tiles[i][j]->_sprite);
 				}
