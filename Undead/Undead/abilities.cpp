@@ -179,6 +179,8 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 {
 	switch (ID)
 	{
+
+	// Default projectile
 	case 1:
 
 		switch (level)
@@ -315,20 +317,12 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		default:
 
-			mSetDamage(5);
-			mSetMaxCooldown(30);
-			mSetSpeed(6);
-			mSetLifetime(120);
-			mSetSize(20); // Pixels
-			mSetPierceAmount(0);
-			mSetBounceAmount(0);
-			mSetCriticalMultiplier(50); // %100
-			mSetCriticalChance(5); // %100
 			break;
 
 		}
 		break;
 
+	// NEGATIVE AURORA
 	case 2:
 
 		switch (level)
@@ -340,7 +334,124 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 			mSetSpeed(0);
 			mSetLifetime(10);
 			mSetSize(70); // Pixels
-			mSetPierceAmount(1000);
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 2:
+
+			mSetDamage(1);
+			mSetMaxCooldown(10);
+			mSetSpeed(0);
+			mSetLifetime(10);
+			mSetSize(90); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 3:
+
+			mSetDamage(1);
+			mSetMaxCooldown(10);
+			mSetSpeed(0);
+			mSetLifetime(10);
+			mSetSize(110); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 4:
+
+			mSetDamage(1);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(130); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 5:
+
+			mSetDamage(2);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(150); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 6:
+
+			mSetDamage(2);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(180); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 7:
+
+			mSetDamage(3);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(200); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 8:
+
+			mSetDamage(3);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(230); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 9:
+
+			mSetDamage(4);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(250); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 10:
+
+			mSetDamage(4);
+			mSetMaxCooldown(5);
+			mSetSpeed(0);
+			mSetLifetime(5);
+			mSetSize(280); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
 			mSetBounceAmount(0);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
@@ -348,15 +459,148 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		default:
 
+			break;
+
+		}
+		break;
+
+	// the BOUNCER
+	case 3:
+
+		switch (level)
+		{
+		case 1:
+
+			mSetDamage(10);
+			mSetMaxCooldown(120);
+			mSetSpeed(4);
+			mSetLifetime(180);
+			mSetSize(30); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(1);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 2:
+
 			mSetDamage(1);
 			mSetMaxCooldown(10);
 			mSetSpeed(0);
 			mSetLifetime(10);
-			mSetSize(70); // Pixels
-			mSetPierceAmount(1000);
+			mSetSize(90); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
 			mSetBounceAmount(0);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
+			break;
+
+		case 3:
+
+			mSetDamage(1);
+			mSetMaxCooldown(10);
+			mSetSpeed(0);
+			mSetLifetime(10);
+			mSetSize(110); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 4:
+
+			mSetDamage(1);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(130); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 5:
+
+			mSetDamage(2);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(150); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 6:
+
+			mSetDamage(2);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(180); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 7:
+
+			mSetDamage(3);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(200); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 8:
+
+			mSetDamage(3);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(230); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 9:
+
+			mSetDamage(4);
+			mSetMaxCooldown(7);
+			mSetSpeed(0);
+			mSetLifetime(7);
+			mSetSize(250); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		case 10:
+
+			mSetDamage(4);
+			mSetMaxCooldown(5);
+			mSetSpeed(0);
+			mSetLifetime(5);
+			mSetSize(280); // Pixels
+			mSetPierceAmount(MAX_ENEMIES);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			break;
+
+		default:
+
 			break;
 
 		}

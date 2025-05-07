@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <cstdlib> // For rand() and srand()
+#include <ctime> // For time()
 
 #include "constantes.h"
 #include "functions.h"

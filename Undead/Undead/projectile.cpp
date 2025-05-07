@@ -216,17 +216,40 @@ void Projectile::mSetProjectile(int ID, int damage, int lifetime, int speed, int
 // Autres
 void Projectile::mInitializeMovement(const int rotation, const int speed)
 {
+	srand(time(0));
 	float rads = rotation * (3.141592653589793 / 180);
 
-	mSetRotation(rotation);
+	if (mGetID() == 2)
+	{
+		mSetRotation(0);
 
-	mSetVelocityX(speed * (cos(rads)));
-	mSetVelocityY(speed * (sin(rads)));
+		mSetVelocityX(0);
+		mSetVelocityY(0);
+	}
+	else if (mGetID() == 3)
+	{
+		int random = rand() % 360;
+		cout << random << endl;
+		float tempRand = random * (3.141592653589793 / 180);
+		cout << tempRand << endl;
 
-	fDebug(12);
-	fDebug(8, rotation);
-	fDebug(9, mGetVelocityX());
-	fDebug(10, mGetVelocityY());
+		mSetRotation(tempRand);
+
+		mSetVelocityX(speed * (cos(tempRand)));
+		mSetVelocityY(speed * (sin(tempRand)));
+
+		//fDebug(12);
+		//fDebug(8, rotation);
+		//fDebug(9, mGetVelocityX());
+		//fDebug(10, mGetVelocityY());
+	}
+	else
+	{
+		mSetRotation(rotation);
+
+		mSetVelocityX(speed * (cos(rads)));
+		mSetVelocityY(speed * (sin(rads)));
+	}
 }
 
 void Projectile::mCloneFromAbility(const Abilities& ability)
