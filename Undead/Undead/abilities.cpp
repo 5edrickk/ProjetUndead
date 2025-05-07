@@ -9,31 +9,16 @@ Abilities::Abilities()
 	_name = "Default";
 	_active = false;
 	_damage = 5;
-	_maxCooldown = 0.25 * (1000 / UPDATE_RATE); // Max cooldown in seconds (X * (1000 / UPDATE_RATE))
+	_maxCooldown = 30;
 	_cooldown = 0;
-	_speed = 1 * UPDATE_RATE; // Speed in pixels per seconds (X * UPDATE_RATE)
-	_lifetime = 2 * (1000 / UPDATE_RATE); // Lifetime in seconds (X * (1000 / UPDATE_RATE))
+	_speed = 6;
+	_lifetime = 120;
 	_size = 20; // Pixels
 	_pierceAmount = 0;
 	_bounceAmount = 0;
 	_criticalMultiplier = 50; // %100
 	_criticalChance = 5; // %100
-}
-
-Abilities::Abilities(std::string name, bool active, bool projectile, int damage, int maxCooldown, int cooldown, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
-{
-	_name = name;
-	_active = active;
-	_damage = damage;
-	_maxCooldown = maxCooldown;
-	_cooldown = cooldown;
-	_speed = speed;
-	_lifetime = lifetime;
-	_size = size;
-	_pierceAmount = pierceAmount;
-	_bounceAmount = bounceAmount;
-	_criticalMultiplier = criticalMultiplier;
-	_criticalChance = criticalChance;
+	_level = 1;
 }
 
 Abilities::~Abilities()
@@ -50,6 +35,7 @@ Abilities::~Abilities()
 	_bounceAmount = 0;
 	_criticalMultiplier = 0;
 	_criticalChance = 0;
+	_level = 0;
 }
 
 //========================================================================================================================
@@ -114,6 +100,11 @@ int Abilities::mGetCriticalChance() const
 	return _criticalChance;
 }
 
+int Abilities::mGetLevel() const
+{
+	return _level;
+}
+
 //========================================================================================================================
 // Setters
 void Abilities::mSetName(const string name)
@@ -175,4 +166,99 @@ void Abilities::mSetCriticalMultiplier(const int criticalMultiplier)
 void Abilities::mSetCriticalChance(const int criticalChance)
 {
 	_criticalChance = criticalChance;
+}
+
+void Abilities::mSetLevel(const int level)
+{
+	_level = level;
+}
+
+//========================================================================================================================
+// Autres
+void Abilities::mSetAbilityType(std::string name, int slot, int level)
+{
+	if (name == "Default")
+	{
+		switch (level)
+		{
+		case 1:
+
+			mSetDamage(5);
+			mSetMaxCooldown(30);
+			mSetSpeed(6);
+			mSetLifetime(120);
+			mSetSize(20); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			mSetLevel(level);
+			break;
+
+		case 2:
+
+			mSetDamage(5);
+			mSetMaxCooldown(25);
+			mSetSpeed(8);
+			mSetLifetime(120);
+			mSetSize(20); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			mSetLevel(level);
+			break;
+
+		case 3:
+
+			mSetDamage(5);
+			mSetMaxCooldown(20);
+			mSetSpeed(10);
+			mSetLifetime(120);
+			mSetSize(20); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			mSetLevel(level);
+			break;
+
+		case 4:
+
+			mSetDamage(10);
+			mSetMaxCooldown(20);
+			mSetSpeed(10);
+			mSetLifetime(120);
+			mSetSize(20); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			mSetLevel(level);
+			break;
+
+		default:
+
+			mSetDamage(5);
+			mSetMaxCooldown(30);
+			mSetSpeed(6);
+			mSetLifetime(120);
+			mSetSize(20); // Pixels
+			mSetPierceAmount(0);
+			mSetBounceAmount(0);
+			mSetCriticalMultiplier(50); // %100
+			mSetCriticalChance(5); // %100
+			mSetLevel(level);
+			break;
+
+		}
+	}
+	else if (name == "Fireball")
+	{
+
+	}
+	else
+	{
+
+	}
 }

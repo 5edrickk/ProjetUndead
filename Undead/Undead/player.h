@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include <string>
 
 #include "constantes.h"
 #include "functions.h"
@@ -13,7 +14,7 @@ private:
 	int _posX,
 		_posY,
 		_maxHealth,
-		_currentHealth,
+		_health,
 		_speed,
 		_direction,
 		_rotation;
@@ -28,6 +29,7 @@ public:
 	// Getters
 	int mGetPosX() const;
 	int mGetPosY() const;
+	int mGetHealth() const;
 	int mGetDirection() const;
 	int mGetRotation() const;
 	Abilities mGetAbility(int slot) const;
@@ -35,6 +37,7 @@ public:
 	// Setters
 	void mSetPosX(const int x);
 	void mSetPosY(const int y);
+	void mSetHealth(const int health);
 	void mSetDirection(const int dir);
 	void mSetRotation(const int rot);
 
@@ -47,5 +50,6 @@ public:
 	bool mCheckAttack(int slot);
 	void mAttacked(int slot);
 	void mDecreaseCooldown(int slot);
+	void mUpdateAbility(std::string name, int slot, int level);
 
 };

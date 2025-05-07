@@ -9,7 +9,7 @@ Player::Player()
 	_posX = WINDOW_SIZE_X / 2 - PLAYER_SIZE / 2;
 	_posY = WINDOW_SIZE_Y / 2 - PLAYER_SIZE / 2;
 	_maxHealth = PLAYER_MAX_HEALTH;
-	_currentHealth = PLAYER_MAX_HEALTH;
+	_health = PLAYER_MAX_HEALTH;
 	_speed = PLAYER_SPEED;
 	_direction = 0;
 	_rotation = 90;
@@ -20,7 +20,7 @@ Player::~Player()
 	_posX = 0;
 	_posY = 0;
 	_maxHealth = 0;
-	_currentHealth = 0;
+	_health = 0;
 	_speed = 0;
 	_direction = 0;
 	_rotation = 0;
@@ -36,6 +36,11 @@ int Player::mGetPosX() const
 int Player::mGetPosY() const
 {
 	return _posY;
+}
+
+int Player::mGetHealth() const
+{
+	return _health;
 }
 
 int Player::mGetDirection() const
@@ -64,6 +69,11 @@ void Player::mSetPosX(const int x)
 void Player::mSetPosY(const int y)
 {
 	_posY = y;
+}
+
+void Player::mSetHealth(const int health)
+{
+	_health = health;
 }
 
 void Player::mSetDirection(const int dir)
@@ -124,4 +134,9 @@ void Player::mDecreaseCooldown(int slot)
 	{
 		_playerAbilities[slot].mSetCooldown(_playerAbilities[slot].mGetCooldown() - 1);
 	}
+}
+
+void Player::mUpdateAbility(std::string name, int slot, int level)
+{
+	_playerAbilities[slot].mSetAbilityType(name, slot, level);
 }
