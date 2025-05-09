@@ -1,9 +1,7 @@
 ﻿#include "game.h"
 
+using namespace std;
 using namespace sf;
-using namespace std;
-
-using namespace std;
 
 Game::Game()
 {
@@ -36,6 +34,8 @@ int Game::mPlay()
 		upgradeSlot[3],
 		upgradeLevel[3];
 
+	Abilities temporaryAbilityClones[3];
+
 	vector<Enemy> vEnemies;
 	vector<RectangleShape> vEnemyShapes;
 	vector<FloatRect> vEnemyBounds;
@@ -44,8 +44,12 @@ int Game::mPlay()
 	vector<RectangleShape> vProjectileShapes;
 	vector<FloatRect> vProjectileBounds;
 
+	vector<RectangleShape> vInterfaceElements;
 	vector<RectangleShape> vInterfaceShapes;
 	vector<Text> vInterfaceTextes;
+	vector<Text> vInterfaceSlots;
+	vector<Text> vInterfaceLevels;
+	vector<Text> vInterfaceDescriptions;
 
 	Font font;
 	if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {
@@ -83,69 +87,69 @@ int Game::mPlay()
 	
 	//========================================================================================================================
 	// Upgrade menu
+
+	// Upgrade button settings
+	float buttonWidth = WINDOW_SIZE_X / 6;
+	float buttonHeight = WINDOW_SIZE_Y / 2;
+	float buttonPosY = WINDOW_SIZE_Y / 4;
+	float buttonSpacingX = WINDOW_SIZE_X / 6 * 1.25;
+
+	// Upgrade menu background
 	RectangleShape upgradeMenuBackground;
-	RectangleShape upgradedMenuButton1;
-	RectangleShape upgradedMenuButton2;
-	RectangleShape upgradedMenuButton3;
-
-	Text upgradeName1;
-	Text upgradeName2;
-	Text upgradeName3;
-
-	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 3.35);
+	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6.0, WINDOW_SIZE_Y / 3.35);
 	upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
 	upgradeMenuBackground.setFillColor(Color::Black);
 	upgradeMenuBackground.setOutlineColor(Color::White);
 	upgradeMenuBackground.setOutlineThickness(10);
+	vInterfaceElements.push_back(upgradeMenuBackground);
 
-	upgradedMenuButton1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
-	upgradedMenuButton1.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
-	upgradedMenuButton1.setFillColor(Color::Red);
-	upgradedMenuButton1.setOutlineColor(Color::White);
-	upgradedMenuButton1.setOutlineThickness(10);
+	// Upgrade buttons
+	for (int i = 0; i < NUM_UPGRADE_BUTTONS; ++i) {
 
-	upgradedMenuButton2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
-	upgradedMenuButton2.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
-	upgradedMenuButton2.setFillColor(Color::Red);
-	upgradedMenuButton2.setOutlineColor(Color::White);
-	upgradedMenuButton2.setOutlineThickness(10);
+		//Background
+		RectangleShape tempButton;
+		tempButton.setPosition(buttonSpacingX + i * buttonWidth * 1.25, buttonPosY);
+		tempButton.setSize(Vector2f(buttonWidth, buttonHeight));
+		tempButton.setFillColor(Color::Red);
+		tempButton.setOutlineColor(Color::White);
+		tempButton.setOutlineThickness(10);
+		vInterfaceShapes.push_back(tempButton);
 
-	upgradedMenuButton3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
-	upgradedMenuButton3.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
-	upgradedMenuButton3.setFillColor(Color::Red);
-	upgradedMenuButton3.setOutlineColor(Color::White);
-	upgradedMenuButton3.setOutlineThickness(10);
+		//Title
+		Text tempLabel;
+		tempLabel.setFont(font);
+		tempLabel.setString("Default");
+		tempLabel.setCharacterSize(15);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition());
+		vInterfaceTextes.push_back(tempLabel);
 
-	upgradeName1.setString("Default : L1");
-	upgradeName1.setFont(font);
-	upgradeName1.setCharacterSize(25);
-	upgradeName1.setFillColor(Color::Black);
-	upgradeName1.setPosition(100, 50);
+		//Slot
+		tempLabel.setFont(font);
+		tempLabel.setString("0");
+		tempLabel.setCharacterSize(15);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 200);
+		vInterfaceSlots.push_back(tempLabel);
 
-	upgradeName2.setString("Default : L2");
-	upgradeName2.setFont(font);
-	upgradeName2.setCharacterSize(25);
-	upgradeName2.setFillColor(Color::Black);
-	upgradeName2.setPosition(100, 50);
+		//Level
+		tempLabel.setFont(font);
+		tempLabel.setString("0");
+		tempLabel.setCharacterSize(15);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 150);
+		vInterfaceLevels.push_back(tempLabel);
 
-	upgradeName3.setString("Default : L3");
-	upgradeName3.setFont(font);
-	upgradeName3.setCharacterSize(25);
-	upgradeName3.setFillColor(Color::Black);
-	upgradeName3.setPosition(100, 50);
+		//Description
+		tempLabel.setFont(font);
+		tempLabel.setString("Default");
+		tempLabel.setCharacterSize(15);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 100);
+		vInterfaceDescriptions.push_back(tempLabel);
 
-	upgradeName1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
-	upgradeName2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
-	upgradeName3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
+	}
 
-	vInterfaceShapes.push_back(upgradeMenuBackground);
-	vInterfaceShapes.push_back(upgradedMenuButton1);
-	vInterfaceShapes.push_back(upgradedMenuButton2);
-	vInterfaceShapes.push_back(upgradedMenuButton3);
-
-	vInterfaceTextes.push_back(upgradeName1);
-	vInterfaceTextes.push_back(upgradeName2);
-	vInterfaceTextes.push_back(upgradeName3);
 	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
@@ -228,28 +232,21 @@ int Game::mPlay()
 
 			// Upgrade menu
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
-				if (upgradedMenuButton1.getGlobalBounds().contains(Vector2f(souris))) 
+				for (int i = 0; i < NUM_UPGRADE_BUTTONS; i++)
 				{
-					_player.mUpdateAbility(upgradeID[0], upgradeSlot[0], upgradeLevel[0]); //ID, slot, level
-					showUpgradeMenu = false;
-				}
-				else if (upgradedMenuButton2.getGlobalBounds().contains(Vector2f(souris)))
-				{
-					_player.mUpdateAbility(upgradeID[1], upgradeSlot[1], upgradeLevel[1]); //ID, slot, level
-					showUpgradeMenu = false;
-				}
-				else if (upgradedMenuButton3.getGlobalBounds().contains(Vector2f(souris)))
-				{
-					_player.mUpdateAbility(upgradeID[2], upgradeSlot[2], upgradeLevel[2]); //ID, slot, level
-					showUpgradeMenu = false;
+					if (vInterfaceShapes[i].getGlobalBounds().contains(Vector2f(souris)))
+					{
+						_player.mUpdateAbility(upgradeID[i], upgradeSlot[i], upgradeLevel[i]); //ID, slot, level
+						showUpgradeMenu = false;
+					}
 				}
 			}
 		}
 
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle update
-		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l�horloge
-		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE) //En milisecondes (100.0f)
+		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l'horloge
+		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE && showUpgradeMenu == false) //En milisecondes (100.0f)
 		{
 			// Clear console on tick (constantes)
 			if (CLEAR_CONSOLE_ON_TICK == true) { system("cls"); }
@@ -268,7 +265,7 @@ int Game::mPlay()
 			}
 
 			// Vague
-			if (killNumber == KILLS_FOR_WAVE * waveNumber)
+			if (killNumber >= KILLS_FOR_WAVE * waveNumber)
 			{
 				waveNumber++;
 				killNumber = 0;
@@ -294,7 +291,18 @@ int Game::mPlay()
 						upgradeLevel[i] = _player.mCheckAbilityLevel(slotIndex) + 1;
 					}
 
+					temporaryAbilityClones[i].mSetAbilityType(upgradeID[i], upgradeSlot[i], upgradeLevel[i]);
+
 					cout << "Slot: " << slotIndex << " | Ability ID: " << upgradeID[i] << " | Upgrade Level: " << upgradeLevel[i] << endl;
+				}
+
+				// Update UI
+				for (int i = 0; i < NUM_UPGRADE_BUTTONS; i++)
+				{
+					vInterfaceTextes[i].setString(temporaryAbilityClones[i].mGetUpgradeName());
+					vInterfaceSlots[i].setString("Slot " + to_string(upgradeSlot[i] + 1));
+					vInterfaceLevels[i].setString("Level " + to_string(upgradeLevel[i]));
+					vInterfaceDescriptions[i].setString(temporaryAbilityClones[i].mGetUpgradeText());
 				}
 
 				showUpgradeMenu = true;
@@ -338,7 +346,7 @@ int Game::mPlay()
 				}
 
 				tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
-				tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
+				tempEnemyRect.setSize(sf::Vector2f(ENEMY_SIZE, ENEMY_SIZE));
 
 				FloatRect sEnemeyBounds = tempEnemyRect.getGlobalBounds();
 
@@ -348,7 +356,6 @@ int Game::mPlay()
 
 				enemyCount++;
 				spawnCooldown = MAX_SPAWN_COOLDOWN;
-				tempEnemy.~Enemy();
 
 				spawnCooldown = spawnCooldown / waveNumber;
 			}
@@ -480,7 +487,6 @@ int Game::mPlay()
 					vProjectileBounds.push_back(sProjectileBounds);
 					_player.mAttacked(i);
 
-					tempProjectile.~Projectile();
 					fDebug(5, i);
 				}
 				else 
@@ -627,6 +633,11 @@ int Game::mPlay()
 			// Dessin de l'interface
 			if (showUpgradeMenu == true)
 			{
+				for (int i = 0; i < vInterfaceElements.size(); i++)
+				{
+					window.draw(vInterfaceElements[i]);
+				}
+
 				for (int i = 0; i < vInterfaceShapes.size(); i++)
 				{
 					window.draw(vInterfaceShapes[i]);
@@ -635,6 +646,21 @@ int Game::mPlay()
 				for (int i = 0; i < vInterfaceTextes.size(); i++)
 				{
 					window.draw(vInterfaceTextes[i]);
+				}
+
+				for (int i = 0; i < vInterfaceSlots.size(); i++)
+				{
+					window.draw(vInterfaceSlots[i]);
+				}
+
+				for (int i = 0; i < vInterfaceLevels.size(); i++)
+				{
+					window.draw(vInterfaceLevels[i]);
+				}
+
+				for (int i = 0; i < vInterfaceDescriptions.size(); i++)
+				{
+					window.draw(vInterfaceDescriptions[i]);
 				}
 			}
 

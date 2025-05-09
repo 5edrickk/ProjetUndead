@@ -6,6 +6,8 @@
 
 class Abilities {
 private:
+	std::string _upgradeName;
+	std::string _upgradeText;
 	bool _active;
 	int _ID,
 		_damage,
@@ -26,6 +28,8 @@ public:
 	~Abilities();
 
 	// Getters
+	std::string mGetUpgradeName() const;
+	std::string mGetUpgradeText() const;
 	bool mGetActive() const;
 	int mGetID() const;
 	int mGetDamage() const;
@@ -41,6 +45,8 @@ public:
 	int mGetLevel() const;
 
 	// Setters
+	void mSetUpgradeName(const std::string upgradeName);
+	void mSetUpgradeText(const std::string upgradeText);
 	void mSetActive(const bool active);
 	void mSetID(const int ID);
 	void mSetDamage(const int damage);

@@ -17,7 +17,7 @@
 #define BACKGROUND_NUMBER 5
 
 // Character
-#define PLAYER_SIZE 32
+#define PLAYER_SIZE 48
 #define PLAYER_ABILITY_SLOTS 3
 #define PLAYER_MAX_HEALTH 500
 #define PLAYER_SPEED 10
@@ -31,5 +31,9 @@
 #define KILLS_FOR_WAVE 5
 
 // Enemies
+#define ENEMY_SIZE 32
 #define DAMAGE_FRAME_TIME 10
 #define ENEMY_TYPE_NUMBER 3
+
+// UI
+#define NUM_UPGRADE_BUTTONS 3
