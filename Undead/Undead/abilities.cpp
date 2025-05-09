@@ -6,6 +6,8 @@ using namespace std;
 // Constructeurs
 Abilities::Abilities()
 {
+	_upgradeName = "Default";
+	_upgradeText = "Default text";
 	_active = false;
 	_ID = 0;
 	_damage = 5;
@@ -23,6 +25,8 @@ Abilities::Abilities()
 
 Abilities::~Abilities()
 {
+	_upgradeName = "";
+	_upgradeText = "";
 	_ID = 0;
 	_active = false;
 	_damage = 0;
@@ -40,6 +44,16 @@ Abilities::~Abilities()
 
 //========================================================================================================================
 // Getters
+std::string Abilities::mGetUpgradeName() const
+{
+	return _upgradeName;
+}
+
+std::string Abilities::mGetUpgradeText() const
+{
+	return _upgradeText;
+}
+
 bool Abilities::mGetActive() const
 {
 	return _active;
@@ -107,6 +121,16 @@ int Abilities::mGetLevel() const
 
 //========================================================================================================================
 // Setters
+void Abilities::mSetUpgradeName(const std::string upgradeName)
+{
+	_upgradeName = upgradeName;
+}
+
+void Abilities::mSetUpgradeText(const std::string upgradeText)
+{
+	_upgradeText = upgradeText;
+}
+
 void Abilities::mSetActive(const bool active)
 {
 	_active = active;
@@ -180,13 +204,13 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 	switch (ID)
 	{
 
-	// Default projectile
 	case 1:
-
+		mSetUpgradeName("Throwing knives");
 		switch (level)
 		{
 		case 1:
 
+			mSetUpgradeText("Balanced starter weapon");
 			mSetDamage(5);
 			mSetMaxCooldown(30);
 			mSetSpeed(6);
@@ -200,6 +224,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 2:
 
+			mSetUpgradeText("Reduced cooldown and increaased speed");
 			mSetDamage(5);
 			mSetMaxCooldown(25);
 			mSetSpeed(8);
@@ -213,6 +238,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 3:
 
+			mSetUpgradeText("Even more reduced cooldown and increaased speed");
 			mSetDamage(5);
 			mSetMaxCooldown(20);
 			mSetSpeed(10);
@@ -226,6 +252,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 4:
 
+			mSetUpgradeText("Increased damage and projectile lifetime");
 			mSetDamage(10);
 			mSetMaxCooldown(20);
 			mSetSpeed(10);
@@ -239,6 +266,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 5:
 
+			mSetUpgradeText("Reduced cooldown and increased speed");
 			mSetDamage(10);
 			mSetMaxCooldown(15);
 			mSetSpeed(12);
@@ -252,6 +280,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 6:
 
+			mSetUpgradeText("Pierces through one enemy, gains increased projectile lifetime and size");
 			mSetDamage(10);
 			mSetMaxCooldown(15);
 			mSetSpeed(12);
@@ -265,6 +294,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 7:
 
+			mSetUpgradeText("Increased damage, shorter cooldown and increased speed");
 			mSetDamage(15);
 			mSetMaxCooldown(10);
 			mSetSpeed(14);
@@ -278,6 +308,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 8:
 
+			mSetUpgradeText("Pierces through a second enemy and gains increased projectile size");
 			mSetDamage(15);
 			mSetMaxCooldown(10);
 			mSetSpeed(14);
@@ -291,6 +322,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 9:
 
+			mSetUpgradeText("Gains increased damage, shorter cooldown and increased speed");
 			mSetDamage(20);
 			mSetMaxCooldown(7);
 			mSetSpeed(16);
@@ -304,6 +336,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 10:
 
+			mSetUpgradeText("Gains even more damage, shorter cooldown and increased speed");
 			mSetDamage(25);
 			mSetMaxCooldown(5);
 			mSetSpeed(18);
@@ -322,13 +355,13 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 		}
 		break;
 
-	// NEGATIVE AURORA
 	case 2:
-
+		mSetUpgradeName("Corruption aura");
 		switch (level)
 		{
 		case 1:
 
+			mSetUpgradeText("Periodic damaging aura around the player");
 			mSetDamage(1);
 			mSetMaxCooldown(10);
 			mSetSpeed(0);
@@ -342,6 +375,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 2:
 
+			mSetUpgradeText("Increased area");
 			mSetDamage(1);
 			mSetMaxCooldown(10);
 			mSetSpeed(0);
@@ -355,6 +389,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 3:
 
+			mSetUpgradeText("Even larger area");
 			mSetDamage(1);
 			mSetMaxCooldown(10);
 			mSetSpeed(0);
@@ -368,6 +403,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 4:
 
+			mSetUpgradeText("Increases area and shortens cooldown");
 			mSetDamage(1);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -381,6 +417,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 5:
 
+			mSetUpgradeText("Increases area and damage");
 			mSetDamage(2);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -394,6 +431,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 6:
 
+			mSetUpgradeText("Increases area even more");
 			mSetDamage(2);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -407,6 +445,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 7:
 
+			mSetUpgradeText("Increases area and damage");
 			mSetDamage(3);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -420,6 +459,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 8:
 
+			mSetUpgradeText("Increases area");
 			mSetDamage(3);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -433,6 +473,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 9:
 
+			mSetUpgradeText("Increases area and damage");
 			mSetDamage(4);
 			mSetMaxCooldown(7);
 			mSetSpeed(0);
@@ -446,6 +487,7 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 10:
 
+			mSetUpgradeText("Increases area and shortens cooldown");
 			mSetDamage(4);
 			mSetMaxCooldown(5);
 			mSetSpeed(0);
@@ -464,9 +506,8 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 		}
 		break;
 
-	// the BOUNCER
 	case 3:
-
+		mSetUpgradeName("Prism");
 		switch (level)
 		{
 		case 1:
