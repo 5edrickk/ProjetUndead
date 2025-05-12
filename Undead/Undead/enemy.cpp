@@ -7,13 +7,16 @@ using namespace sf;
 // Constructeurs
 Enemy::Enemy()
 {
-	_color = sf::Color::Blue;
+	_color = sf::Color::White;
 	_name = "Default";
+	_ID = 1;
+	_minimumWave = 1;
+	_maximumWave = 10;
 	_maxHealth = 10;
 	_health = 10;
 	_damage = 5;
 	_speed = 1;
-	_xp = 1;
+	_spawnWeight = 1;
 	_dmgEffectCooldown = 0;
 
 	_direction = 0,
@@ -28,11 +31,14 @@ Enemy::~Enemy()
 {
 	_color = sf::Color::Black;
 	_name = "";
+	_ID = 0;
+	_minimumWave = 0;
+	_maximumWave = 0;
 	_maxHealth = 0;
 	_health = 0;
 	_damage = 0;
 	_speed = 0;
-	_xp = 0;
+	_spawnWeight = 0;
 	_dmgEffectCooldown = 0;
 
 	_direction = 0,
@@ -55,6 +61,21 @@ std::string Enemy::mGetName() const
 	return _name;
 }
 
+int Enemy::mGetID() const
+{
+	return _ID;
+}
+
+int Enemy::mGetMaximumWave() const
+{
+	return _maximumWave;
+}
+
+int Enemy::mGetMinimumWave() const
+{
+	return _minimumWave;
+}
+
 int Enemy::mGetMaxHealth() const
 {
 	return _maxHealth;
@@ -75,9 +96,9 @@ int Enemy::mGetDamage() const
 	return _damage;
 }
 
-int Enemy::mGetXp() const
+int Enemy::mGetSpawnWeight() const
 {
-	return _xp;
+	return _spawnWeight;
 }
 
 int Enemy::mGetDmgEffectCooldown() const
@@ -127,6 +148,21 @@ void Enemy::mSetName(const std::string name)
 	_name = name;
 }
 
+void Enemy::mSetID(const int ID)
+{
+	_ID = ID;
+}
+
+void Enemy::mSetMaximumWave(const int maximumWave)
+{
+	_maximumWave = maximumWave;
+}
+
+void Enemy::mSetMinimumWave(const int minimumWave)
+{
+	_minimumWave = minimumWave;
+}
+
 void Enemy::mSetMaxHealth(const int maxHealth)
 {
 	_maxHealth = maxHealth;
@@ -147,9 +183,9 @@ void Enemy::mSetDamage(const int damage)
 	_damage = damage;
 }
 
-void Enemy::mSetXp(const int xp)
+void Enemy::mSetSpawnWeight(const int weight)
 {
-	_xp = xp;
+	_spawnWeight = weight;
 }
 
 void Enemy::mSetDmgEffectCooldown(const int cooldown)
@@ -240,12 +276,17 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 	{
 	case 1: // Default, first enemy
 
-		mSetName("Default");
+		mSetName("Zombie");
+		_ID = 1;
+		_minimumWave = 1;
+		_maximumWave = 10;
+
 		mSetMaxHealth(10);
 		mSetHealth(mGetMaxHealth());
 		mSetDamage(5);
 		mSetSpeed(1);
-		mSetXp(1);
+		mSetSpawnWeight(1);
+
 		mSetColor(sf::Color::Blue);
 		enemyShape.setFillColor(sf::Color::Blue);
 		break;
@@ -253,11 +294,16 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 	case 2: // Fast but low hp
 
 		mSetName("Runner");
+		_ID = 2;
+		_minimumWave = 5;
+		_maximumWave = 15;
+
 		mSetMaxHealth(5);
 		mSetHealth(mGetMaxHealth());
 		mSetDamage(5);
 		mSetSpeed(2);
-		mSetXp(1);
+		mSetSpawnWeight(1);
+
 		mSetColor(sf::Color::Yellow);
 		enemyShape.setFillColor(sf::Color::Yellow);
 		break;
@@ -265,24 +311,23 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 	case 3: // Slow but tanky
 
 		mSetName("Tank");
+
+		_ID = 3;
+		_minimumWave = 10;
+		_maximumWave = 20;
+
 		mSetMaxHealth(25);
 		mSetHealth(mGetMaxHealth());
 		mSetDamage(5);
 		mSetSpeed(1);
-		mSetXp(1);
+		mSetSpawnWeight(3);
+
 		mSetColor(sf::Color::Green);
 		enemyShape.setFillColor(sf::Color::Green);
 		break;
 
-	default: // Default enemy
+	default:
 
-		mSetName("Default");
-		mSetMaxHealth(10);
-		mSetHealth(mGetMaxHealth());
-		mSetDamage(5);
-		mSetSpeed(1);
-		mSetXp(1);
-		mSetColor(sf::Color::Blue);
 		break;
 
 	}
