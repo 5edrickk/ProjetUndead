@@ -515,9 +515,9 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 			mSetDamage(10);
 			mSetMaxCooldown(120);
 			mSetSpeed(4);
-			mSetLifetime(180);
+			mSetLifetime(240);
 			mSetSize(30); // Pixels
-			mSetPierceAmount(0);
+			mSetPierceAmount(MAX_ENEMIES);
 			mSetBounceAmount(1);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
@@ -525,117 +525,117 @@ void Abilities::mSetAbilityType(int ID, int slot, int level)
 
 		case 2:
 
-			mSetDamage(1);
-			mSetMaxCooldown(10);
-			mSetSpeed(0);
-			mSetLifetime(10);
-			mSetSize(90); // Pixels
+			mSetDamage(15);
+			mSetMaxCooldown(120);
+			mSetSpeed(4);
+			mSetLifetime(320);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(1);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 3:
 
-			mSetDamage(1);
-			mSetMaxCooldown(10);
-			mSetSpeed(0);
-			mSetLifetime(10);
-			mSetSize(110); // Pixels
+			mSetDamage(15);
+			mSetMaxCooldown(120);
+			mSetSpeed(6);
+			mSetLifetime(320);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(1);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 4:
 
-			mSetDamage(1);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(130); // Pixels
+			mSetDamage(15);
+			mSetMaxCooldown(100);
+			mSetSpeed(6);
+			mSetLifetime(420);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(2);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 5:
 
-			mSetDamage(2);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(150); // Pixels
+			mSetDamage(15);
+			mSetMaxCooldown(100);
+			mSetSpeed(8);
+			mSetLifetime(420);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(2);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 6:
 
-			mSetDamage(2);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(180); // Pixels
+			mSetDamage(20);
+			mSetMaxCooldown(100);
+			mSetSpeed(8);
+			mSetLifetime(420);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(2);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 7:
 
-			mSetDamage(3);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(200); // Pixels
+			mSetDamage(20);
+			mSetMaxCooldown(80);
+			mSetSpeed(8);
+			mSetLifetime(480);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(2);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 8:
 
-			mSetDamage(3);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(230); // Pixels
+			mSetDamage(20);
+			mSetMaxCooldown(80);
+			mSetSpeed(10);
+			mSetLifetime(560);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(3);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 9:
 
-			mSetDamage(4);
-			mSetMaxCooldown(7);
-			mSetSpeed(0);
-			mSetLifetime(7);
-			mSetSize(250); // Pixels
+			mSetDamage(30);
+			mSetMaxCooldown(80);
+			mSetSpeed(12);
+			mSetLifetime(560);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(3);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;
 
 		case 10:
 
-			mSetDamage(4);
-			mSetMaxCooldown(5);
-			mSetSpeed(0);
-			mSetLifetime(5);
-			mSetSize(280); // Pixels
+			mSetDamage(30);
+			mSetMaxCooldown(70);
+			mSetSpeed(12);
+			mSetLifetime(680);
+			mSetSize(30); // Pixels
 			mSetPierceAmount(MAX_ENEMIES);
-			mSetBounceAmount(0);
+			mSetBounceAmount(4);
 			mSetCriticalMultiplier(50); // %100
 			mSetCriticalChance(5); // %100
 			break;

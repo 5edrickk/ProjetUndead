@@ -28,7 +28,9 @@ int Game::mPlay()
 		waveNumber = 0,
 		spawnCooldown = 0,
 		killNumber = 0,
-		typeResult = 0;
+		typeResult = 0,
+		currentWaveWeight = 0,
+		maxWaveWeight = 5;
 
 	int upgradeID[3],
 		upgradeSlot[3],
@@ -89,10 +91,11 @@ int Game::mPlay()
 	// Upgrade menu
 
 	// Upgrade button settings
-	float buttonWidth = WINDOW_SIZE_X / 6;
-	float buttonHeight = WINDOW_SIZE_Y / 2;
-	float buttonPosY = WINDOW_SIZE_Y / 4;
-	float buttonSpacingX = WINDOW_SIZE_X / 6 * 1.25;
+	float buttonWidth = WINDOW_SIZE_X / 6,
+		  buttonHeight = WINDOW_SIZE_Y / 2,
+		  buttonPosY = WINDOW_SIZE_Y / 4,
+		  buttonSpacingX = WINDOW_SIZE_X / 6 * 1.25;
+	int textSize = 15;
 
 	// Upgrade menu background
 	RectangleShape upgradeMenuBackground;
@@ -119,7 +122,7 @@ int Game::mPlay()
 		Text tempLabel;
 		tempLabel.setFont(font);
 		tempLabel.setString("Default");
-		tempLabel.setCharacterSize(15);
+		tempLabel.setCharacterSize(textSize);
 		tempLabel.setFillColor(Color::Black);
 		tempLabel.setPosition(tempButton.getPosition());
 		vInterfaceTextes.push_back(tempLabel);
@@ -127,25 +130,25 @@ int Game::mPlay()
 		//Slot
 		tempLabel.setFont(font);
 		tempLabel.setString("0");
-		tempLabel.setCharacterSize(15);
+		tempLabel.setCharacterSize(textSize);
 		tempLabel.setFillColor(Color::Black);
-		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 200);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 2);
 		vInterfaceSlots.push_back(tempLabel);
 
 		//Level
 		tempLabel.setFont(font);
 		tempLabel.setString("0");
-		tempLabel.setCharacterSize(15);
+		tempLabel.setCharacterSize(textSize);
 		tempLabel.setFillColor(Color::Black);
-		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 150);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 4);
 		vInterfaceLevels.push_back(tempLabel);
 
 		//Description
 		tempLabel.setFont(font);
 		tempLabel.setString("Default");
-		tempLabel.setCharacterSize(15);
+		tempLabel.setCharacterSize(textSize);
 		tempLabel.setFillColor(Color::Black);
-		tempLabel.setPosition(tempButton.getPosition().x, tempButton.getPosition().y + 100);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 6);
 		vInterfaceDescriptions.push_back(tempLabel);
 
 	}
@@ -264,7 +267,7 @@ int Game::mPlay()
 				cout << GAME_NAME << " : " << FRAMERATE << "FPS / " << UPDATE_RATE << "Hz / " << WINDOW_SIZE_X << "x" << WINDOW_SIZE_Y << "px / " << INCREMENT << "inc." << endl;
 			}
 
-			// Vague
+			// Wave
 			if (killNumber >= KILLS_FOR_WAVE * waveNumber)
 			{
 				waveNumber++;
@@ -308,22 +311,22 @@ int Game::mPlay()
 				showUpgradeMenu = true;
 			}
 
-			// Enemy type selection
-			if (killNumber == 0 || killNumber >= waveNumber / 3)
-			{
-				typeResult = rand() % ENEMY_TYPE_NUMBER + 1; // Max, min
-			}
-
 			// Spawning
-			if (spawnCooldown <= 0 && enemyCount < MAX_ENEMIES)
+			if (spawnCooldown <= 0 && enemyCount < MAX_ENEMIES && currentWaveWeight < waveNumber * 5)
 			{
 				int side = rand() % 4 + 1; // Max, min
 
 				Enemy tempEnemy;
 				RectangleShape tempEnemyRect;
 
-				tempEnemy.mSetEnemyType(typeResult, tempEnemyRect);
+				do
+				{
+					typeResult = rand() % ENEMY_TYPE_NUMBER + 1; // Max, min
+					tempEnemy.mSetEnemyType(typeResult, tempEnemyRect);
 
+				} while ((tempEnemy.mGetSpawnWeight() > (waveNumber * 5) - currentWaveWeight) || (waveNumber < tempEnemy.mGetMinimumWave() || waveNumber > tempEnemy.mGetMaximumWave()));
+
+				// Spawn on screen edges
 				if (side == 1)
 				{
 					tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0); // Max, min
@@ -345,6 +348,7 @@ int Game::mPlay()
 					tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
 				}
 
+				// Generate enemy
 				tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
 				tempEnemyRect.setSize(sf::Vector2f(ENEMY_SIZE, ENEMY_SIZE));
 
@@ -354,10 +358,11 @@ int Game::mPlay()
 				vEnemyShapes.push_back(tempEnemyRect);
 				vEnemyBounds.push_back(sEnemeyBounds);
 
+				// Values
 				enemyCount++;
-				spawnCooldown = MAX_SPAWN_COOLDOWN;
+				spawnCooldown = MAX_SPAWN_COOLDOWN / waveNumber;	
 
-				spawnCooldown = spawnCooldown / waveNumber;
+				currentWaveWeight += tempEnemy.mGetSpawnWeight();
 			}
 			else
 			{
@@ -470,7 +475,7 @@ int Game::mPlay()
 				{ 
 					Projectile tempProjectile;
 					tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
-					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed());
+					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed()); 
 					tempProjectile.mSetPositionX(_player.mGetPosX());
 					tempProjectile.mSetPositionY(_player.mGetPosY());
 
@@ -581,6 +586,8 @@ int Game::mPlay()
 			{
 				if (vEnemies[i].mGetHealth() <= 0)
 				{
+					currentWaveWeight -= vEnemies[i].mGetSpawnWeight();
+
 					vEnemies.erase(vEnemies.begin() + i);
 					vEnemyShapes.erase(vEnemyShapes.begin() + i);
 					vEnemyBounds.erase(vEnemyBounds.begin() + i);

@@ -9,11 +9,14 @@ class Enemy {
 private:
 	sf::Color _color;
 	std::string _name;
-	int _maxHealth,
+	int _ID,
+		_maximumWave,
+		_minimumWave,
+		_maxHealth,
 		_health,
 		_speed,
 		_damage,
-		_xp,
+		_spawnWeight,
 		_dmgEffectCooldown,
 
 		_direction,
@@ -31,11 +34,14 @@ public:
 	// Getters
 	sf::Color mGetColor() const;
 	std::string mGetName() const;
+	int mGetID() const;
+	int mGetMaximumWave() const;
+	int mGetMinimumWave() const;
 	int mGetMaxHealth() const;
 	int mGetHealth() const;
 	int mGetSpeed() const;
 	int mGetDamage() const;
-	int mGetXp() const;
+	int mGetSpawnWeight() const;
 	int mGetDmgEffectCooldown() const;
 
 	int mGetDirection() const;
@@ -48,11 +54,14 @@ public:
 	// Setters
 	void mSetColor(const sf::Color color);
 	void mSetName(const std::string name);
+	void mSetID(const int ID);
+	void mSetMaximumWave(const int maximumWave);
+	void mSetMinimumWave(const int minimumWave);
 	void mSetMaxHealth(const int maxHealth);
 	void mSetHealth(const int health);
 	void mSetSpeed(const int speed);
 	void mSetDamage(const int damage);
-	void mSetXp(const int xp);
+	void mSetSpawnWeight(const int weight);
 	void mSetDmgEffectCooldown(const int cooldown);
 
 	void mSetDirection(const int dir);

@@ -228,25 +228,15 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 	}
 	else if (mGetID() == 3)
 	{
-		int random = rand() % 360;
-		cout << random << endl;
-		float tempRand = random * (3.141592653589793 / 180);
-		cout << tempRand << endl;
+		int randomDirection = ((rand() % 8 + 0) * 45) * (3.141592653589793 / 180);
 
-		mSetRotation(tempRand);
-
-		mSetVelocityX(speed * (cos(tempRand)));
-		mSetVelocityY(speed * (sin(tempRand)));
-
-		//fDebug(12);
-		//fDebug(8, rotation);
-		//fDebug(9, mGetVelocityX());
-		//fDebug(10, mGetVelocityY());
+		mSetVelocityX(speed * (cos(randomDirection)));
+		mSetVelocityY(speed * (sin(randomDirection)));
 	}
 	else
 	{
 		mSetRotation(rotation);
-
+		
 		mSetVelocityX(speed * (cos(rads)));
 		mSetVelocityY(speed * (sin(rads)));
 	}
