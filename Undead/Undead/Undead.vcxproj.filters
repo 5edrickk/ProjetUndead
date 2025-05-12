@@ -6,11 +6,10 @@
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="GameTile.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="projectile.cpp" />
-    <ClCompile Include="GameWorld.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="abilities.h" />
@@ -18,11 +17,10 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="GameTile.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
-    <ClInclude Include="GameWorld.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />

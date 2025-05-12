@@ -66,14 +66,27 @@ int Game::mPlay()
 
 	//========================================================================================================================
 	// Background
-	GameWorld gameWorld = GameWorld();
-		
+	Texture bkgTexture;
+	if (!bkgTexture.loadFromFile("assets/backgrounds/background7.png"))
+	{
+		cout << "Error loading background texture" << endl;
+		exit(1);
+	}
+	Sprite bkgSprite;
+	bkgSprite.setTexture(bkgTexture);
+	bkgSprite.setTextureRect(IntRect(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y)); // Set the texture rectangle
 
-	//View view(sf::FloatRect(0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y)); // On crée une vue de la taille de la fenêtre
-	//view.setCenter(playerPosition); // On centre la vue sur la fenêtre
-	//window.setView(view); // On applique la vue à la fenêtre
+	Camera viewDuJoueur(playerPosition.x, playerPosition.y, 0.5f,0.0f);
+	viewDuJoueur.msetViewPort(0, 0, 1, 1); // Set le view port pour couvrir tt la fenêtre
 
-	
+	//Set les limites de la view pour ne montrer que la map
+	Vector2f viewSize = viewDuJoueur.mGetView().getSize();
+	FloatRect mapBounds = bkgSprite.getGlobalBounds();
+
+	float halfWidth = viewSize.x / 2.f;
+	float halfHeight = viewSize.y / 2.f;
+
+
 	//========================================================================================================================
 	// Boucle de menu principal
 	int choix = afficherMenuPrincipal(window);
@@ -114,29 +127,7 @@ int Game::mPlay()
 			{
 				window.close();
 			}
-			// Détection des touches
-			else if (event.type == Event::KeyPressed)
-			{
-				switch (event.key.code) {
-				case Keyboard::Escape:
-					window.close();
-					break;
-				case Keyboard::W:
-					dir = 1;
-					break;
-				case Keyboard::D:
-					dir = 2;
-					break;
-				case Keyboard::S:
-					dir = 3;
-					break;
-				case Keyboard::A:
-					dir = 4;
-					break;
-				default:
-					break;
-				}
-			}
+			
 		}
 
 		//========================================================================================================================
@@ -226,38 +217,40 @@ int Game::mPlay()
 			{
 				_player.mSetPosX(fPlayerMove(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
 			}
-
+				
 			playerPosition = sPlayer.getPosition();
 
 			fDebug(2, _player.mGetPosX(), _player.mGetPosY());
 
-			//Défilement du joueur
-			//switch (dir)
-			//{
-			//case 1: // Haut
-			//	bkg = 1;
-			//	lastbkg = bkg;
-			//	break;
-			//case 2: // Droite
-			//	bkg = 2;
-			//	lastbkg = bkg;
-			//	break;
-			//case 3: // Bas
-			//	bkg = 3;
-			//	lastbkg = bkg;
-			//		break;
-			//case 4: // Gauche
-			//	bkg = 4;
-			//	lastbkg = bkg;
-			//	break;
-			//default:
-			//	bkg = lastbkg;
-			//	break;
-			//}
 
-			// Rotation joueur par rapport a la souris
-			fDebug(3, Mouse::getPosition(window).x, Mouse::getPosition(window).y);
-			_player.mRotate(fWindowClamp(Mouse::getPosition(window).x, 'x'), fWindowClamp(Mouse::getPosition(window).y, 'y'), _player);
+			//Mouvement du view du joueur (camera/background du joueur)
+
+			float viewX = clamp(playerPosition.x, halfWidth, mapBounds.width - halfWidth);
+			float viewY = clamp(playerPosition.y, halfHeight, mapBounds.height - halfHeight);
+
+			viewDuJoueur.mSetPosition(viewX, viewY);
+			viewDuJoueur.mUpdate();
+
+
+			window.setView(viewDuJoueur.mGetView());
+
+			//Zoom de la view du joueur
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
+			{
+				viewDuJoueur.mSetZoom(1.05f);
+				viewDuJoueur.mUpdateZoom();
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+			{
+				viewDuJoueur.mSetZoom(0.93f);
+				viewDuJoueur.mUpdateZoom();
+			}
+
+			// Rotation joueur par rapport a la souris (v.2 -> Capture seulement dans la "viewDuJoueur" et non dans tout l'ecran
+			fDebug(3, Mouse::getPosition().x, Mouse::getPosition().y);
+			sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window);
+			sf::Vector2f mouseWorldPos = window.mapPixelToCoords(mousePixelPos, viewDuJoueur.mGetView());
+			_player.mRotate(fWindowClamp(mouseWorldPos.x, 'x'), fWindowClamp(mouseWorldPos.y, 'y'), _player);
 			sPlayer.rotate(-_player.mGetRotation() - sPlayer.getRotation());
 
 			// Attaque du joueur
@@ -363,13 +356,7 @@ int Game::mPlay()
 			window.clear();
 
 			// On dessine le background
-			for (int i = 0; i < gameWorld._gridlength; i++)
-			{
-				for (int j = 0; j < 5; j++)
-				{
-					window.draw(gameWorld._tiles[i][j]->_sprite);
-				}
-			}
+			window.draw(bkgSprite);
 
 			// Dessin des ennemis
 			for (int i = 0; i < vEnemyShapes.size(); i++)

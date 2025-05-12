@@ -13,7 +13,7 @@
 #include "player.h"
 #include "enemy.h"
 #include "projectile.h"
-#include "GameWorld.h"
+#include "Camera.h"
 #include "menu.h"
 
 
