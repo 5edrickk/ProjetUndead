@@ -153,6 +153,14 @@ int Game::mPlay()
 
 	}
 
+	// Other UI elements
+	Text deathScreenText;
+	deathScreenText.setFont(font);
+	deathScreenText.setString("MORT");
+	deathScreenText.setCharacterSize(80);
+	deathScreenText.setFillColor(Color::Red);
+	deathScreenText.setPosition(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y / 2);
+
 	//========================================================================================================================
 	// Joueur
 	sf::RectangleShape sPlayer;
@@ -249,7 +257,7 @@ int Game::mPlay()
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle update
 		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l'horloge
-		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE && showUpgradeMenu == false) //En milisecondes (100.0f)
+		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE && showUpgradeMenu == false && playerAlive == true) //En milisecondes (100.0f)
 		{
 			// Clear console on tick (constantes)
 			if (CLEAR_CONSOLE_ON_TICK == true) { system("cls"); }
@@ -377,13 +385,13 @@ int Game::mPlay()
 				for (int i = 0; i < vEnemies.size(); i++)
 				{
 					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + INCREMENT);
-					vEnemyShapes[i].move(0, + INCREMENT);
+					vEnemyShapes[i].move(0, INCREMENT);
 				}
 
 				for (int i = 0; i < vProjectiles.size(); i++)
 				{
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
-					vProjectileShapes[i].move(0, +INCREMENT);
+					vProjectileShapes[i].move(0, INCREMENT);
 				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
@@ -398,7 +406,7 @@ int Game::mPlay()
 
 				for (int i = 0; i < vProjectiles.size(); i++)
 				{
-					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
+					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() - INCREMENT);
 					vProjectileShapes[i].move(-INCREMENT, 0);
 				}
 			}
@@ -430,7 +438,7 @@ int Game::mPlay()
 
 				for (int i = 0; i < vProjectiles.size(); i++)
 				{
-					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
+					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + INCREMENT);
 					vProjectileShapes[i].move(INCREMENT, 0);
 				}
 			}
@@ -439,7 +447,7 @@ int Game::mPlay()
 
 			fDebug(2, _player.mGetPosX(), _player.mGetPosY());
 
-			//Défilement du joueur
+			//Défilement du sprite joueur
 			switch (dir)
 			{
 			case 1: // Haut
@@ -574,9 +582,13 @@ int Game::mPlay()
 				{
 					_player.mSetHealth(_player.mGetHealth() - vEnemies[i].mGetDamage());
 
+					cout << "Player HP : " << _player.mGetHealth() << endl;
+
 					if (_player.mGetHealth() <= 0)
 					{
 						playerAlive = false;
+
+						cout << "Player died" << endl;
 					}
 				}
 			}
@@ -669,6 +681,11 @@ int Game::mPlay()
 				{
 					window.draw(vInterfaceDescriptions[i]);
 				}
+			}
+			// Death screen
+			if (playerAlive == false)
+			{
+					window.draw(deathScreenText);
 			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné
