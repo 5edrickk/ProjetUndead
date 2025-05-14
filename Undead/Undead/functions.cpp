@@ -1,6 +1,7 @@
 #include "functions.h"
 
 using namespace std;
+using namespace sf;
 
 void fDebug(int code, int param1, int param2) 
 {
@@ -96,15 +97,13 @@ int fWindowClamp(int value, char direction)
 
 int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY) 
 {
-	int temp = INCREMENT * UPDATE_RATE;
-
 	switch (direction) 
 	{
 	case 1: // Up
 		if (posY > 0)
 		{
-			player.move(0, -INCREMENT * temp);
-			posY -= INCREMENT * temp;
+			//player.move(0, -INCREMENT);
+			//posY -= INCREMENT;
 		}
 		else { fDebug(1); }
 
@@ -112,8 +111,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 2: // Right
 		if (posX < WINDOW_SIZE_X - PLAYER_SIZE)
 		{
-			player.move(INCREMENT * temp, 0);
-			posX += INCREMENT * temp;
+			//player.move(INCREMENT, 0);
+			//posX += INCREMENT;
 		}
 		else { fDebug(1); }
 
@@ -121,8 +120,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 3: // Down
 		if (posY < WINDOW_SIZE_Y - PLAYER_SIZE)
 		{
-			player.move(0, INCREMENT * temp);
-			posY += INCREMENT * temp;
+			//player.move(0, INCREMENT);
+			//posY += INCREMENT;
 		}
 		else { fDebug(1); }
 
@@ -130,8 +129,8 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	case 4: // Left
 		if (posX > 0)
 		{
-			player.move(-INCREMENT * temp, 0);
-			posX -= INCREMENT * temp;
+			//player.move(-INCREMENT, 0);
+			//posX -= INCREMENT;
 		}
 		else { fDebug(1); }
 
@@ -142,6 +141,11 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 }
 
 void fInitialize() 
+{
+
+}
+
+void fTriggerUpgrade(int upgradeNumber)
 {
 
 }

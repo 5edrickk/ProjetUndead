@@ -6,10 +6,11 @@ using namespace std;
 // Constructeurs
 Projectile::Projectile()
 {
-	_name = "Default";
+	_canDamage = true;
+	_damage = 1;
 	_damage = 5;
-	_speed = 1 * UPDATE_RATE; // Speed (X * UPDATE_RATE))
-	_lifetime = UPDATE_RATE * 2; // Lifetime in seconds (UPDATE_RATE * X)
+	_speed = 10;
+	_lifetime = 120;
 	_size = 20; // Pixels
 	_pierceAmount = 0;
 	_bounceAmount = 0;
@@ -23,22 +24,10 @@ Projectile::Projectile()
 	_positionY = 0;
 }
 
-Projectile::Projectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
-{
-	_name = name;
-	_damage = damage;
-	_speed = speed;
-	_lifetime = lifetime;
-	_size = size;
-	_pierceAmount = pierceAmount;
-	_bounceAmount = bounceAmount;
-	_criticalMultiplier = criticalMultiplier;
-	_criticalChance = criticalChance;
-}
-
 Projectile::~Projectile()
 {
-	_name = "";
+	_canDamage = false;
+	_damage = 0;
 	_damage = 0;
 	_speed = 0;
 	_lifetime = 0;
@@ -57,9 +46,14 @@ Projectile::~Projectile()
 
 //========================================================================================================================
 // Getters
-string Projectile::mGetName() const
+bool Projectile::mGetCanDamage() const
 {
-	return _name;
+	return _canDamage;
+}
+
+int Projectile::mGetID() const
+{
+	return _ID;
 }
 
 int Projectile::mGetDamage() const
@@ -129,9 +123,14 @@ int Projectile::mGetPositionY() const
 
 //========================================================================================================================
 // Setters
-void Projectile::mSetName(const string name)
+void Projectile::mSetCanDamage(const bool canDamage)
 {
-	_name = name;
+	_canDamage = canDamage;
+}
+
+void Projectile::mSetID(const int ID)
+{
+	_ID = ID;
 }
 
 void Projectile::mSetDamage(const int damage)
@@ -200,9 +199,9 @@ void Projectile::mSetPositionY(const int posY)
 	_positionY = posY;
 }
 
-void Projectile::mSetProjectile(std::string name, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
+void Projectile::mSetProjectile(int ID, int damage, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance)
 {
-	_name = name;
+	_ID = ID;
 	_damage = damage;
 	_speed = speed;
 	_lifetime = lifetime;
@@ -217,22 +216,35 @@ void Projectile::mSetProjectile(std::string name, int damage, int lifetime, int 
 // Autres
 void Projectile::mInitializeMovement(const int rotation, const int speed)
 {
+	srand(time(0));
 	float rads = rotation * (3.141592653589793 / 180);
 
-	mSetRotation(rotation);
+	if (mGetID() == 2)
+	{
+		mSetRotation(0);
 
-	mSetVelocityX(speed * (cos(rads)));
-	mSetVelocityY(speed * (sin(rads)));
+		mSetVelocityX(0);
+		mSetVelocityY(0);
+	}
+	else if (mGetID() == 3)
+	{
+		int randomDirection = ((rand() % 8 + 0) * 45) * (3.141592653589793 / 180);
 
-	fDebug(12);
-	fDebug(8, rotation);
-	fDebug(9, mGetVelocityX());
-	fDebug(10, mGetVelocityY());
+		mSetVelocityX(speed * (cos(randomDirection)));
+		mSetVelocityY(speed * (sin(randomDirection)));
+	}
+	else
+	{
+		mSetRotation(rotation);
+		
+		mSetVelocityX(speed * (cos(rads)));
+		mSetVelocityY(speed * (sin(rads)));
+	}
 }
 
 void Projectile::mCloneFromAbility(const Abilities& ability)
 {
-	_name = ability.mGetName();
+	_ID = ability.mGetID();
 	_damage = ability.mGetDamage();
 	_speed = ability.mGetSpeed();;
 	_lifetime = ability.mGetLifetime();

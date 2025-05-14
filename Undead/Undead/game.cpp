@@ -1,10 +1,8 @@
-﻿#include "game.h"
+#include "game.h"
 #include "menu.h"
 
+using namespace std;
 using namespace sf;
-using namespace std;
-
-using namespace std;
 
 Game::Game()
 {
@@ -22,13 +20,45 @@ int Game::mPlay()
 	//========================================================================================================================
 	// Variables
 	srand(time(0));
+
+	bool playerAlive = true,
+		showUpgradeMenu = false;
+
 	int time = 0,
 		enemyCount = 0,
-		waveNumber = 0;
+		waveNumber = 0,
+		spawnCooldown = 0,
+		killNumber = 0,
+		typeResult = 0,
+		currentWaveWeight = 0,
+		maxWaveWeight = 5;
+
+	int upgradeID[3],
+		upgradeSlot[3],
+		upgradeLevel[3];
+
+	Abilities temporaryAbilityClones[3];
+
 	vector<Enemy> vEnemies;
 	vector<RectangleShape> vEnemyShapes;
+	vector<FloatRect> vEnemyBounds;
+
 	vector<Projectile> vProjectiles;
 	vector<RectangleShape> vProjectileShapes;
+	vector<FloatRect> vProjectileBounds;
+
+	vector<RectangleShape> vInterfaceElements;
+	vector<RectangleShape> vInterfaceShapes;
+	vector<Text> vInterfaceTextes;
+	vector<Text> vInterfaceSlots;
+	vector<Text> vInterfaceLevels;
+	vector<Text> vInterfaceDescriptions;
+
+	Font font;
+	if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {
+		cerr << "Erreur chargement police" << endl;
+		return -1;
+	}
 
 	//========================================================================================================================
 	// Objets de classes
@@ -57,6 +87,80 @@ int Game::mPlay()
 		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
 
 	}
+	
+	//========================================================================================================================
+	// Upgrade menu
+
+	// Upgrade button settings
+	float buttonWidth = WINDOW_SIZE_X / 6,
+		  buttonHeight = WINDOW_SIZE_Y / 2,
+		  buttonPosY = WINDOW_SIZE_Y / 4,
+		  buttonSpacingX = WINDOW_SIZE_X / 6 * 1.25;
+	int textSize = 15;
+
+	// Upgrade menu background
+	RectangleShape upgradeMenuBackground;
+	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6.0, WINDOW_SIZE_Y / 3.35);
+	upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
+	upgradeMenuBackground.setFillColor(Color::Black);
+	upgradeMenuBackground.setOutlineColor(Color::White);
+	upgradeMenuBackground.setOutlineThickness(10);
+	vInterfaceElements.push_back(upgradeMenuBackground);
+
+	// Upgrade buttons
+	for (int i = 0; i < NUM_UPGRADE_BUTTONS; ++i) {
+
+		//Background
+		RectangleShape tempButton;
+		tempButton.setPosition(buttonSpacingX + i * buttonWidth * 1.25, buttonPosY);
+		tempButton.setSize(Vector2f(buttonWidth, buttonHeight));
+		tempButton.setFillColor(Color::Red);
+		tempButton.setOutlineColor(Color::White);
+		tempButton.setOutlineThickness(10);
+		vInterfaceShapes.push_back(tempButton);
+
+		//Title
+		Text tempLabel;
+		tempLabel.setFont(font);
+		tempLabel.setString("Default");
+		tempLabel.setCharacterSize(textSize);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition());
+		vInterfaceTextes.push_back(tempLabel);
+
+		//Slot
+		tempLabel.setFont(font);
+		tempLabel.setString("0");
+		tempLabel.setCharacterSize(textSize);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 2);
+		vInterfaceSlots.push_back(tempLabel);
+
+		//Level
+		tempLabel.setFont(font);
+		tempLabel.setString("0");
+		tempLabel.setCharacterSize(textSize);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 4);
+		vInterfaceLevels.push_back(tempLabel);
+
+		//Description
+		tempLabel.setFont(font);
+		tempLabel.setString("Default");
+		tempLabel.setCharacterSize(textSize);
+		tempLabel.setFillColor(Color::Black);
+		tempLabel.setPosition(tempButton.getPosition().x, buttonPosY + buttonHeight - textSize * 6);
+		vInterfaceDescriptions.push_back(tempLabel);
+
+	}
+
+	// Other UI elements
+	Text deathScreenText;
+	deathScreenText.setFont(font);
+	deathScreenText.setString("MORT");
+	deathScreenText.setCharacterSize(80);
+	deathScreenText.setFillColor(Color::Red);
+	deathScreenText.setPosition(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y / 2);
 
 	//========================================================================================================================
 	// Joueur
@@ -68,22 +172,21 @@ int Game::mPlay()
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
 
+	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
+
 	_player.mInitialize();
 	_player.mSetActive(0, true);
 
-	
-
 	//========================================================================================================================
 	// Joueur hitbox
-
 	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
-	//========================================================================================================================
 	// Boucle fenêtre : jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
 		// On inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		Event event;
+		Vector2i souris = Mouse::getPosition(window);
 		int dir = 0;
 
 		while (window.pollEvent(event))
@@ -116,12 +219,24 @@ int Game::mPlay()
 					break;
 				}
 			}
+
+			// Upgrade menu
+			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+				for (int i = 0; i < NUM_UPGRADE_BUTTONS; i++)
+				{
+					if (vInterfaceShapes[i].getGlobalBounds().contains(Vector2f(souris)))
+					{
+						_player.mUpdateAbility(upgradeID[i], upgradeSlot[i], upgradeLevel[i]); //ID, slot, level
+						showUpgradeMenu = false;
+					}
+				}
+			}
 		}
 
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle update
-		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l�horloge
-		if (timeUpdate.asMilliseconds() >= UPDATE_RATE) //En milisecondes (100.0f)
+		timeUpdate = clockUpdate.getElapsedTime(); //Prends le temps de l'horloge
+		if (timeUpdate.asMilliseconds() >= 1000 / UPDATE_RATE && showUpgradeMenu == false && playerAlive == true) //En milisecondes (100.0f)
 		{
 			// Clear console on tick (constantes)
 			if (CLEAR_CONSOLE_ON_TICK == true) { system("cls"); }
@@ -139,73 +254,179 @@ int Game::mPlay()
 				cout << GAME_NAME << " : " << FRAMERATE << "FPS / " << UPDATE_RATE << "Hz / " << WINDOW_SIZE_X << "x" << WINDOW_SIZE_Y << "px / " << INCREMENT << "inc." << endl;
 			}
 
-			// Vague
-			if (enemyCount == 0)
+			// Wave
+			if (killNumber >= KILLS_FOR_WAVE * waveNumber)
 			{
 				waveNumber++;
+				killNumber = 0;
+				cout << "Wave " << waveNumber << endl;
 
-				for (int i = 0; i < 5 * waveNumber; i++)
+				// Generate upgrades
+				for (int i = 0; i < 3; i++)
 				{
-					int side = rand() % 4 + 1;
+					int slotIndex = rand() % PLAYER_ABILITY_SLOTS; // [0, 4]
+					upgradeSlot[i] = slotIndex;
 
-					Enemy tempEnemy;
-					RectangleShape tempEnemyRect;
+					int existingID = _player.mCheckAbilityID(slotIndex);
 
-					// Max, min
-					if (side == 1)
+					if (existingID == 0) // If no ability assigned yet
 					{
-						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
-						tempEnemy.mSetPositionY(0);
+						int newAbilityID = rand() % PLAYER_UPGRADE_TYPE_NUMBER + 1; // [1, N]
+						upgradeID[i] = newAbilityID;
+						upgradeLevel[i] = 1;
 					}
-					else if (side == 2)
+					else // Upgrade existing ability
 					{
-						tempEnemy.mSetPositionX(0);
-						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
-					}
-					else if (side == 3)
-					{
-						tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
-						tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
-					}
-					else 
-					{
-						tempEnemy.mSetPositionX(WINDOW_SIZE_X);
-						tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+						upgradeID[i] = existingID;
+						upgradeLevel[i] = _player.mCheckAbilityLevel(slotIndex) + 1;
 					}
 
-					tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
-					tempEnemyRect.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-					tempEnemyRect.setFillColor(sf::Color::Blue);
+					temporaryAbilityClones[i].mSetAbilityType(upgradeID[i], upgradeSlot[i], upgradeLevel[i]);
 
-					vEnemies.push_back(tempEnemy);
-					vEnemyShapes.push_back(tempEnemyRect);
-
-					enemyCount++;
-					cout << enemyCount << endl;
+					cout << "Slot: " << slotIndex << " | Ability ID: " << upgradeID[i] << " | Upgrade Level: " << upgradeLevel[i] << endl;
 				}
+
+				// Update UI
+				for (int i = 0; i < NUM_UPGRADE_BUTTONS; i++)
+				{
+					vInterfaceTextes[i].setString(temporaryAbilityClones[i].mGetUpgradeName());
+					vInterfaceSlots[i].setString("Slot " + to_string(upgradeSlot[i] + 1));
+					vInterfaceLevels[i].setString("Level " + to_string(upgradeLevel[i]));
+					vInterfaceDescriptions[i].setString(temporaryAbilityClones[i].mGetUpgradeText());
+				}
+
+				showUpgradeMenu = true;
+			}
+
+			// Spawning
+			if (spawnCooldown <= 0 && enemyCount < MAX_ENEMIES && currentWaveWeight < waveNumber * 5)
+			{
+				int side = rand() % 4 + 1; // Max, min
+
+				Enemy tempEnemy;
+				RectangleShape tempEnemyRect;
+
+				do
+				{
+					typeResult = rand() % ENEMY_TYPE_NUMBER + 1; // Max, min
+					tempEnemy.mSetEnemyType(typeResult, tempEnemyRect);
+
+				} while ((tempEnemy.mGetSpawnWeight() > (waveNumber * 5) - currentWaveWeight) || (waveNumber < tempEnemy.mGetMinimumWave() || waveNumber > tempEnemy.mGetMaximumWave()));
+
+				// Spawn on screen edges
+				if (side == 1)
+				{
+					tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0); // Max, min
+					tempEnemy.mSetPositionY(0);
+				}
+				else if (side == 2)
+				{
+					tempEnemy.mSetPositionX(0);
+					tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+				}
+				else if (side == 3)
+				{
+					tempEnemy.mSetPositionX(rand() % WINDOW_SIZE_X + 0);
+					tempEnemy.mSetPositionY(WINDOW_SIZE_Y);
+				}
+				else
+				{
+					tempEnemy.mSetPositionX(WINDOW_SIZE_X);
+					tempEnemy.mSetPositionY(rand() % WINDOW_SIZE_Y + 0);
+				}
+
+				// Generate enemy
+				tempEnemyRect.setPosition(tempEnemy.mGetPositionX(), tempEnemy.mGetPositionY());
+				tempEnemyRect.setSize(sf::Vector2f(ENEMY_SIZE, ENEMY_SIZE));
+
+				FloatRect sEnemeyBounds = tempEnemyRect.getGlobalBounds();
+
+				vEnemies.push_back(tempEnemy);
+				vEnemyShapes.push_back(tempEnemyRect);
+				vEnemyBounds.push_back(sEnemeyBounds);
+
+				// Values
+				enemyCount++;
+				spawnCooldown = MAX_SPAWN_COOLDOWN / waveNumber;	
+
+				currentWaveWeight += tempEnemy.mGetSpawnWeight();
+			}
+			else
+			{
+				spawnCooldown--;
 			}
 
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
 				_player.mSetPosY(fPlayerMove(1, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + INCREMENT);
+					vEnemyShapes[i].move(0, INCREMENT);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
+					vProjectileShapes[i].move(0, INCREMENT);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 			{
 				_player.mSetPosX(fPlayerMove(2, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() - INCREMENT);
+					vEnemyShapes[i].move(-INCREMENT, 0);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() - INCREMENT);
+					vProjectileShapes[i].move(-INCREMENT, 0);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			{
 				_player.mSetPosY(fPlayerMove(3, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() - INCREMENT);
+					vEnemyShapes[i].move(0, - INCREMENT);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
+					vProjectileShapes[i].move(0, -INCREMENT);
+				}
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
 				_player.mSetPosX(fPlayerMove(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				for (int i = 0; i < vEnemies.size(); i++)
+				{
+					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() + INCREMENT);
+					vEnemyShapes[i].move(INCREMENT, 0);
+				}
+
+				for (int i = 0; i < vProjectiles.size(); i++)
+				{
+					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + INCREMENT);
+					vProjectileShapes[i].move(INCREMENT, 0);
+				}
 			}
+
+			FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
 			fDebug(2, _player.mGetPosX(), _player.mGetPosY());
 
-			//Défilement du joueur
+			//Défilement du sprite joueur
 			switch (dir)
 			{
 			case 1: // Haut
@@ -237,23 +458,27 @@ int Game::mPlay()
 			// Attaque du joueur
 			for (int i = 0; i < PLAYER_ABILITY_SLOTS; i++)
 			{
-				if (_player.mCheckAttack(i) == true) 
+				if (_player.mCheckAttack(i) == true)
 				{ 
 					Projectile tempProjectile;
 					tempProjectile.mCloneFromAbility(_player.mGetAbility(i));
-					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed());
-					
+					tempProjectile.mInitializeMovement(_player.mGetRotation(), tempProjectile.mGetSpeed()); 
+					tempProjectile.mSetPositionX(_player.mGetPosX());
+					tempProjectile.mSetPositionY(_player.mGetPosY());
+
+					RectangleShape sProjectile;
+					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
+					sProjectile.setSize(sf::Vector2f(tempProjectile.mGetSize(), tempProjectile.mGetSize()));
+					sProjectile.setFillColor(sf::Color::Red);
+					sProjectile.setOrigin(tempProjectile.mGetSize() / 2, tempProjectile.mGetSize() / 2);
+
+					FloatRect sProjectileBounds = sProjectile.getGlobalBounds();
+
 					vProjectiles.push_back(tempProjectile);
+					vProjectileShapes.push_back(sProjectile);
+					vProjectileBounds.push_back(sProjectileBounds);
 					_player.mAttacked(i);
 
-					sf::RectangleShape sProjectile;
-					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
-					sProjectile.setSize(sf::Vector2f(vProjectiles[i].mGetSize(), vProjectiles[i].mGetSize()));
-					sProjectile.setFillColor(sf::Color::Red);
-					sProjectile.setOrigin(vProjectiles[i].mGetSize() / 2, vProjectiles[i].mGetSize() / 2);
-					vProjectileShapes.push_back(sProjectile);
-
-					tempProjectile.~Projectile();
 					fDebug(5, i);
 				}
 				else 
@@ -266,7 +491,7 @@ int Game::mPlay()
 			fDebug(7, vProjectiles.size());
 
 			// Défilement des projectiles
-			for (int i = 0; i < vProjectiles.size(); i++)
+			for (int i = vProjectiles.size() - 1; i >= 0; i--) //int i = 0; i < vProjectiles.size(); i++ //int i = vProjeectiles.size() - 1; i >= 0; i--
 			{
 				vProjectiles[i].mSetLifetime(vProjectiles[i].mGetLifetime() - 1);
 
@@ -274,23 +499,92 @@ int Game::mPlay()
 				{
 					vProjectiles.erase(vProjectiles.begin() + i);
 					vProjectileShapes.erase(vProjectileShapes.begin() + i);
+					vProjectileBounds.erase(vProjectileBounds.begin() + i);
 				}
 				else
 				{
+					if (vProjectiles[i].mGetBounceAmount() > 0 && (vProjectiles[i].mGetPositionX() <= 0 || vProjectiles[i].mGetPositionX() >= WINDOW_SIZE_X || vProjectiles[i].mGetPositionY() <= 0 || vProjectiles[i].mGetPositionY() >= WINDOW_SIZE_Y))
+					{
+						if (vProjectiles[i].mGetPositionX() <= 0 || vProjectiles[i].mGetPositionX() >= WINDOW_SIZE_X)
+						{
+							vProjectiles[i].mSetVelocityX(-vProjectiles[i].mGetVelocityX());
+							vProjectiles[i].mSetBounceAmount(vProjectiles[i].mGetBounceAmount() - 1);
+						}
+
+						if  (vProjectiles[i].mGetPositionY() <= 0 || vProjectiles[i].mGetPositionY() >= WINDOW_SIZE_Y)
+						{
+							vProjectiles[i].mSetVelocityY(-vProjectiles[i].mGetVelocityY());
+							vProjectiles[i].mSetBounceAmount(vProjectiles[i].mGetBounceAmount() - 1);
+						}
+					}
+					
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + vProjectiles[i].mGetVelocityX());
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + vProjectiles[i].mGetVelocityY());
-
+					
 					vProjectileShapes[i].move(vProjectiles[i].mGetVelocityX(), -vProjectiles[i].mGetVelocityY());
+					vProjectileBounds[i] = vProjectileShapes[i].getGlobalBounds();
 				}
 			}
-			
-			// Défilement des ennemis
+
 			for (int i = 0; i < vEnemies.size(); i++)
-			{				
+			{
+				vEnemies[i].mDamageEffectTick(vEnemyShapes[i]);
+			}
+
+			// Collision des projectiles
+			for (int i = 0; i < vProjectiles.size(); i++)
+			{
+				for (int j = 0; j < vEnemies.size(); j++)
+				{
+					if (vProjectileBounds[i].intersects(vEnemyBounds[j]) && vProjectiles[i].mGetCanDamage() == true)
+					{
+						vEnemies[j].mDamageEffect(vEnemyShapes[j]);
+						vEnemies[j].mSetHealth(vEnemies[j].mGetHealth() - vProjectiles[i].mGetDamage());
+
+						if (vProjectiles[i].mGetPierceAmount() > 0)
+						{
+							vProjectiles[i].mSetPierceAmount(vProjectiles[i].mGetPierceAmount() - 1);
+						}
+						else
+						{
+							vProjectiles[i].mSetCanDamage(false);
+							vProjectiles[i].mSetLifetime(0);
+						}
+					}
+				}
+			}
+
+			// Collision des ennemis avec le joueur
+			for (int i = 0; i < vEnemies.size(); i++)
+			{
+				if (sPlayerBounds.intersects(vEnemyBounds[i]))
+				{
+					_player.mSetHealth(_player.mGetHealth() - vEnemies[i].mGetDamage());
+
+					cout << "Player HP : " << _player.mGetHealth() << endl;
+
+					if (_player.mGetHealth() <= 0)
+					{
+						playerAlive = false;
+
+						cout << "Player died" << endl;
+					}
+				}
+			}
+		
+			// Défilement des ennemis
+			for (int i = vEnemies.size() - 1; i >= 0; i--) //int i = 0; i < vEnemies.size(); i++ //int i = vEnemies.size() - 1; i >= 0; i--
+			{
 				if (vEnemies[i].mGetHealth() <= 0)
 				{
+					currentWaveWeight -= vEnemies[i].mGetSpawnWeight();
+
 					vEnemies.erase(vEnemies.begin() + i);
 					vEnemyShapes.erase(vEnemyShapes.begin() + i);
+					vEnemyBounds.erase(vEnemyBounds.begin() + i);
+
+					enemyCount--;
+					killNumber++;
 				}
 				else
 				{
@@ -300,6 +594,8 @@ int Game::mPlay()
 					vEnemies[i].mSetPositionY(vEnemies[i].mGetPositionY() + vEnemies[i].mGetVelocityY());
 
 					vEnemyShapes[i].move(vEnemies[i].mGetVelocityX(), vEnemies[i].mGetVelocityY());
+
+					vEnemyBounds[i] = vEnemyShapes[i].getGlobalBounds();
 				}
 			}
 			
@@ -309,7 +605,7 @@ int Game::mPlay()
 		//========================================================================================================================
 		// Boucle fenêtre > Boucle visuelle
 		timeDraw = clockDraw.getElapsedTime(); //Prends le temps de l’horloge
-		if (timeDraw.asMilliseconds() >= 1000 / 60) //En milisecondes (100.0f)
+		if (timeDraw.asMilliseconds() >= 1000 / FRAMERATE) //En milisecondes (100.0f)
 		{
 			// Effacement de la fenêtre en noir
 			window.clear();
@@ -330,6 +626,45 @@ int Game::mPlay()
 			for (int i = 0; i < vProjectileShapes.size(); i++)
 			{
 				window.draw(vProjectileShapes[i]);
+			}
+
+			// Dessin de l'interface
+			if (showUpgradeMenu == true)
+			{
+				for (int i = 0; i < vInterfaceElements.size(); i++)
+				{
+					window.draw(vInterfaceElements[i]);
+				}
+
+				for (int i = 0; i < vInterfaceShapes.size(); i++)
+				{
+					window.draw(vInterfaceShapes[i]);
+				}
+
+				for (int i = 0; i < vInterfaceTextes.size(); i++)
+				{
+					window.draw(vInterfaceTextes[i]);
+				}
+
+				for (int i = 0; i < vInterfaceSlots.size(); i++)
+				{
+					window.draw(vInterfaceSlots[i]);
+				}
+
+				for (int i = 0; i < vInterfaceLevels.size(); i++)
+				{
+					window.draw(vInterfaceLevels[i]);
+				}
+
+				for (int i = 0; i < vInterfaceDescriptions.size(); i++)
+				{
+					window.draw(vInterfaceDescriptions[i]);
+				}
+			}
+			// Death screen
+			if (playerAlive == false)
+			{
+					window.draw(deathScreenText);
 			}
 
 			// Fin de la frame courante, affichage de tout ce qu'on a dessiné

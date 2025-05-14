@@ -10,7 +10,6 @@
 #include <string>
 #include <vector>
 
-
 using namespace sf;
 using namespace std;
 
@@ -559,7 +558,6 @@ void Menu::boucleAffiche(sf::RenderWindow& window)
         {
             Event event;
             
-
             while (window.pollEvent(event)) 
             {
                 if (event.type == Event::Closed) 

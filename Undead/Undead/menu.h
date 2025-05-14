@@ -1,16 +1,16 @@
 #pragma once
 
 #include "constantes.h"
+#include "constantes.h"
 #include "player.h"  // Pour accéder aux dimensions ou constantes similaires
 #include "game.h" 
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <string>
-
 
 class Menu
 {
@@ -67,5 +67,3 @@ public:
     void playClickSound();
     
 };
-
-

@@ -1,0 +1,64 @@
+	//========================================================================================================================
+	// Upgrade menu
+	/*
+	RectangleShape upgradeMenuBackground;
+	RectangleShape upgradedMenuButton1;
+	RectangleShape upgradedMenuButton2;
+	RectangleShape upgradedMenuButton3;
+
+	Text upgradeName1;
+	Text upgradeName2;
+	Text upgradeName3;
+
+	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 3.35);
+	upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
+	upgradeMenuBackground.setFillColor(Color::Black);
+	upgradeMenuBackground.setOutlineColor(Color::White);
+	upgradeMenuBackground.setOutlineThickness(10);
+
+	upgradedMenuButton1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton1.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton1.setFillColor(Color::Red);
+	upgradedMenuButton1.setOutlineColor(Color::White);
+	upgradedMenuButton1.setOutlineThickness(10);
+
+	upgradedMenuButton2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton2.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton2.setFillColor(Color::Red);
+	upgradedMenuButton2.setOutlineColor(Color::White);
+	upgradedMenuButton2.setOutlineThickness(10);
+
+	upgradedMenuButton3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
+	upgradedMenuButton3.setSize(Vector2f(WINDOW_SIZE_X / 6, WINDOW_SIZE_Y / 2));
+	upgradedMenuButton3.setFillColor(Color::Red);
+	upgradedMenuButton3.setOutlineColor(Color::White);
+	upgradedMenuButton3.setOutlineThickness(10);
+
+	upgradeName1.setString("Default : L1");
+	upgradeName1.setFont(font);
+	upgradeName1.setCharacterSize(15);
+	upgradeName1.setFillColor(Color::Black);
+
+	upgradeName2.setString("Default : L2");
+	upgradeName2.setFont(font);
+	upgradeName2.setCharacterSize(15);
+	upgradeName2.setFillColor(Color::Black);
+
+	upgradeName3.setString("Default : L3");
+	upgradeName3.setFont(font);
+	upgradeName3.setCharacterSize(15);
+	upgradeName3.setFillColor(Color::Black);
+
+	upgradeName1.setPosition((WINDOW_SIZE_X / 6) * 1.25, WINDOW_SIZE_Y / 4);
+	upgradeName2.setPosition((WINDOW_SIZE_X / 6) * 2.5, WINDOW_SIZE_Y / 4);
+	upgradeName3.setPosition((WINDOW_SIZE_X / 6) * 3.75, WINDOW_SIZE_Y / 4);
+
+	vInterfaceShapes.push_back(upgradeMenuBackground);
+	vInterfaceShapes.push_back(upgradedMenuButton1);
+	vInterfaceShapes.push_back(upgradedMenuButton2);
+	vInterfaceShapes.push_back(upgradedMenuButton3);
+
+	vInterfaceTextes.push_back(upgradeName1);
+	vInterfaceTextes.push_back(upgradeName2);
+	vInterfaceTextes.push_back(upgradeName3);
+	*/
