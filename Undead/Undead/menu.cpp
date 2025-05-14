@@ -1,380 +1,628 @@
 #include "menu.h"
+#include "constantes.h"
+#include "player.h" 
+#include "game.h"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace sf;
 using namespace std;
 
-struct ScoreEntry {
-    string nom;
-    int score;
-};
-
-// Fonction pour lire les meilleurs scores depuis un fichier
-vector<ScoreEntry> lireTousLesScores() {
-    vector<ScoreEntry> scores;
-    ifstream fichier("highscore.txt");
-    if (!fichier.is_open()) return scores;
-
-    string nom;
-    int score;
-    while (fichier >> nom >> score) {
-        scores.push_back({ nom, score });
-    }
-
-    fichier.close();
-    sort(scores.begin(), scores.end(), [](const ScoreEntry& a, const ScoreEntry& b) {
-        return a.score > b.score;  // Tri décroissant
-        });
-
-    return scores;
-}
-
-// Fonction pour afficher les scores dans un tableau
-void afficherTableauScores(RenderWindow& window, Font& font) {
-    auto scores = lireTousLesScores();
-
-    RectangleShape fond(Vector2f(window.getSize()));
-    fond.setFillColor(Color(0, 0, 0, 220));
-
-    Text titre;
-    titre.setFont(font);
-    titre.setString("Meilleurs Scores");
-    titre.setCharacterSize(40);
-    titre.setFillColor(Color::Yellow);
-    titre.setPosition(100, 50);
-
-    vector<Text> textes;
-    int yOffset = 120;
-
-    for (size_t i = 0; i < scores.size() && i < 10; ++i) {
-        Text ligne;
-        ligne.setFont(font);
-        ligne.setCharacterSize(26);
-        ligne.setFillColor(Color::White);
-        ligne.setString(to_string(i + 1) + ". " + scores[i].nom + " - " + to_string(scores[i].score));
-        ligne.setPosition(100, yOffset + i * 40);
-        textes.push_back(ligne);
-    }
-
-    // Bouton retour
-    RectangleShape boutonRetour(Vector2f(200, 50));
-    boutonRetour.setFillColor(Color(100, 100, 255));
-    boutonRetour.setPosition(100, window.getSize().y - 80);
-
-    Text texteRetour;
-    texteRetour.setFont(font);
-    texteRetour.setString("Retour");
-    texteRetour.setCharacterSize(24);
-    texteRetour.setFillColor(Color::White);
-    texteRetour.setPosition(130, window.getSize().y - 75);
-
-    while (window.isOpen()) {
-        Event event;
-        Vector2i souris = Mouse::getPosition(window);
-        while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
-                window.close();
-                return;
-            }
-            if (event.type == Event::MouseButtonPressed && boutonRetour.getGlobalBounds().contains(Vector2f(souris))) {
-                return; // Quitter la vue des scores
-            }
-        }
-
-        boutonRetour.setFillColor(boutonRetour.getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
-
-        window.clear();
-        window.draw(fond);
-        window.draw(titre);
-        for (const auto& t : textes) window.draw(t);
-        window.draw(boutonRetour);
-        window.draw(texteRetour);
-        window.display();
-    }
-}
-
-int afficherMenuJouer(RenderWindow& window, Font& font) {
-    Texture backgroundTexture;
-    backgroundTexture.loadFromFile("assets/Menu/background.jpg");
-    Sprite backgroundSprite(backgroundTexture);
-
-    const float BUTTON_WIDTH = PLAYER_SIZE * 12;
-    const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
-    const float BUTTON_SPACING = 40;
-    Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
-
-    string labels[] = { "Lancer la partie", "High Score", "Retour" };
-    RectangleShape boutons[3];
-    Text textes[3];
-
-    for (int i = 0; i < 3; ++i) {
-        boutons[i].setSize(Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
-        boutons[i].setOrigin(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
-        boutons[i].setPosition(windowCenter.x, windowCenter.y + i * (BUTTON_HEIGHT + BUTTON_SPACING));
-        boutons[i].setFillColor(Color(100, 100, 255));
-        boutons[i].setOutlineThickness(4);
-        boutons[i].setOutlineColor(Color::White);
-
-        textes[i].setFont(font);
-        textes[i].setString(labels[i]);
-        textes[i].setCharacterSize(30);
-        textes[i].setFillColor(Color::White);
-
-        FloatRect textRect = textes[i].getLocalBounds();
-        textes[i].setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-        textes[i].setPosition(boutons[i].getPosition());
-    }
-
-    while (window.isOpen()) {
-        Event event;
-        Vector2i souris = Mouse::getPosition(window);
-
-        while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
-                window.close();
-                return -1;
-            }
-            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
-                for (int i = 0; i < 3; ++i) {
-                    if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                        if (i == 0) return 1; // Lancer la partie
-                        else if (i == 1) afficherTableauScores(window, font); // Affiche les scores
-                        else if (i == 2) return 3; // Retour
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < 3; ++i) {
-            boutons[i].setFillColor(boutons[i].getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
-        }
-
-        window.clear();
-        window.draw(backgroundSprite);
-        for (int i = 0; i < 3; ++i) {
-            window.draw(boutons[i]);
-            window.draw(textes[i]);
-        }
-        window.display();
-    }
-
-    return -1;
-}
-
-int afficherTutoriel(RenderWindow& window, Font& font) {
-    // Charger l'image ou texture du tutoriel (remplace par une vidéo si nécessaire avec une lib externe)
-    Texture tutoTexture;
-    if (!tutoTexture.loadFromFile("assets/Menu/tutoriel.jpg")) {
-        cerr << "Erreur chargement tutoriel" << endl;
-        return -1;
-    }
-    Sprite tutoSprite(tutoTexture);
-
-    // Créer le bouton Retour
-    RectangleShape boutonRetour(Vector2f(200, 60));
-    boutonRetour.setPosition(window.getSize().x / 2 - 100, window.getSize().y - 100);
-    boutonRetour.setFillColor(Color(100, 100, 255));
-    boutonRetour.setOutlineThickness(3);
-    boutonRetour.setOutlineColor(Color::White);
-
-    Text texteRetour;
-    texteRetour.setFont(font);
-    texteRetour.setString("Retour");
-    texteRetour.setCharacterSize(24);
-    texteRetour.setFillColor(Color::White);
-    texteRetour.setPosition(boutonRetour.getPosition().x + 50, boutonRetour.getPosition().y + 10);
-
-    while (window.isOpen()) {
-        Event event;
-        Vector2i souris = Mouse::getPosition(window);
-
-        while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
-                window.close();
-                return -1;
-            }
-            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
-                if (boutonRetour.getGlobalBounds().contains(Vector2f(souris))) {
-                    return 3; // Retour
-                }
-            }
-        }
-
-        boutonRetour.setFillColor(
-            boutonRetour.getGlobalBounds().contains(Vector2f(souris)) ? Color::Red : Color(100, 100, 255));
-
-        window.clear();
-        window.draw(tutoSprite);
-        window.draw(boutonRetour);
-        window.draw(texteRetour);
-        window.display();
-    }
-
-    return -1;
-}
 
 
 
-int afficherMenuPrincipal(RenderWindow& window) {
+Menu::Menu() {
+
+    inSubMenu = false; // Par défaut, le menu principal est visible
+    inHighScore = false;
+    //========================================================================================================================
     // Charger la police
-    Font font;
-    if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {  
-        cerr << "Erreur chargement police" << endl;
-        return -1;
+    if (!font.loadFromFile("assets/Menu/fonts/Nosifer-Regular.ttf")) {
+        cout << "Erreur chargement police";
     }
-
-
-    // Charger la musique de fond
-    Music backgroundMusic;
-    if (!backgroundMusic.openFromFile("assets/Menu/music1.ogg")) { 
-        cerr << "Erreur chargement musique" << endl;
-        return -1;
-    }
-    backgroundMusic.setLoop(true);
-    backgroundMusic.play();  // Joue la musique en boucle
-
+    //========================================================================================================================
     // Charger l'image de fond
-    Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("assets/Menu/background.jpg")) {  // Assure-toi que l'image est dans le bon répertoire
-        cerr << "Erreur chargement image de fond" << endl;
-        return -1;
+    if (bgTexture.loadFromFile("assets/Menu/background.jpg")) {
+        background.setTexture(bgTexture);
     }
-    Sprite backgroundSprite(backgroundTexture);
-
-    // Dimensions des boutons basées sur PLAYER_SIZE pour cohérence avec le jeu
-    const float BUTTON_WIDTH = PLAYER_SIZE * 15;
-    const float BUTTON_HEIGHT = PLAYER_SIZE * 2;
-    const float BUTTON_SPACING = 35;
-    const float CORNER_RADIUS = 20;  // Rayon des coins arrondis
-
-    Vector2f windowCenter(window.getSize().x / 2.f, window.getSize().y / 2.f);
-
-    // Options du menu
-    string labels[] = { "Commencer un Partie", "Parametres", "Tutoriel", "Quitter" };
-    RectangleShape boutons[4];
-    Text textes[4];
-   
-
-    // Créer et styliser les boutons et textes
-    for (int i = 0; i < 4; ++i) {
-        boutons[i].setSize(Vector2f(BUTTON_WIDTH, BUTTON_HEIGHT));
-        boutons[i].setOrigin(BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
-        boutons[i].setPosition(windowCenter.x, windowCenter.y + i * (BUTTON_HEIGHT + BUTTON_SPACING));
-
-        // Style de bordure pour les boutons
-        boutons[i].setOutlineThickness(5);  // Épaisseur de la bordure
-        boutons[i].setOutlineColor(Color::White);  // Couleur de la bordure (ici noire)
-        boutons[i].setFillColor(Color(100, 100, 255));  // Couleur initiale
-
-        textes[i].setFont(font);
-        textes[i].setString(labels[i]);
-        textes[i].setCharacterSize(30);  // Plus gros pour être lisible
-        textes[i].setFillColor(Color::White);  // Couleur blanche pour le texte
-
-        FloatRect textRect = textes[i].getLocalBounds();
-        textes[i].setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-        textes[i].setPosition(boutons[i].getPosition());
+    //========================================================================================================================
+    // Charger la musique de fond
+    if (!backgroundMusic.openFromFile("assets/Menu/music1.ogg")) {
+        cout << "Erreur chargement musique";
     }
-    
+    else {
+        backgroundMusic.setLoop(true); 
+        backgroundMusic.play(); 
+    }
+    //========================================================================================================================
+    // Charger le son du click
+    if (!clickBuffer.loadFromFile("assets/Menu/click.ogg")) 
+    {
+        cout << "Erreur chargement son click";
+    }
+    else 
+    {
+        clickSound.setBuffer(clickBuffer);
+    }
+    //========================================================================================================================
+    // Fond de la barre de volume
+    volumeBarBack.setSize(Vector2f(200, 20));
+    volumeBarBack.setFillColor(Color(100, 100, 100));
+    volumeBarBack.setPosition(540, 550);
+    //========================================================================================================================
+    // Remplissage dynamique
+    volumeBarFill.setSize(Vector2f(backgroundMusic.getVolume() * 2, 20)); // 
+    volumeBarFill.setFillColor(Color::Green);
+    volumeBarFill.setPosition(540, 550);
+    //========================================================================================================================
+    // Texte volume
+    volumeText.setFont(font);
+    volumeText.setCharacterSize(25);
+    volumeText.setFillColor(Color::White);
+    volumeText.setPosition(640, 520); // Centré au-dessus de la barre
+    volumeText.setOrigin(volumeText.getLocalBounds().width / 2, 0);
+    volumeText.setString("Volume : " + std::to_string((int)backgroundMusic.getVolume()) + "%");
 
-    // Texte animé du titre "UNDEAD"
-    Text titre;
+
+    //========================================================================================================================
+    // Configuration des éléments du menu principal
+    float startY = 300;            
+    float spacing = 90.f;
+
+    string labels[4] = { "Commencer une Partie", "Parametres", "Tutoriel", "Quitter" };
+
+    for (int i = 0; i < 4; i++) 
+    {
+        mainItems[i].setFont(font);
+        mainItems[i].setString(labels[i]);
+        mainItems[i].setCharacterSize(40);
+
+        FloatRect bounds = mainItems[i].getLocalBounds();
+        mainItems[i].setOrigin(bounds.width / 2, bounds.height / 2);
+        mainItems[i].setPosition(640, startY + i * spacing);
+        mainItems[i].setFillColor(Color::Yellow);
+    }
+    //========================================================================================================================
+    // Configuration des éléments du sous-menu
+    startY = 300;
+    spacing = 80.f;
+    string subLabels[3] = { "Lancer la partie", "High Score", "Retour" };
+
+    for (int i = 0; i < 3; i++) 
+    {
+        subItems[i].setFont(font);
+        subItems[i].setString(subLabels[i]);
+        subItems[i].setCharacterSize(35);
+
+        FloatRect bounds = subItems[i].getLocalBounds();
+        subItems[i].setOrigin(bounds.width / 2, bounds.height / 2);
+        subItems[i].setPosition(640, startY + i * spacing);
+        subItems[i].setFillColor(Color::Cyan);
+    }
+    //========================================================================================================================
+    // Configuration du titre
+
     titre.setFont(font);
     titre.setString("UNDEAD GAME");
     titre.setCharacterSize(80);
-    titre.setStyle(Text::Bold);
-    titre.setPosition(windowCenter.x, windowCenter.y - 160);
+    titre.setStyle(sf::Text::Bold);
     FloatRect titreBounds = titre.getLocalBounds();
     titre.setOrigin(titreBounds.left + titreBounds.width / 2.0f, titreBounds.top + titreBounds.height / 2.0f);
+    titre.setPosition(640, 80);  
 
-    Clock animationClock;
-    float hue = 0.f;
-
-    // Boucle de gestion de la fenêtre
-    while (window.isOpen()) {
-        Event event;
-        Vector2i souris = Mouse::getPosition(window);
-
-        while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
-                window.close();
-                return -1;
-            }
-
-            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
-                for (int i = 0; i < 4; ++i) {
-                    if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                        if (i == 0) {
-                            // Appel à afficherMenuJouer
-                            int resultat = afficherMenuJouer(window, font);
-
-                            if (resultat == -1) {
-                                return -1;  // Si un problème survient dans afficherMenuJouer
-                            }
-                            else if (resultat == 1)
-                            {
-                                return 1;
-                            }
-                        }
-
-                        else if (i == 1) {
-                            return 1; // Paramètres
-                        }
-                        else if (i == 2) {
-                            int resultat = afficherTutoriel(window, font); // Tutoriel
-                            if (resultat == -1) return -1;
-                        }
-                        else if (i == 3) {
-                            continue;  // Quitter
-                        }
-                        
-                    }
-                }
-            }
-        }
-            
-    
-
-        // Survol de la souris sur les boutons
-        for (int i = 0; i < 4; ++i) {
-            if (boutons[i].getGlobalBounds().contains(Vector2f(souris))) {
-                boutons[i].setFillColor(Color::Red);    // Changer la couleur survolée
-
-                // Augmenter la taille du bouton pour un effet visuel
-                boutons[i].setScale(1.1f, 1.1f);  // Agrandir légèrement
-                
-            }
-            else {
-                boutons[i].setFillColor(Color(100, 100, 255));  // Couleur normale
-            }
-        }
-        // Animation de la couleur du titre
-        hue += animationClock.restart().asSeconds() * 60;
-        if (hue > 360.f) hue -= 360.f;
-
-        float c = 255, x = 255 * (1 - abs(fmod(hue / 60.0, 2) - 1));
-        Color animatedColor;
-        if (hue < 60) animatedColor = Color(c, x, 0);
-        else if (hue < 120) animatedColor = Color(x, c, 0);
-        else if (hue < 180) animatedColor = Color(0, c, x);
-        else if (hue < 240) animatedColor = Color(0, x, c);
-        else if (hue < 300) animatedColor = Color(x, 0, c);
-        else animatedColor = Color(c, 0, x);
-
-        titre.setFillColor(animatedColor);
-
-        // Effacer la fenêtre et redessiner le menu
-        window.clear(Color(30, 30, 30));  // Fond sombre pour un meilleur contraste
-        // Dessiner l'image de fond
-        window.draw(backgroundSprite);
-        window.draw(titre);
-        for (int i = 0; i < 4; ++i) {
-            window.draw(boutons[i]);
-            window.draw(textes[i]);
-        }
-
-        window.display();
+    //========================================================================================================================
+    // Ajout d’un menu pour les paramètres
+    string settingsLabels[3] = { "Pause Musique", "Volume +", "Volume -" };
+    for (int i = 0; i < 3; i++) {
+        settingsItems[i].setFont(font);
+        settingsItems[i].setString(settingsLabels[i]);
+        settingsItems[i].setCharacterSize(35);
+        FloatRect bounds = settingsItems[i].getLocalBounds();
+        settingsItems[i].setOrigin(bounds.width / 2, bounds.height / 2);
+        settingsItems[i].setPosition(640, 300 + i * 80);
+        settingsItems[i].setFillColor(Color::White);
     }
 
-    return -1;  // Retourne -1 si la fenêtre est fermée sans option sélectionnée
+    //========================================================================================================================
+    // Configuration du Retour de Score
+    retourScore.setFont(font);
+    retourScore.setString("Retour");
+    retourScore.setCharacterSize(30);
+    retourScore.setFillColor(Color::Red);
+
+    FloatRect retourBounds = retourScore.getLocalBounds();
+    retourScore.setOrigin(retourBounds.width / 2, retourBounds.height / 2);
+    retourScore.setPosition(640, 650);  // En bas au centre
+
+    //========================================================================================================================
+    // Configuration du Retour de paramettres
+    retourParametres.setFont(font);
+    retourParametres.setString("Retour");
+    retourParametres.setCharacterSize(30);
+    retourParametres.setFillColor(Color::White);
+
+    FloatRect retourParamBounds = retourParametres.getLocalBounds();
+    retourParametres.setOrigin(retourParamBounds.width / 2, retourParamBounds.height / 2);
+    retourParametres.setPosition(640, 650);  
+
+    //========================================================================================================================
+    // Configuration du Tutoriel
+
+    sf::Text line;
+    line.setFont(font);
+    line.setCharacterSize(15);
+    line.setFillColor(Color::Green);
+
+    std::vector<std::string> lines = {
+    " TUTORIEL : Comment bien jouer a UNDEAD GAME ?",
+    "",
+    " Controles de base :",
+    " - W : Avancer",
+    " - A : Aller a gauche",
+    " - S : Reculer",
+    " - D : Aller a droite",
+    " - Souris : Viser dans toutes les directions",
+    "",
+    " Objectif : Survis face aux vagues de morts-vivants !",
+    " - Tire pour les eliminer et gagner des points.",
+    " - Chaque seconde compte, la difficulte augmente.",
+    "",
+    " Conseils pour survivre :",
+    " - Bouge constamment pour eviter detre encercle.",
+    " - Oriente-toi avec la souris pour viser precisement.",
+    " - Ne gaspille pas tes tirs, vise bien.",
+    " - Surveille les coins : ne te fais pas pieger !",
+    "",
+    " Pour marquer un maximum de points :",
+    " - Enchaine les eliminations sans te faire toucher.",
+    " - Plus tu survis, plus ton score combo augmente.",
+    " - Bat ton record dans le menu High Score !",
+    "",
+    " Appuie sur Echap pour revenir au menu principal."
+    };
+
+    
+
+    for (const auto& text : lines) {
+        line.setString(text);
+        line.setPosition(100.f, startY);
+        tutorialText.push_back(line);
+        startY += 30.f; // Espace entre les lignes
+    }
+
 }
+
+//========================================================================================================================
+
+void Menu::loadScores() {
+
+    ifstream fichier("highscore.txt");
+    if (!fichier.is_open()) {
+        std::cerr << "Erreur ouverture fichier highscore.txt";
+        nbScores = 0;
+        return;
+    }
+
+    nbScores = 0;
+    while (fichier >> noms[nbScores] >> scores[nbScores] && nbScores < MAX_SCORES) {
+        nbScores++;
+    }
+    fichier.close();
+
+    // Tri décroissant
+    for (int i = 0; i < nbScores - 1; ++i) {
+        for (int j = 0; j < nbScores - i - 1; ++j) {
+            if (scores[j] < scores[j + 1]) {
+                std::swap(scores[j], scores[j + 1]);
+                std::swap(noms[j], noms[j + 1]);
+            }
+        }
+    }
+
+    
+    for (int i = 0; i < nbScores; ++i) 
+    {
+        scoreTexts[i].setFont(font);
+        scoreTexts[i].setCharacterSize(30);
+        scoreTexts[i].setFillColor(Color::White);
+       
+        FloatRect bounds = scoreTexts[i].getLocalBounds();
+        scoreTexts[i].setOrigin(bounds.width / 2, bounds.height / 2);
+        scoreTexts[i].setPosition(640, 200 + i * 40);  // Centrage horizontal et espacement vertical
+
+        string line = noms[i] + " - " + std::to_string(scores[i]);
+        scoreTexts[i].setString(line);
+    }
+}
+//========================================================================================================================
+void Menu::addScore(const string& nom, int score)
+{
+    if (nbScores < MAX_SCORES) {
+        noms[nbScores] = nom;
+        scores[nbScores] = score;
+        nbScores++;
+    }
+    else 
+    {
+        // Remplacer le score le plus bas si le tableau est plein
+        if (score > scores[MAX_SCORES - 1]) {
+            noms[MAX_SCORES - 1] = nom;
+            scores[MAX_SCORES - 1] = score;
+        }
+    }
+
+    // Tri des scores
+    for (int i = 0; i < nbScores - 1; ++i) {
+        for (int j = 0; j < nbScores - i - 1; ++j) {
+            if (scores[j] < scores[j + 1]) {
+                std::swap(scores[j], scores[j + 1]);
+                std::swap(noms[j], noms[j + 1]);
+            }
+        }
+    }
+
+    // Sauvegarder les scores dans le fichier
+    std::ofstream fichier("highscore.txt", std::ios::app);
+    for (int i = 0; i < nbScores; ++i) {
+        fichier << noms[i] << " " << scores[i] << "";
+    }
+    fichier.close();
+}
+
+//========================================================================================================================
+
+void Menu::draw(sf::RenderWindow& window) 
+{
+    window.clear();
+    window.draw(background);
+   window.draw(titre);
+
+    // Animation du titre
+    float delta = animationClock.restart().asSeconds();
+    animationTime += delta;
+    hue += delta * 60.f;
+    if (hue > 360.f) hue -= 360.f;
+
+    float c = 255.f, x = 255.f * (1 - abs(fmod(hue / 60.0, 2) - 1));
+    Color animatedColor;
+    if (hue < 60) animatedColor = Color(c, x, 0);
+    else if (hue < 120) animatedColor = Color(x, c, 0);
+    else if (hue < 180) animatedColor = Color(0, c, x);
+    else if (hue < 240) animatedColor = Color(0, x, c);
+    else if (hue < 300) animatedColor = Color(x, 0, c);
+    else animatedColor = Color(c, 0, x);
+
+    // Effet de rebond vertical
+    float bounce = sin(animationTime * 2.f) * 10.f;
+
+    // Effet d’agrandissement/zoom progressif
+    float scale = 1.f + 0.05f * sin(animationTime * 1.5f);
+    titre.setScale(scale, scale);
+    titre.setPosition(640, 80 + bounce);
+    titre.setFillColor(animatedColor);
+    window.draw(titre);  // Afficher le titre animé
+
+    if (inHighScore)
+    {
+        for (int i = 0; i < nbScores; ++i)
+        { 
+            window.draw(scoreTexts[i]);
+        }
+        window.draw(retourScore);
+    }
+    else if (inSubMenu) 
+    {
+        for (int i = 0; i < 3; i++)
+            window.draw(subItems[i]);
+    }
+    else if (inSettings) 
+    {
+        float vol = backgroundMusic.getVolume();
+        volumeBarFill.setSize(Vector2f(vol * 2, 20)); // max 200px
+        volumeText.setString("Volume : " + to_string((int)vol) + "%");
+        FloatRect volBounds = volumeText.getLocalBounds();
+        volumeText.setOrigin(volBounds.width / 2, 0);
+
+        for (int i = 0; i < 3; i++) 
+        {
+            window.draw(settingsItems[i]);
+        }
+            window.draw(volumeText);
+            window.draw(volumeBarBack);
+            window.draw(volumeBarFill);
+            window.draw(retourParametres);
+    }
+    else if (inTutorial) 
+    {
+        for (const auto& line : tutorialText)
+        {
+            sf::Text tempLine = line;
+            sf::Vector2f pos = tempLine.getPosition();
+            pos.y -= tutorialScrollOffset;  // appliquer l’offset
+            tempLine.setPosition(pos);
+
+             //afficher uniquement les lignes visibles
+            if (pos.y + tempLine.getCharacterSize() > 0 && pos.y < 720)
+                window.draw(tempLine);
+        }
+    }
+    else 
+    {
+        for (int i = 0; i < 4; i++)
+            window.draw(mainItems[i]);
+    }
+    window.display();
+}
+//========================================================================================================================
+void Menu::moveUp() 
+{
+
+    if (inSettings) 
+    {
+        if (selectedSettingsIndex > 0) 
+            selectedSettingsIndex--;
+        updateColors();
+        return;
+    }
+    else if (inSubMenu) 
+    {
+        if (selectedSubIndex > 0) 
+            selectedSubIndex--;
+    }
+    else 
+    {
+        if (selectedMainIndex > 0) 
+            selectedMainIndex--;
+    }
+    updateColors();
+}
+//========================================================================================================================
+void Menu::moveDown() 
+{
+    if (inSettings) {
+        if (selectedSettingsIndex < 2)
+            selectedSettingsIndex++;
+        updateColors();
+        return;
+    }
+    else if (inSubMenu) 
+    {
+        if (selectedSubIndex < 2) 
+            selectedSubIndex++;
+    }
+    else 
+    {
+        if (selectedMainIndex < 3) 
+            selectedMainIndex++;
+    }
+    updateColors();
+}
+//========================================================================================================================
+void Menu::updateColors()
+{
+    // Mise à jour des couleurs pour le menu principal
+    for (int i = 0; i < 4; i++) {
+        if (i == selectedMainIndex) {
+            mainItems[i].setFillColor(Color::Yellow);  
+        }
+        else {
+            mainItems[i].setFillColor(Color::White);  
+        }
+    }
+
+    // Mise à jour des couleurs pour le sous-menu
+    for (int i = 0; i < 3; i++) {
+        if (i == selectedSubIndex) {
+            subItems[i].setFillColor(Color::Cyan);  
+        }
+        else {
+            subItems[i].setFillColor(Color::White); 
+        }
+    }
+}
+
+void Menu::handleMouse(const Vector2f& pos)
+{
+    if (inHighScore) 
+    {
+        if (retourScore.getGlobalBounds().contains(pos)) {
+            inHighScore = false;
+            inSubMenu = false;
+            updateColors();
+            return;
+        }
+    }
+    else if (inSettings)
+    {
+        if (retourParametres.getGlobalBounds().contains(pos)) {
+            inSettings = false;
+            updateColors();
+            return;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (settingsItems[i].getGlobalBounds().contains(pos)) {
+                selectedSettingsIndex = i;
+                updateColors();
+            }
+        }
+    }
+    else if (inSubMenu) 
+    {
+       for (int i = 0; i < 3; i++) 
+       {
+            if (subItems[i].getGlobalBounds().contains(pos)) 
+            {
+                selectedSubIndex = i;
+                updateColors();
+            }
+       }
+    }
+    else {
+        for (int i = 0; i < 4; i++) 
+        {
+            if (mainItems[i].getGlobalBounds().contains(pos)) 
+            {
+                selectedMainIndex = i;
+                updateColors();
+            }
+        }
+    }
+}
+
+void Menu::select() 
+{
+    playClickSound();
+    if (inSettings) 
+    {
+        switch (selectedSettingsIndex) 
+        {
+        case 0:
+            if (backgroundMusic.getStatus() == Music::Playing)
+                backgroundMusic.pause();
+            else
+                backgroundMusic.play();
+            break;
+        case 1:
+            backgroundMusic.setVolume(min(100.f, backgroundMusic.getVolume() + 10));
+            break;
+        case 2:
+            backgroundMusic.setVolume(max(0.f, backgroundMusic.getVolume() - 10));
+            break;
+        }
+        return;
+    }
+    else if (inSubMenu) 
+    {
+        switch (selectedSubIndex) 
+        {
+        case 0: 
+            cout << "Lancer la partie";
+            {
+                Game game;
+                game.mPlay();
+            }
+            break;
+        case 1: 
+            cout << "High Score"; 
+            loadScores();
+            inHighScore = true;
+            break;
+        case 2: 
+            inSubMenu = false;
+            inHighScore = false;
+            break;
+        }
+
+    }
+    else 
+    {
+        switch (selectedMainIndex) 
+        {
+        case 0: 
+            inSubMenu = true;
+            break;
+        case 1:
+            cout << "Paramètres";
+            inSettings = true;
+            break;
+        case 2:
+            cout << "Tutoriel";
+            inTutorial = true;
+            break;
+        case 3:
+            exit(0);
+            break;
+        }
+        
+    }
+    if (Keyboard::isKeyPressed(Keyboard::BackSpace)) 
+    {
+        inSettings = false;
+        updateColors();
+    }
+}
+
+
+void Menu::boucleAffiche(sf::RenderWindow& window)
+{
+
+    
+        while (window.isOpen()) 
+        {
+            Event event;
+            
+            while (window.pollEvent(event)) 
+            {
+                if (event.type == Event::Closed) 
+                {
+                    window.close();
+                }
+                else if (event.type == Event::KeyPressed) 
+                {
+                    switch (event.key.code) 
+                    {
+                    case Keyboard::Escape:
+                        window.close();
+                        break;
+                    case Keyboard::W:
+                        moveUp();
+                        if (inTutorial) tutorialScrollOffset = max(0.f, tutorialScrollOffset - 30.f);
+                        break;
+                    case Keyboard::S:
+                        moveDown();
+                        if (inTutorial) tutorialScrollOffset += 30.f;
+                        break;
+                    case Keyboard::Enter:
+                        select();
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                else if (event.type == Event::MouseMoved)
+                {
+                    // Détection de la position pour hover
+                    Vector2f mousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+                    handleMouse(mousePos);  // met à jour les couleurs selon la position
+                }
+                else if (event.type == Event::MouseWheelScrolled)
+                {
+                    if (inTutorial)
+                    {
+                        tutorialScrollOffset -= event.mouseWheelScroll.delta * 30.f;
+                        if (tutorialScrollOffset < 0.f)
+                            tutorialScrollOffset = 0.f;
+                    }
+                }
+
+                else if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
+                {
+                    Vector2f mousePos = window.mapPixelToCoords(Mouse::getPosition(window));
+                    handleMouse(mousePos);  // met à jour l’élément sélectionné
+                    select();               // effectue l’action de sélection
+                }
+                
+            }
+            draw(window);
+           
+        }
+
+            
+}
+
+void Menu::playClickSound()
+{
+    clickSound.play();
+}
+    
+
+
+
 
