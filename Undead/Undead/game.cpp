@@ -1,5 +1,4 @@
-#include "game.h"
-#include "menu.h"
+﻿#include "game.h"
 
 using namespace std;
 using namespace sf;
@@ -178,9 +177,31 @@ int Game::mPlay()
 	_player.mSetActive(0, true);
 
 	//========================================================================================================================
-	// Joueur hitbox
-	FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
+	// Boucle de menu principal
+	int choix = afficherMenuPrincipal(window);
 
+	do
+	{
+		if (choix == 1) {
+			cout << "Vous avez choisi de jouer !" << endl;
+			// Lancer le jeu
+		}
+		else if (choix == 2) {
+			cout << "Paramètres sélectionnés" << endl;
+			// Afficher ou gérer les paramètres
+		}
+		else if (choix == 3) {
+			cout << "Affichage du tutoriel" << endl;
+			// Afficher le tutoriel
+		}
+		else if (choix == 4 || choix == -1) {
+			cout << "Quitter le jeu" << endl;
+			return 0;
+			// Fermer le jeu
+		}
+	} while (choix == 2 || choix == 3);
+
+	//========================================================================================================================
 	// Boucle fenêtre : jusqu'à ce que la fenêtre soit fermée
 	while (window.isOpen())
 	{
@@ -612,7 +633,7 @@ int Game::mPlay()
 
 			// On dessine le background
 			background[bkg].draw(window); // On dessine le background
-			
+
 			// Dessin des ennemis
 			for (int i = 0; i < vEnemyShapes.size(); i++)
 			{
@@ -673,5 +694,4 @@ int Game::mPlay()
 			clockDraw.restart(); // On remet l’horloge à 0
 		}
 	}
-	return 0;
 }
