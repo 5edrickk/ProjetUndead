@@ -216,7 +216,6 @@ void Projectile::mSetProjectile(int ID, int damage, int lifetime, int speed, int
 // Autres
 void Projectile::mInitializeMovement(const int rotation, const int speed)
 {
-	srand(time(0));
 	float rads = rotation * (3.141592653589793 / 180);
 
 	if (mGetID() == 2)
