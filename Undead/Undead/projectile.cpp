@@ -228,7 +228,7 @@ void Projectile::mInitializeMovement(const int rotation, const int speed)
 	}
 	else if (mGetID() == 3)
 	{
-		int randomDirection = ((rand() % 8 + 0) * 45) * (3.141592653589793 / 180);
+		float randomDirection = (rand() % 360) * (3.141592653589793 / 180);
 
 		mSetVelocityX(speed * (cos(randomDirection)));
 		mSetVelocityY(speed * (sin(randomDirection)));
