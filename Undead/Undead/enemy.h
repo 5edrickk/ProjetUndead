@@ -24,7 +24,11 @@ private:
 		_velocityX,
 		_velocityY,
 		_positionX,
-		_positionY;
+		_positionY,
+
+		_animationCooldown,
+		_animationPosition,
+		_spriteSheetID;
 
 public:
 	// Constructeurs
@@ -51,6 +55,10 @@ public:
 	int mGetPositionX() const;
 	int mGetPositionY() const;
 
+	int mGetAnimationCooldown() const;
+	int mGetAnimationPosition() const;
+	int mGetSpriteSheetID() const;
+
 	// Setters
 	void mSetColor(const sf::Color color);
 	void mSetName(const std::string name);
@@ -70,6 +78,10 @@ public:
 	void mSetVelocityY(const int y);
 	void mSetPositionX(const int x);
 	void mSetPositionY(const int y);
+
+	void mSetAnimationCooldown(const int cooldown);
+	void mSetAnimationPosition(const int position);
+	void mSetSpriteSheetID(const int ID);
 
 	// Autres
 	void mInitializeMovement(const int playerX, const int playerY);

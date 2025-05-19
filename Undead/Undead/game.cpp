@@ -30,7 +30,9 @@ int Game::mPlay()
 		killNumber = 0,
 		typeResult = 0,
 		currentWaveWeight = 0,
-		maxWaveWeight = 5;
+		maxWaveWeight = 5,
+		playerAnimationCooldown = 0,
+		playerAnimationPosition = 0;
 
 	int upgradeID[3],
 		upgradeSlot[3],
@@ -58,6 +60,40 @@ int Game::mPlay()
 		cerr << "Erreur chargement police" << endl;
 		return -1;
 	}
+
+	//========================================================================================================================
+	// Texture vectors
+
+	vector<string> vSpritePlayer;
+	vector<string> vSpriteEnemy1;
+	vector<string> vSpriteEnemy2;
+	vector<string> vSpriteEnemy3;
+	vector<string> vSpriteEnemy4;
+
+	if ("assets/sprites/Crowstill.png") { vSpritePlayer.push_back("assets/sprites/Crowstill.png"); } else { return 1; }
+	if ("assets/sprites/Crowstepleft.png") { vSpritePlayer.push_back("assets/sprites/Crowstepleft.png"); } else { return 1; }
+	if ("assets/sprites/Crowstepright.png") { vSpritePlayer.push_back("assets/sprites/Crowstepright.png"); } else { return 1; }
+	if ("assets/sprites/Crowhit.png") { vSpritePlayer.push_back("assets/sprites/Crowhit.png"); } else { return 1; }
+
+	if ("assets/sprites/Enemy1still.png") { vSpriteEnemy1.push_back("assets/sprites/Enemy1still.png"); } else { return 1; }
+	if ("assets/sprites/Enemy1down.png") { vSpriteEnemy1.push_back("assets/sprites/Enemy1down.png"); } else { return 1; }
+	if ("assets/sprites/Enemy1up.png") { vSpriteEnemy1.push_back("assets/sprites/Enemy1up.png"); } else { return 1; }
+	if ("assets/sprites/Enemy1hit.png") { vSpriteEnemy1.push_back("assets/sprites/Enemy1hit.png"); } else { return 1; }
+
+	if ("assets/sprites/Enemy2still.png") { vSpriteEnemy2.push_back("assets/sprites/Enemy2still.png"); } else { return 1; }
+	if ("assets/sprites/Enemy2down.png") { vSpriteEnemy2.push_back("assets/sprites/Enemy2down.png"); } else { return 1; }
+	if ("assets/sprites/Enemy2up.png") { vSpriteEnemy2.push_back("assets/sprites/Enemy2up.png"); } else { return 1; }
+	if ("assets/sprites/Enemy2hit.png") { vSpriteEnemy2.push_back("assets/sprites/Enemy2hit.png"); } else { return 1; }
+
+	if ("assets/sprites/Enemy3still.png") { vSpriteEnemy3.push_back("assets/sprites/Enemy3still.png"); } else { return 1; }
+	if ("assets/sprites/Enemy3down.png") { vSpriteEnemy3.push_back("assets/sprites/Enemy3down.png"); } else { return 1; }
+	if ("assets/sprites/Enemy3up.png") { vSpriteEnemy3.push_back("assets/sprites/Enemy3up.png"); } else { return 1; }
+	if ("assets/sprites/Enemy3hit.png") { vSpriteEnemy3.push_back("assets/sprites/Enemy3hit.png"); } else { return 1; }
+
+	if ("assets/sprites/Enemy4still.png") { vSpriteEnemy4.push_back("assets/sprites/Enemy4still.png"); } else { return 1; }
+	if ("assets/sprites/Enemy4down.png") { vSpriteEnemy4.push_back("assets/sprites/Enemy4down.png"); } else { return 1; }
+	if ("assets/sprites/Enemy4up.png") { vSpriteEnemy4.push_back("assets/sprites/Enemy4up.png"); } else { return 1; }
+	if ("assets/sprites/Enemy4hit.png") { vSpriteEnemy4.push_back("assets/sprites/Enemy4hit.png"); } else { return 1; }
 
 	//========================================================================================================================
 	// Objets de classes
@@ -98,13 +134,13 @@ int Game::mPlay()
 	int textSize = 15;
 
 	// Upgrade menu background
-	RectangleShape upgradeMenuBackground;
-	upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6.0, WINDOW_SIZE_Y / 3.35);
-	upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
-	upgradeMenuBackground.setFillColor(Color::Black);
-	upgradeMenuBackground.setOutlineColor(Color::White);
-	upgradeMenuBackground.setOutlineThickness(10);
-	vInterfaceElements.push_back(upgradeMenuBackground);
+	//RectangleShape upgradeMenuBackground;
+	//upgradeMenuBackground.setPosition(WINDOW_SIZE_X / 6.0, WINDOW_SIZE_Y / 3.35);
+	//upgradeMenuBackground.setSize(Vector2f(WINDOW_SIZE_X / 1.5, WINDOW_SIZE_Y / 2.5));
+	//upgradeMenuBackground.setFillColor(Color::Black);
+	//upgradeMenuBackground.setOutlineColor(Color::White);
+	//upgradeMenuBackground.setOutlineThickness(10);
+	//vInterfaceElements.push_back(upgradeMenuBackground);
 
 	// Upgrade buttons
 	for (int i = 0; i < NUM_UPGRADE_BUTTONS; ++i) {
@@ -113,9 +149,9 @@ int Game::mPlay()
 		RectangleShape tempButton;
 		tempButton.setPosition(buttonSpacingX + i * buttonWidth * 1.25, buttonPosY);
 		tempButton.setSize(Vector2f(buttonWidth, buttonHeight));
-		tempButton.setFillColor(Color::Red);
-		tempButton.setOutlineColor(Color::White);
-		tempButton.setOutlineThickness(10);
+		//tempButton.setFillColor(Color::Red);
+		//tempButton.setOutlineColor(Color::White);
+		//tempButton.setOutlineThickness(10);
 		vInterfaceShapes.push_back(tempButton);
 
 		//Title
@@ -167,7 +203,7 @@ int Game::mPlay()
 
 	sPlayer.setPosition(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y / 2);
 	sPlayer.setSize(sf::Vector2f(PLAYER_SIZE, PLAYER_SIZE));
-	sPlayer.setFillColor(sf::Color::Black);
+	//sPlayer.setFillColor(sf::Color::Black);
 
 	sPlayer.setOrigin(PLAYER_SIZE / 2, PLAYER_SIZE / 2); // Point central du joueur pour la rotation
 
@@ -368,6 +404,8 @@ int Game::mPlay()
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
 					vProjectileShapes[i].move(0, INCREMENT);
 				}
+
+				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 			{
@@ -384,6 +422,8 @@ int Game::mPlay()
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() - INCREMENT);
 					vProjectileShapes[i].move(-INCREMENT, 0);
 				}
+
+				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			{
@@ -400,6 +440,8 @@ int Game::mPlay()
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
 					vProjectileShapes[i].move(0, -INCREMENT);
 				}
+
+				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
@@ -416,6 +458,8 @@ int Game::mPlay()
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + INCREMENT);
 					vProjectileShapes[i].move(INCREMENT, 0);
 				}
+
+				playerAnimationCooldown -= 1;
 			}
 
 			FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
@@ -465,7 +509,7 @@ int Game::mPlay()
 					RectangleShape sProjectile;
 					sProjectile.setPosition(_player.mGetPosX() + PLAYER_SIZE / 2, _player.mGetPosY() + PLAYER_SIZE / 2);
 					sProjectile.setSize(sf::Vector2f(tempProjectile.mGetSize(), tempProjectile.mGetSize()));
-					sProjectile.setFillColor(sf::Color::Red);
+					//sProjectile.setFillColor(sf::Color::Red);
 					sProjectile.setOrigin(tempProjectile.mGetSize() / 2, tempProjectile.mGetSize() / 2);
 
 					FloatRect sProjectileBounds = sProjectile.getGlobalBounds();
@@ -612,17 +656,95 @@ int Game::mPlay()
 			// Dessin des ennemis
 			for (int i = 0; i < vEnemyShapes.size(); i++)
 			{
-				window.draw(vEnemyShapes[i]);
-			}
 
-			// Dessin du joueur
-			window.draw(sPlayer);
+				Texture tempTexture;
+
+				if (vEnemies[i].mGetAnimationCooldown() <= 0)
+				{
+					if (vEnemies[i].mGetAnimationPosition() >= 3)
+					{
+						vEnemies[i].mSetAnimationPosition(0);
+					}
+					else
+					{
+						vEnemies[i].mSetAnimationPosition(vEnemies[i].mGetAnimationPosition() + 1);
+					}
+
+					vEnemies[i].mSetAnimationCooldown(ANIMATION_COOLDOWN);
+				}
+				else
+				{
+					vEnemies[i].mSetAnimationCooldown(vEnemies[i].mGetAnimationCooldown() - 1);
+				}
+
+				if (vEnemies[i].mGetID() == 1)
+				{
+					if (vEnemies[i].mGetAnimationPosition() == 0) { tempTexture.loadFromFile(vSpriteEnemy1[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 1) { tempTexture.loadFromFile(vSpriteEnemy1[1]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 2) { tempTexture.loadFromFile(vSpriteEnemy1[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 3) { tempTexture.loadFromFile(vSpriteEnemy1[2]); }
+
+					if (vEnemies[i].mGetDmgEffectCooldown() > 0) { tempTexture.loadFromFile(vSpriteEnemy1[3]); }
+				}
+				else if (vEnemies[i].mGetID() == 2)
+				{
+					if (vEnemies[i].mGetAnimationPosition() == 0) { tempTexture.loadFromFile(vSpriteEnemy2[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 1) { tempTexture.loadFromFile(vSpriteEnemy2[1]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 2) { tempTexture.loadFromFile(vSpriteEnemy2[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 3) { tempTexture.loadFromFile(vSpriteEnemy2[2]); }
+
+					if (vEnemies[i].mGetDmgEffectCooldown() > 0) { tempTexture.loadFromFile(vSpriteEnemy2[3]); }
+				}
+				else if (vEnemies[i].mGetID() == 3)
+				{
+					if (vEnemies[i].mGetAnimationPosition() == 0) { tempTexture.loadFromFile(vSpriteEnemy3[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 1) { tempTexture.loadFromFile(vSpriteEnemy3[1]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 2) { tempTexture.loadFromFile(vSpriteEnemy3[0]); }
+					else if (vEnemies[i].mGetAnimationPosition() == 3) { tempTexture.loadFromFile(vSpriteEnemy3[2]); }
+
+					if (vEnemies[i].mGetDmgEffectCooldown() > 0) { tempTexture.loadFromFile(vSpriteEnemy3[3]); }
+				}
+
+				vEnemyShapes[i].setTexture(&tempTexture);
+
+				window.draw(vEnemyShapes[i]); 
+			}
 
 			// Dessin des projectiles
 			for (int i = 0; i < vProjectileShapes.size(); i++)
 			{
+				Texture tempTexture; // On crée une texture pour le background
+				tempTexture.loadFromFile("assets/sprites/Projectile.png"); // On charge la texture
+				vProjectileShapes[i].setTexture(&tempTexture); // On applique la texture au background
+
 				window.draw(vProjectileShapes[i]);
 			}
+
+			// Dessin du joueur
+			Texture tempTexture;
+
+			if (playerAnimationCooldown <= 0)
+			{
+				if (playerAnimationPosition >= 3)
+				{
+					playerAnimationPosition = 0;
+				}
+				else
+				{
+					playerAnimationPosition += 1;
+				}
+
+				playerAnimationCooldown = ANIMATION_COOLDOWN;
+			}
+
+				 if (playerAnimationPosition == 0) { tempTexture.loadFromFile(vSpritePlayer[0]); }
+			else if (playerAnimationPosition == 1) { tempTexture.loadFromFile(vSpritePlayer[1]); }
+			else if (playerAnimationPosition == 2) { tempTexture.loadFromFile(vSpritePlayer[0]); }
+			else if (playerAnimationPosition == 3) { tempTexture.loadFromFile(vSpritePlayer[2]); }
+
+			sPlayer.setTexture(&tempTexture);
+
+			window.draw(sPlayer);
 
 			// Dessin de l'interface
 			if (showUpgradeMenu == true)
@@ -634,6 +756,10 @@ int Game::mPlay()
 
 				for (int i = 0; i < vInterfaceShapes.size(); i++)
 				{
+					Texture tempTexture; // On crée une texture pour le background
+					tempTexture.loadFromFile("assets/interface/upgrade_card.png"); // On charge la texture
+					vInterfaceShapes[i].setTexture(&tempTexture); // On applique la texture au background
+
 					window.draw(vInterfaceShapes[i]);
 				}
 
