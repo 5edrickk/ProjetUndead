@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "constantes.h"
 
 using namespace std;
 using namespace sf;
@@ -25,6 +26,10 @@ Enemy::Enemy()
 	_velocityY = 0,
 	_positionX = 0,
 	_positionY = 0;
+
+	_animationCooldown = 0;
+	_animationPosition = 0;
+	_spriteSheetID = 0;
 }
 
 Enemy::~Enemy()
@@ -47,6 +52,10 @@ Enemy::~Enemy()
 	_velocityY = 0,
 	_positionX = 0,
 	_positionY = 0;
+
+	_animationCooldown = 0;
+	_animationPosition = 0;
+	_spriteSheetID = 0;
 }
 
 //========================================================================================================================
@@ -134,6 +143,21 @@ int Enemy::mGetPositionX() const
 int Enemy::mGetPositionY() const
 {
 	return _positionY;
+}
+
+int Enemy::mGetAnimationCooldown() const
+{
+	return _animationCooldown;
+}
+
+int Enemy::mGetAnimationPosition() const
+{
+	return _animationPosition;
+}
+
+int Enemy::mGetSpriteSheetID() const
+{
+	return _spriteSheetID;
 }
 
 //========================================================================================================================
@@ -224,6 +248,21 @@ void Enemy::mSetPositionY(const int y)
 	_positionY = y;
 }
 
+void Enemy::mSetAnimationCooldown(const int cooldown)
+{
+	_animationCooldown = cooldown;
+}
+
+void Enemy::mSetAnimationPosition(const int position)
+{
+	_animationPosition = position;
+}
+
+void Enemy::mSetSpriteSheetID(const int ID)
+{
+	_spriteSheetID = ID;
+}
+
 //========================================================================================================================
 // Autres
 void Enemy::mInitializeMovement(const int playerX, const int playerY)
@@ -287,8 +326,11 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 		mSetSpeed(1);
 		mSetSpawnWeight(1);
 
-		mSetColor(sf::Color::Blue);
-		enemyShape.setFillColor(sf::Color::Blue);
+		//mSetColor(sf::Color::Blue);
+		//enemyShape.setFillColor(sf::Color::Blue);
+
+		mSetAnimationCooldown(ANIMATION_COOLDOWN);
+		mSetSpriteSheetID(1);
 		break;
 
 	case 2: // Fast but low hp
@@ -304,8 +346,11 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 		mSetSpeed(2);
 		mSetSpawnWeight(1);
 
-		mSetColor(sf::Color::Yellow);
-		enemyShape.setFillColor(sf::Color::Yellow);
+		//mSetColor(sf::Color::Yellow);
+		//enemyShape.setFillColor(sf::Color::Yellow);
+
+		mSetAnimationCooldown(ANIMATION_COOLDOWN);
+		mSetSpriteSheetID(2);
 		break;
 
 	case 3: // Slow but tanky
@@ -322,8 +367,11 @@ void Enemy::mSetEnemyType(int type, sf::RectangleShape& enemyShape)
 		mSetSpeed(1);
 		mSetSpawnWeight(3);
 
-		mSetColor(sf::Color::Green);
-		enemyShape.setFillColor(sf::Color::Green);
+		//mSetColor(sf::Color::Green);
+		//enemyShape.setFillColor(sf::Color::Green);
+
+		mSetAnimationCooldown(ANIMATION_COOLDOWN);
+		mSetSpriteSheetID(3);
 		break;
 
 	default:
