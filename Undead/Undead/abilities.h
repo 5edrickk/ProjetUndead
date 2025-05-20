@@ -6,9 +6,11 @@
 
 class Abilities {
 private:
-	std::string _name;
+	std::string _upgradeName;
+	std::string _upgradeText;
 	bool _active;
-	int _damage,
+	int _ID,
+		_damage,
 		_maxCooldown,
 		_cooldown,
 		_lifetime,
@@ -17,17 +19,19 @@ private:
 		_pierceAmount,
 		_bounceAmount,
 		_criticalMultiplier,
-		_criticalChance;
+		_criticalChance,
+		_level;
 
 public:
 	// Constructeurs
 	Abilities();
-	Abilities(std:: string name, bool active, bool projectile, int damage, int maxCooldown, int cooldown, int lifetime, int speed, int size, int pierceAmount, int bounceAmount, int criticalMultiplier, int criticalChance);
 	~Abilities();
 
 	// Getters
-	std::string mGetName() const;
+	std::string mGetUpgradeName() const;
+	std::string mGetUpgradeText() const;
 	bool mGetActive() const;
+	int mGetID() const;
 	int mGetDamage() const;
 	int mGetMaxCooldown() const;
 	int mGetCooldown() const;
@@ -38,10 +42,13 @@ public:
 	int mGetBounceAmount() const;
 	int mGetCriticalMultiplier() const;
 	int mGetCriticalChance() const;
+	int mGetLevel() const;
 
 	// Setters
-	void mSetName(const std::string name);
+	void mSetUpgradeName(const std::string upgradeName);
+	void mSetUpgradeText(const std::string upgradeText);
 	void mSetActive(const bool active);
+	void mSetID(const int ID);
 	void mSetDamage(const int damage);
 	void mSetMaxCooldown(const int maxCooldown);
 	void mSetCooldown(const int cooldown);
@@ -52,4 +59,8 @@ public:
 	void mSetBounceAmount(const int bounceAmount);
 	void mSetCriticalMultiplier(const int criticalMultiplier);
 	void mSetCriticalChance(const int criticalChance);
+	void mSetLevel(const int level);
+
+	// Autres
+	void mSetAbilityType(int ID, int slot, int level);
 };
