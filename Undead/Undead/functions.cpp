@@ -95,9 +95,9 @@ int fWindowClamp(int value, char direction)
 	return value;
 }
 
-int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY) 
+int fPlayerMove2(int direction, sf::RectangleShape& player, int posX, int posY)
 {
-	switch (direction) 
+	switch (direction)
 	{
 	case 1: // Up
 		if (posY > 0)
@@ -138,6 +138,73 @@ int fPlayerMove(int direction, sf::RectangleShape& player, int posX, int posY)
 	default:
 		return 0;
 	}
+}
+
+int fPlayerMove(int direction, int posX, int posY) 
+{
+	switch (direction)
+	{
+	case 1: // Up
+		if (posY > 0)
+			return posY - INCREMENT;
+		break;
+	case 2: // Right
+		if (posX < WINDOW_SIZE_X - PLAYER_SIZE)
+			return posX + INCREMENT;
+		break;
+	case 3: // Down
+		if (posY < WINDOW_SIZE_Y - PLAYER_SIZE)
+			return posY + INCREMENT;
+		break;
+	case 4: // Left
+		if (posX > 0)
+			return posX - INCREMENT;
+		break;
+	}
+	fDebug(1);
+	return (direction == 1 || direction == 3) ? posY : posX;
+
+	//switch (direction) 
+	//{
+	//case 1: // Up
+	//	if (posY > 0)
+	//	{
+	//		player.move(0, -INCREMENT);
+	//		posY -= INCREMENT;
+	//	}
+	//	else { fDebug(1); }
+
+	//	return posY;
+	//case 2: // Right
+	//	if (posX < WINDOW_SIZE_X - PLAYER_SIZE)
+	//	{
+	//		player.move(INCREMENT, 0);
+	//		posX += INCREMENT;
+	//	}
+	//	else { fDebug(1); }
+
+	//	return posX;
+	//case 3: // Down
+	//	if (posY < WINDOW_SIZE_Y - PLAYER_SIZE)
+	//	{
+	//		player.move(0, INCREMENT);
+	//		posY += INCREMENT;
+	//	}
+	//	else { fDebug(1); }
+
+	//	return posY;
+	//case 4: // Left
+	//	if (posX > 0)
+	//	{
+	//		player.move(-INCREMENT, 0);
+	//		posX -= INCREMENT;
+	//	}
+	//	else { fDebug(1); }
+
+	//	return posX;
+	//default:
+	//	return 0;
+	//}
 }
 
 void fInitialize() 

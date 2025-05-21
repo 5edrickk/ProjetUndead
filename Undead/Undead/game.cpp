@@ -109,22 +109,9 @@ int Game::mPlay()
 	window.setFramerateLimit(FRAMERATE);
 
 	//========================================================================================================================
-	// Background
-	int bkg = 0,
-		lastbkg = 0;
-
-	Background background[BACKGROUND_NUMBER]; // On crée un tableau de Backgrounds
-	for (int i = 0; i < BACKGROUND_NUMBER; i++)
-	{
-		background[i].setBackground(background[i].getBackground()); // On initialise le background
-		Texture textureBackground; // On crée une texture pour le background
-		textureBackground.loadFromFile("assets/backgrounds/background" + std::to_string(i) + ".png"); // On charge la texture
-		background[i].setTexture(textureBackground, 0, 0, WINDOW_SIZE_X, WINDOW_SIZE_Y); // On applique la texture au background
-
-	}
-	
-	//========================================================================================================================
 	// Upgrade menu
+	Camera viewUpgradeMenu(WINDOW_SIZE_X / 2, WINDOW_SIZE_Y / 2, 1.5f, 0.0f);
+	//viewUpgradeMenu.msetViewPort(0, 0, 1, 1); // Set le view port pour couvrir tt la fenêtre
 
 	// Upgrade button settings
 	float buttonWidth = WINDOW_SIZE_X / 6,
@@ -148,6 +135,7 @@ int Game::mPlay()
 		//Background
 		RectangleShape tempButton;
 		tempButton.setPosition(buttonSpacingX + i * buttonWidth * 1.25, buttonPosY);
+
 		tempButton.setSize(Vector2f(buttonWidth, buttonHeight));
 		//tempButton.setFillColor(Color::Red);
 		//tempButton.setOutlineColor(Color::White);
@@ -229,6 +217,7 @@ int Game::mPlay()
 	Camera viewDuJoueur(playerPosition.x, playerPosition.y, 0.5f,0.0f);
 	viewDuJoueur.msetViewPort(0, 0, 1, 1); // Set le view port pour couvrir tt la fenêtre
 
+
 	//Set les limites de la view pour ne montrer que la map
 	Vector2f viewSize = viewDuJoueur.mGetView().getSize();
 	FloatRect mapBounds = bkgSprite.getGlobalBounds();
@@ -244,7 +233,6 @@ int Game::mPlay()
 		// On inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
 		Event event;
 		Vector2i souris = Mouse::getPosition(window);
-		int dir = 0;
 
 		while (window.pollEvent(event))
 		{
@@ -255,30 +243,10 @@ int Game::mPlay()
 			}
 
 			// Détection des touches
-			else if (event.type == Event::KeyPressed)
-			{
-				switch (event.key.code) {
-				case Keyboard::Escape:
-					window.close();
-					break;
-				case Keyboard::W:
-					dir = 1;
-					break;
-				case Keyboard::D:
-					dir = 2;
-					break;
-				case Keyboard::S:
-					dir = 3;
-					break;
-				case Keyboard::A:
-					dir = 4;
-					break;
-				default:
-					break;
-				}
-			}
 
 			// Upgrade menu
+			
+
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
 				for (int i = 0; i < NUM_UPGRADE_BUTTONS; i++)
 				{
@@ -315,6 +283,8 @@ int Game::mPlay()
 			// Wave
 			if (killNumber >= KILLS_FOR_WAVE * waveNumber)
 			{
+				//window.setView(viewUpgradeMenu.mGetView());
+
 				waveNumber++;
 				killNumber = 0;
 				cout << "Wave " << waveNumber << endl;
@@ -353,7 +323,9 @@ int Game::mPlay()
 					vInterfaceDescriptions[i].setString(temporaryAbilityClones[i].mGetUpgradeText());
 				}
 
+				
 				showUpgradeMenu = true;
+				
 			}
 
 			// Spawning
@@ -417,7 +389,12 @@ int Game::mPlay()
 			// Mouvement du joueur
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			{
-				_player.mSetPosY(fPlayerMove(1, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				
+				_player.mSetPosY(fPlayerMove(1, _player.mGetPosX(), _player.mGetPosY()));
+
+
+				/*_player.mSetPosY(fPlayerMove2(1, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				
 
 				for (int i = 0; i < vEnemies.size(); i++)
 				{
@@ -429,13 +406,19 @@ int Game::mPlay()
 				{
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() + INCREMENT);
 					vProjectileShapes[i].move(0, INCREMENT);
-				}
+				}*/
 
 				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 			{
-				_player.mSetPosX(fPlayerMove(2, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				
+				_player.mSetPosX(fPlayerMove(2, _player.mGetPosX(), _player.mGetPosY()));
+				
+				
+				/*_player.mSetPosX(fPlayerMove2(2, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+
+				
 
 				for (int i = 0; i < vEnemies.size(); i++)
 				{
@@ -447,13 +430,18 @@ int Game::mPlay()
 				{
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() - INCREMENT);
 					vProjectileShapes[i].move(-INCREMENT, 0);
-				}
+				}*/
 
 				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			{
-				_player.mSetPosY(fPlayerMove(3, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				_player.mSetPosY(fPlayerMove(3, _player.mGetPosX(), _player.mGetPosY()));
+				
+				
+				/*_player.mSetPosY(fPlayerMove2(3, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				
+
 
 				for (int i = 0; i < vEnemies.size(); i++)
 				{
@@ -465,15 +453,20 @@ int Game::mPlay()
 				{
 					vProjectiles[i].mSetPositionY(vProjectiles[i].mGetPositionY() - INCREMENT);
 					vProjectileShapes[i].move(0, -INCREMENT);
-				}
+				}*/
 
 				playerAnimationCooldown -= 1;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
-				_player.mSetPosX(fPlayerMove(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
+				
+				_player.mSetPosX(fPlayerMove(4, _player.mGetPosX(), _player.mGetPosY()));
+				
+				//_player.mSetPosX(fPlayerMove2(4, sPlayer, _player.mGetPosX(), _player.mGetPosY()));
 
-				for (int i = 0; i < vEnemies.size(); i++)
+				
+
+				/*for (int i = 0; i < vEnemies.size(); i++)
 				{
 					vEnemies[i].mSetPositionX(vEnemies[i].mGetPositionX() + INCREMENT);
 					vEnemyShapes[i].move(INCREMENT, 0);
@@ -483,12 +476,15 @@ int Game::mPlay()
 				{
 					vProjectiles[i].mSetPositionX(vProjectiles[i].mGetPositionX() + INCREMENT);
 					vProjectileShapes[i].move(INCREMENT, 0);
-				}
+				}*/
 
 				playerAnimationCooldown -= 1;
 			}
 				
+			sPlayer.setPosition(_player.mGetPosX(), _player.mGetPosY());
+
 			playerPosition = sPlayer.getPosition();
+
 
 			FloatRect sPlayerBounds = sPlayer.getGlobalBounds();
 
@@ -500,24 +496,9 @@ int Game::mPlay()
 
 			viewDuJoueur.mSetPosition(viewX, viewY);
 			viewDuJoueur.mUpdate();
-
+			
 
 			window.setView(viewDuJoueur.mGetView());
-
-			//Zoom de la view du joueur
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E))
-
-			//Défilement du sprite joueur
-			switch (dir)
-			{
-				viewDuJoueur.mSetZoom(1.05f);
-				viewDuJoueur.mUpdateZoom();
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-			{
-				viewDuJoueur.mSetZoom(0.93f);
-				viewDuJoueur.mUpdateZoom();
-			}
 
 			// Rotation joueur par rapport a la souris (v.2 -> Capture seulement dans la "viewDuJoueur" et non dans tout l'ecran
 			fDebug(3, Mouse::getPosition().x, Mouse::getPosition().y);
